@@ -35,3 +35,5 @@ const deleteBlog = (id: number): boolean => {
   blogsDB.splice(blogIndex, 1);
   return true;
 };
+
+export { getAllBlogs, getBlogById, createBlog, updateBlog, deleteBlog };
