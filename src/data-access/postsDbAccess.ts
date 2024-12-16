@@ -1,6 +1,6 @@
 import { postsDB } from '../db/posts-db.js';
 import { postType } from '../types/posts-types.js';
-import { getBlogById } from './blogs-repository.js';
+import { getBlogById } from './blogsDbAccess.js';
 
 const getAllPosts = (): postType[] => {
   return postsDB;

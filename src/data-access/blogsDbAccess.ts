@@ -1,11 +1,11 @@
 import { blogsDB } from '../db/blogs-db.js';
 import { blogType } from '../types/blogs-types.js';
 
-const getAllBlogs = (): blogType[] => {
+const getBlogsDb = (): blogType[] => {
   return blogsDB;
 };
 
-const getBlogById = (id: number): blogType | null => {
+const findBlogDb = (id: number): blogType | null => {
   const foundBlog = blogsDB.find((blog) => blog.id === id);
   if (!foundBlog) {
     return null;
@@ -13,12 +13,12 @@ const getBlogById = (id: number): blogType | null => {
   return foundBlog;
 };
 
-const createBlog = (blogProps: { name: string; description: string; websiteUrl: string }): blogType => {
+const createBlogDb = (blogProps: { name: string; description: string; websiteUrl: string }): blogType => {
   const id = blogsDB.length ? Math.max(...blogsDB.map((blog) => blog.id)) + 1 : 1;
   return { id, ...blogProps };
 };
 
-const updateBlog = (id: number, blogProps: { name: string; description: string; websiteUrl: string }): boolean => {
+const updateBlogDb = (id: number, blogProps: { name: string; description: string; websiteUrl: string }): boolean => {
   const blogIndex = blogsDB.findIndex((blog) => blog.id === id);
   if (blogIndex < 0) {
     return false;
@@ -27,7 +27,7 @@ const updateBlog = (id: number, blogProps: { name: string; description: string; 
   return true;
 };
 
-const deleteBlog = (id: number): boolean => {
+const deleteBlogDb = (id: number): boolean => {
   const blogIndex = blogsDB.findIndex((blog) => blog.id === id);
   if (blogIndex < 0) {
     return false;
@@ -36,4 +36,4 @@ const deleteBlog = (id: number): boolean => {
   return true;
 };
 
-export { getAllBlogs, getBlogById, createBlog, updateBlog, deleteBlog };
+export { getBlogsDb, findBlogDb, createBlogDb, updateBlogDb, deleteBlogDb };
