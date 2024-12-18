@@ -1,11 +1,11 @@
 import { blogsDB } from '../db/blogs-db.js';
-import { blogType } from '../types/blogs-types.js';
+import { BlogType } from '../types/blog-types.js';
 
-const getBlogsDb = (): blogType[] => {
+const getBlogsDb = (): BlogType[] => {
   return blogsDB;
 };
 
-const findBlogDb = (id: number): blogType | null => {
+const findBlogDb = (id: number): BlogType | null => {
   const foundBlog = blogsDB.find((blog) => blog.id === id);
   if (!foundBlog) {
     return null;
@@ -13,7 +13,7 @@ const findBlogDb = (id: number): blogType | null => {
   return foundBlog;
 };
 
-const createBlogDb = (blogProps: { name: string; description: string; websiteUrl: string }): blogType => {
+const createBlogDb = (blogProps: { name: string; description: string; websiteUrl: string }): BlogType => {
   const id = blogsDB.length ? Math.max(...blogsDB.map((blog) => blog.id)) + 1 : 1;
   return { id, ...blogProps };
 };

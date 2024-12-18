@@ -1,4 +1,4 @@
-export type postType = {
+export type PostType = {
   id: number;
   title: string;
   shortDescription: string;
