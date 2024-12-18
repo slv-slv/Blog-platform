@@ -1,18 +1,20 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { createBlogDb } from '../data-access/blogs-db-access.js';
-import { blogDescriptionValidation, blogNameValidation, blogUrlValidation } from './blogs-validation.js';
+import { formatErrors } from './blogs-validation.js';
+import { checkAuth } from '../authorization/authorization.js';
 
-export const createBlog = [
-  blogNameValidation,
-  blogDescriptionValidation,
-  blogUrlValidation,
-  (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array({ onlyFirstError: true }) });
-    }
-    const newBlog = createBlogDb(req.body);
-    res.status(201).json({ newBlog });
-  },
-];
+export const createBlog = (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !checkAuth(authHeader)) {
+    res.status(401).json({ error: 'unsuccessful authorization' });
+  }
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json({ errors: formatErrors(errors) });
+  }
+
+  const newBlog = createBlogDb(req.body);
+  res.status(201).json({ newBlog });
+};

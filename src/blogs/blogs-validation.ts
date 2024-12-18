@@ -1,6 +1,17 @@
 import { body, query, Result, ValidationError } from 'express-validator';
 import { ErrorType } from '../types/error-types.js';
 
+export const formatErrors = (errors: Result<ValidationError>): ErrorType[] => {
+  return errors.array({ onlyFirstError: true }).map((err) => {
+    const message = err.msg;
+    if ('param' in err) {
+      const field = err.param;
+    }
+    const field = '';
+    return { message, field };
+  });
+};
+
 export const blogIdValidation = query('id').isInt({ min: 1 }).withMessage('Invalid blog ID');
 
 export const blogNameValidation = body('name')
@@ -37,10 +48,3 @@ export const blogUrlValidation = body('name')
   .withMessage('URL must be a valid URL')
   .isLength({ max: 100 })
   .withMessage('URL must not be more than 100 characters');
-
-export const formatErrors = (errors: Result<ValidationError>): ErrorType[] => {
-  return errors.array({ onlyFirstError: true }).map((err) => ({
-    message: err.msg,
-    // field: err.param,
-  }));
-};
