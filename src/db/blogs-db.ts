@@ -1,6 +1,6 @@
-import { blogType } from '../types/blogs-types.js';
+import { BlogType } from '../types/blog-types.js';
 
-export const blogsDB: blogType[] = [
+export const blogsDB: BlogType[] = [
   {
     id: 1,
     name: 'Timur Shemsedinov',

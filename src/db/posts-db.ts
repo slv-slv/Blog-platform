@@ -1,6 +1,6 @@
-import { postType } from '../types/posts-types.js';
+import { PostType } from '../types/posts-types.js';
 
-export const postsDB: postType[] = [
+export const postsDB: PostType[] = [
   {
     id: 1,
     title: 'Understanding TypeScript',

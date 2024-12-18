@@ -1,7 +1,7 @@
 import express from 'express';
 import { SETTINGS } from './settings.js';
-import { blogsRouter } from './blogs/index.js';
-import { postsRouter } from './posts/index.js';
+import { blogsRouter } from './blogs/blogs-router.js';
+import { postsRouter } from './posts/posts-router.js';
 
 const app = express();
 
