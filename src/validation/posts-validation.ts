@@ -1,4 +1,4 @@
-import { body, query } from 'express-validator';
+import { body } from 'express-validator';
 import { findBlogDb } from '../data-access/blogs-db-access.js';
 
 export const postTitleValidation = body('title')
