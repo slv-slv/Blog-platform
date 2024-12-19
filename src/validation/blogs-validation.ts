@@ -1,6 +1,4 @@
-import { body, query } from 'express-validator';
-
-export const blogIdValidation = query('id').isInt({ min: 1 }).withMessage('Invalid blog ID');
+import { body } from 'express-validator';
 
 export const blogNameValidation = body('name')
   .exists()
