@@ -4,7 +4,7 @@ import { findBlogDb, updateBlogDb } from '../data-access/blogs-db-access.js';
 import { formatErrors } from '../validation/format-errors.js';
 
 export const updateBlog = (req: Request, res: Response) => {
-  const blogId = Number(req.query.id);
+  const blogId = Number(req.params.id);
   if (!findBlogDb(blogId)) {
     res.status(404).json({ error: 'Blog not found' });
     return;
