@@ -1,13 +1,13 @@
-import { postsDB } from '../db/posts-db.js';
+import { db } from '../db/db.js';
 import { PostType } from '../types/posts-types.js';
 import { findBlogDb } from './blogs-db-access.js';
 
 const getPostsDb = (): PostType[] => {
-  return postsDB;
+  return db.posts;
 };
 
 const findPostDb = (id: number): PostType | null => {
-  const foundPost = postsDB.find((post) => post.id === id);
+  const foundPost = db.posts.find((post) => post.id === id);
   if (!foundPost) {
     return null;
   }
@@ -20,7 +20,7 @@ const createPostDb = (postProps: {
   content: string;
   blogId: number;
 }): PostType | null => {
-  const id = postsDB.length ? Math.max(...postsDB.map((post) => post.id)) + 1 : 1;
+  const id = db.posts.length ? Math.max(...db.posts.map((post) => post.id)) + 1 : 1;
   const blog = findBlogDb(postProps.blogId);
   if (!blog) {
     return null;
@@ -37,7 +37,7 @@ const updatePostDb = (
     blogId: number;
   },
 ): boolean => {
-  const postIndex = postsDB.findIndex((post) => post.id === id);
+  const postIndex = db.posts.findIndex((post) => post.id === id);
   if (postIndex < 0) {
     return false;
   }
@@ -45,16 +45,16 @@ const updatePostDb = (
   if (!blog) {
     return false;
   }
-  postsDB[postIndex] = { ...postsDB[postIndex], ...postProps, blogName: blog.name };
+  db.posts[postIndex] = { ...db.posts[postIndex], ...postProps, blogName: blog.name };
   return true;
 };
 
 const deletePostDb = (id: number): boolean => {
-  const postIndex = postsDB.findIndex((post) => post.id === id);
+  const postIndex = db.posts.findIndex((post) => post.id === id);
   if (postIndex < 0) {
     return false;
   }
-  postsDB.splice(postIndex, 1);
+  db.posts.splice(postIndex, 1);
   return true;
 };
 
