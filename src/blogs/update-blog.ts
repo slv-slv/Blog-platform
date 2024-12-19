@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { findBlogDb, updateBlogDb } from '../data-access/blogs-db-access.js';
-import { formatErrors } from './blogs-validation.js';
+import { formatErrors } from '../validation/format-errors.js';
 
 export const updateBlog = (req: Request, res: Response) => {
   const blogId = Number(req.query.id);

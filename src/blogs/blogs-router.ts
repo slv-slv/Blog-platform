@@ -5,7 +5,7 @@ import { createBlog } from './create-blog.js';
 import { updateBlog } from './update-blog.js';
 import { deleteBlog } from './delete-blog.js';
 import { checkAuth } from '../authorization/authorization.js';
-import { blogDescriptionValidation, blogNameValidation, blogUrlValidation } from './blogs-validation.js';
+import { blogDescriptionValidation, blogNameValidation, blogUrlValidation } from '../validation/blogs-validation.js';
 
 export const blogsRouter = Router();
 
