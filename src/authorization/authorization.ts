@@ -6,8 +6,8 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
   let isAuth = false;
 
   if (authHeader) {
-    const [, authReqBase64] = authHeader.split(' ');
-    isAuth = credentials.map((user) => user.base64).includes(authReqBase64);
+    const [authMethod, authReqBase64] = authHeader.split(' ');
+    isAuth = authMethod === 'Basic' && credentials.map((user) => user.base64).includes(authReqBase64);
   }
 
   if (!authHeader || !isAuth) {
