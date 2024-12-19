@@ -25,7 +25,9 @@ const createPostDb = (postProps: {
   if (!blog) {
     return null;
   }
-  return { id, ...postProps, blogName: blog.name };
+  const newPost = { id, ...postProps, blogName: blog.name };
+  db.posts.push(newPost);
+  return newPost;
 };
 
 const updatePostDb = (

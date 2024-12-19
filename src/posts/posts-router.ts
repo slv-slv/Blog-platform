@@ -4,7 +4,6 @@ import { findPost } from './find-post.js';
 import { createPost } from './create-post.js';
 import { updatePost } from './update-post.js';
 import { deletePost } from './delete-post.js';
-import { deleteAllPosts } from './delete-all-posts.js';
 import { checkAuth } from '../authorization/authorization.js';
 import {
   blogExistsValidation,
@@ -39,5 +38,3 @@ postsRouter.put(
 );
 
 postsRouter.delete('/:id', checkAuth, deletePost);
-
-postsRouter.delete('/testing/all-data', deleteAllPosts);

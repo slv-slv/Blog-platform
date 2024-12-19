@@ -11,5 +11,5 @@ export const createBlog = (req: Request, res: Response) => {
   }
 
   const newBlog = createBlogDb(req.body);
-  res.status(201).json({ newBlog });
+  res.status(201).json(newBlog);
 };

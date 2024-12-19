@@ -15,7 +15,9 @@ const findBlogDb = (id: number): BlogType | null => {
 
 const createBlogDb = (blogProps: { name: string; description: string; websiteUrl: string }): BlogType => {
   const id = db.blogs.length ? Math.max(...db.blogs.map((blog) => blog.id)) + 1 : 1;
-  return { id, ...blogProps };
+  const newBlog = { id, ...blogProps };
+  db.blogs.push(newBlog);
+  return newBlog;
 };
 
 const updateBlogDb = (id: number, blogProps: { name: string; description: string; websiteUrl: string }): boolean => {

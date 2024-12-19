@@ -11,7 +11,7 @@ export const blogNameValidation = body('name')
   .isLength({ max: 15 })
   .withMessage('Name must not be more than 15 characters');
 
-export const blogDescriptionValidation = body('name')
+export const blogDescriptionValidation = body('description')
   .exists()
   .withMessage('Description is required')
   .isString()
@@ -22,7 +22,7 @@ export const blogDescriptionValidation = body('name')
   .isLength({ max: 500 })
   .withMessage('Description must not be more than 15 characters');
 
-export const blogUrlValidation = body('name')
+export const blogUrlValidation = body('websiteUrl')
   .exists()
   .withMessage('URL is required')
   .isString()
