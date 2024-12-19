@@ -12,7 +12,7 @@ export const postTitleValidation = body('title')
   .isLength({ max: 30 })
   .withMessage('Name must not be more than 30 characters');
 
-export const postDescriptionValidation = body('shortDescriptions')
+export const postDescriptionValidation = body('shortDescription')
   .exists()
   .withMessage('Description is required')
   .isString()
@@ -21,18 +21,18 @@ export const postDescriptionValidation = body('shortDescriptions')
   .notEmpty()
   .withMessage('Description must not be empty')
   .isLength({ max: 100 })
-  .withMessage('Description must not be more than 15 characters');
+  .withMessage('Description must not be more than 100 characters');
 
 export const postContentValidation = body('content')
   .exists()
-  .withMessage('Description is required')
+  .withMessage('Content is required')
   .isString()
-  .withMessage('Description must be a string')
+  .withMessage('Content must be a string')
   .trim()
   .notEmpty()
-  .withMessage('Description must not be empty')
+  .withMessage('Content must not be empty')
   .isLength({ max: 1000 })
-  .withMessage('Description must not be more than 15 characters');
+  .withMessage('Content must not be more than 1000 characters');
 
 export const blogExistsValidation = body('blogId')
   .exists()

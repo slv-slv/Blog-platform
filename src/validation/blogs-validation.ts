@@ -20,7 +20,7 @@ export const blogDescriptionValidation = body('description')
   .notEmpty()
   .withMessage('Description must not be empty')
   .isLength({ max: 500 })
-  .withMessage('Description must not be more than 15 characters');
+  .withMessage('Description must not be more than 500 characters');
 
 export const blogUrlValidation = body('websiteUrl')
   .exists()
