@@ -36,4 +36,8 @@ const deleteBlogDb = (id: number): boolean => {
   return true;
 };
 
-export { getBlogsDb, findBlogDb, createBlogDb, updateBlogDb, deleteBlogDb };
+const deleteAllBlogsDb = () => {
+  db.blogs = [];
+};
+
+export { getBlogsDb, findBlogDb, createBlogDb, updateBlogDb, deleteBlogDb, deleteAllBlogsDb };

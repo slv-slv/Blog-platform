@@ -58,4 +58,8 @@ const deletePostDb = (id: number): boolean => {
   return true;
 };
 
-export { getPostsDb, findPostDb, createPostDb, updatePostDb, deletePostDb };
+const deleteAllPostsDb = () => {
+  db.posts = [];
+};
+
+export { getPostsDb, findPostDb, createPostDb, updatePostDb, deletePostDb, deleteAllPostsDb };

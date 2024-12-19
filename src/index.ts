@@ -14,12 +14,6 @@ app.get('/', (req, res) => {
   res.status(200).json({ version: '1.0' });
 });
 
-app.delete('/testing/all-data', (req, res) => {
-  db.blogs = [];
-  db.posts = [];
-  res.status(204).end();
-});
-
 app.listen(SETTINGS.PORT, () => {
   console.log('...server started in port ' + SETTINGS.PORT);
 });
