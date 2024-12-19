@@ -1,12 +1,12 @@
 import { postsDB } from '../db/posts-db.js';
-import { postType } from '../types/posts-types.js';
-import { getBlogById } from './blogs-db-access.js';
+import { PostType } from '../types/posts-types.js';
+import { findBlogDb } from './blogs-db-access.js';
 
-const getAllPosts = (): postType[] => {
+const getPostsDb = (): PostType[] => {
   return postsDB;
 };
 
-const getPostById = (id: number): postType | null => {
+const findPostDb = (id: number): PostType | null => {
   const foundPost = postsDB.find((post) => post.id === id);
   if (!foundPost) {
     return null;
@@ -14,21 +14,21 @@ const getPostById = (id: number): postType | null => {
   return foundPost;
 };
 
-const createPost = (postProps: {
+const createPostDb = (postProps: {
   title: string;
   shortDescription: string;
   content: string;
   blogId: number;
-}): postType | null => {
+}): PostType | null => {
   const id = postsDB.length ? Math.max(...postsDB.map((post) => post.id)) + 1 : 1;
-  const blog = getBlogById(postProps.blogId);
+  const blog = findBlogDb(postProps.blogId);
   if (!blog) {
     return null;
   }
   return { id, ...postProps, blogName: blog.name };
 };
 
-const updatePost = (
+const updatePostDb = (
   id: number,
   postProps: {
     title: string;
@@ -41,7 +41,7 @@ const updatePost = (
   if (postIndex < 0) {
     return false;
   }
-  const blog = getBlogById(postProps.blogId);
+  const blog = findBlogDb(postProps.blogId);
   if (!blog) {
     return false;
   }
@@ -49,7 +49,7 @@ const updatePost = (
   return true;
 };
 
-const deletePost = (id: number): boolean => {
+const deletePostDb = (id: number): boolean => {
   const postIndex = postsDB.findIndex((post) => post.id === id);
   if (postIndex < 0) {
     return false;
@@ -58,4 +58,4 @@ const deletePost = (id: number): boolean => {
   return true;
 };
 
-export { getAllPosts, getPostById, createPost, updatePost, deletePost };
+export { getPostsDb, findPostDb, createPostDb, updatePostDb, deletePostDb };
