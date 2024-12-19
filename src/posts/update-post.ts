@@ -7,11 +7,13 @@ export const updatePost = (req: Request, res: Response) => {
   const postId = Number(req.query.id);
   if (!findPostDb(postId)) {
     res.status(404).json({ error: 'Blog not found' });
+    return;
   }
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(400).json({ errors: formatErrors(errors) });
+    return;
   }
 
   updatePostDb(postId, req.body);

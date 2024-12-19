@@ -6,6 +6,7 @@ export const findBlog = (req: Request, res: Response) => {
   const foundBlog = findBlogDb(blogId);
   if (!foundBlog) {
     res.status(404).json({ error: 'Blog not found' });
+    return;
   }
   res.status(200).json(foundBlog);
 };
