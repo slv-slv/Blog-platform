@@ -11,5 +11,5 @@ export const createPost = (req: Request, res: Response) => {
   }
 
   const newPost = createPostDb(req.body);
-  res.status(201).json({ newPost });
+  res.status(201).json(newPost);
 };

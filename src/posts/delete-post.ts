@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { deletePostDb } from '../data-access/posts-db-access.js';
 
 export const deletePost = (req: Request, res: Response) => {
-  const postId = Number(req.params.id);
+  const postId = req.params.id;
   if (!deletePostDb(postId)) {
     res.status(404).json({ error: 'Post not found' });
     return;

@@ -43,7 +43,7 @@ export const blogExistsValidation = body('blogId')
   .notEmpty()
   .withMessage('Blog ID must not be empty')
   .custom((id) => {
-    if (!findBlogDb(Number(id))) {
+    if (!findBlogDb(id)) {
       return false;
     }
     return true;
