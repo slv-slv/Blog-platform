@@ -12,6 +12,7 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
 
   if (!authHeader || !isAuth) {
     res.status(401).json({ error: 'unsuccessful authorization' });
+    return;
   }
   next();
 };
