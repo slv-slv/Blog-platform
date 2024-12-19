@@ -6,7 +6,7 @@ import { formatErrors } from '../validation/format-errors.js';
 export const createBlog = (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({ errors: formatErrors(errors) });
+    res.status(400).json({ errorsMessages: formatErrors(errors) });
     return;
   }
 

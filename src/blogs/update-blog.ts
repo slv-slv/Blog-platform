@@ -12,7 +12,7 @@ export const updateBlog = (req: Request, res: Response) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({ errors: formatErrors(errors) });
+    res.status(400).json({ errorsMessages: formatErrors(errors) });
     return;
   }
 
