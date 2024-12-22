@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { formatErrors } from '../validation/format-errors.js';
-import { findPostDb, updatePostDb } from '../data-access/posts-db-access.js';
+import { postsRepo } from '../data-access/posts-db-access.js';
 
 export const updatePost = (req: Request, res: Response) => {
   const postId = req.params.id;
-  if (!findPostDb(postId)) {
+  if (!postsRepo.findPost(postId)) {
     res.status(404).json({ error: 'Blog not found' });
     return;
   }
@@ -16,6 +16,6 @@ export const updatePost = (req: Request, res: Response) => {
     return;
   }
 
-  updatePostDb(postId, req.body);
+  postsRepo.updatePost(postId, req.body);
   res.status(204).json({ message: 'The post has been updated' });
 };

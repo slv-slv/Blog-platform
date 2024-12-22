@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { deleteBlogDb } from '../data-access/blogs-db-access.js';
+import { blogsRepo } from '../data-access/blogs-db-access.js';
 
 export const deleteBlog = (req: Request, res: Response) => {
   const blogId = req.params.id;
-  if (!deleteBlogDb(blogId)) {
+  if (!blogsRepo.deleteBlog(blogId)) {
     res.status(404).json({ error: 'Blog not found' });
     return;
   }

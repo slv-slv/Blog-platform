@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { createBlogDb } from '../data-access/blogs-db-access.js';
+import { blogsRepo } from '../data-access/blogs-db-access.js';
 import { formatErrors } from '../validation/format-errors.js';
 
 export const createBlog = (req: Request, res: Response) => {
@@ -10,6 +10,6 @@ export const createBlog = (req: Request, res: Response) => {
     return;
   }
 
-  const newBlog = createBlogDb(req.body);
+  const newBlog = blogsRepo.createBlog(req.body);
   res.status(201).json(newBlog);
 };
