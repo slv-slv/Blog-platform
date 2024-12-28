@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { findBlogDb } from '../data-access/blogs-db-access.js';
+import { blogsRepo } from '../data-access/blogs-db-access.js';
 
 export const postTitleValidation = body('title')
   .exists()
@@ -43,7 +43,7 @@ export const blogExistsValidation = body('blogId')
   .notEmpty()
   .withMessage('Blog ID must not be empty')
   .custom((id) => {
-    if (!findBlogDb(id)) {
+    if (!blogsRepo.findBlog(id)) {
       return false;
     }
     return true;

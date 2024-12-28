@@ -3,8 +3,9 @@ import { Request, Response } from 'express';
 import { SETTINGS } from './settings.js';
 import { blogsRouter } from './blogs/blogs-router.js';
 import { postsRouter } from './posts/posts-router.js';
-import { deleteAllBlogsDb } from './data-access/blogs-db-access.js';
-import { deleteAllPostsDb } from './data-access/posts-db-access.js';
+import { blogsRepo } from './data-access/blogs-db-access.js';
+import { postsRepo } from './data-access/posts-db-access.js';
+import { dbClient, runDb } from './db/db.js';
 
 const app = express();
 
@@ -17,11 +18,20 @@ app.get('/', (req, res) => {
 });
 
 app.delete('/testing/all-data', (req: Request, res: Response) => {
-  deleteAllBlogsDb();
-  deleteAllPostsDb();
+  blogsRepo.deleteAllBlogs();
+  postsRepo.deleteAllPosts();
   res.status(204).json({ message: 'All data has been deleted' });
 });
 
-app.listen(SETTINGS.PORT, () => {
-  console.log('...server started in port ' + SETTINGS.PORT);
-});
+const start = async () => {
+  try {
+    await runDb(dbClient);
+    app.listen(SETTINGS.PORT, () => {
+      console.log('Server started in port ' + SETTINGS.PORT);
+    });
+  } catch {
+    process.exit(1);
+  }
+};
+
+start();

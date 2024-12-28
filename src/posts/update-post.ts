@@ -3,10 +3,10 @@ import { validationResult } from 'express-validator';
 import { formatErrors } from '../validation/format-errors.js';
 import { postsRepo } from '../data-access/posts-db-access.js';
 
-export const updatePost = (req: Request, res: Response) => {
+export const updatePost = async (req: Request, res: Response) => {
   const postId = req.params.id;
   if (!postsRepo.findPost(postId)) {
-    res.status(404).json({ error: 'Blog not found' });
+    res.status(404).json({ error: 'Post not found' });
     return;
   }
 
