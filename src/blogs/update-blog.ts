@@ -18,5 +18,5 @@ export const updateBlog = async (req: Request, res: Response) => {
   }
 
   await blogsRepo.updateBlog(blogId, req.body);
-  res.status(204).json({ message: 'The blog has been updated' });
+  res.status(204).end();
 };

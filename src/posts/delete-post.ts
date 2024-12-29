@@ -9,5 +9,5 @@ export const deletePost = async (req: Request, res: Response) => {
     return;
   }
 
-  res.status(204).json({ message: 'The post has been deleted' });
+  res.status(204).end();
 };

@@ -1,6 +1,23 @@
 import { body } from 'express-validator';
 import { blogsRepo } from '../data-access/blogs-db-access.js';
 
+export const blogExistsValidation = body('blogId')
+  .exists()
+  .withMessage('Blog ID is required')
+  .isString()
+  .withMessage('Blog ID must be a string')
+  .trim()
+  .notEmpty()
+  .withMessage('Blog ID must not be empty')
+  .custom(async (blogId) => {
+    const blogFound = await blogsRepo.findBlog(blogId);
+    if (!blogFound) {
+      throw new Error('Blog does not exist');
+    }
+    return true;
+  })
+  .withMessage('Blog does not exist');
+
 export const postTitleValidation = body('title')
   .exists()
   .withMessage('Title is required')
@@ -33,19 +50,3 @@ export const postContentValidation = body('content')
   .withMessage('Content must not be empty')
   .isLength({ max: 1000 })
   .withMessage('Content must not be more than 1000 characters');
-
-export const blogExistsValidation = body('blogId')
-  .exists()
-  .withMessage('Blog ID is required')
-  .isString()
-  .withMessage('Blog ID must be a string')
-  .trim()
-  .notEmpty()
-  .withMessage('Blog ID must not be empty')
-  .custom((id) => {
-    if (!blogsRepo.findBlog(id)) {
-      return false;
-    }
-    return true;
-  })
-  .withMessage('Blog does not exist');

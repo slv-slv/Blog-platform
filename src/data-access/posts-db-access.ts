@@ -37,16 +37,19 @@ export const postsRepo = {
 
   updatePost: async (
     id: string,
-    postProps: {
-      title: string;
-      shortDescription: string;
-      content: string;
-      blogId: string;
-    },
+    {
+      title,
+      shortDescription,
+      content,
+      blogId,
+    }: { title: string; shortDescription: string; content: string; blogId: string },
   ): Promise<boolean> => {
-    // const blog = await blogsRepo.findBlog(postProps.blogId);
+    // const blog = await blogsRepo.findBlog(blogId);
+    // if (!blog) {
+    //   return false; // Blog does not exist
+    // }
     // const blogName = blog?.name;
-    const updateResult = await postsColl.updateOne({ id }, { $set: { ...postProps } });
+    const updateResult = await postsColl.updateOne({ id }, { $set: { title, shortDescription, content } });
     if (!updateResult.matchedCount) {
       return false;
     }

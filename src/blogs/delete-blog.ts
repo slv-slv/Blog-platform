@@ -8,5 +8,5 @@ export const deleteBlog = async (req: Request, res: Response) => {
     res.status(404).json({ error: 'Blog not found' });
     return;
   }
-  res.status(204).json({ message: 'The blog has been deleted' });
+  res.status(204).end();
 };
