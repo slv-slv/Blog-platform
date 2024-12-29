@@ -44,9 +44,9 @@ export const postsRepo = {
       blogId: string;
     },
   ): Promise<boolean> => {
-    const blog = await blogsRepo.findBlog(postProps.blogId);
-    const blogName = blog?.name;
-    const updateResult = await postsColl.updateOne({ id }, { $set: { ...postProps, blogName } });
+    // const blog = await blogsRepo.findBlog(postProps.blogId);
+    // const blogName = blog?.name;
+    const updateResult = await postsColl.updateOne({ id }, { $set: { ...postProps } });
     if (!updateResult.matchedCount) {
       return false;
     }
