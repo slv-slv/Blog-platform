@@ -23,15 +23,11 @@ app.delete('/testing/all-data', (req: Request, res: Response) => {
   res.status(204).json({ message: 'All data has been deleted' });
 });
 
-const start = async () => {
-  try {
-    await runDb(dbClient);
-    app.listen(SETTINGS.PORT, () => {
-      console.log('Server started in port ' + SETTINGS.PORT);
-    });
-  } catch {
-    process.exit(1);
-  }
-};
-
-start();
+try {
+  await runDb(dbClient);
+  app.listen(SETTINGS.PORT, () => {
+    console.log('Server started in port ' + SETTINGS.PORT);
+  });
+} catch {
+  process.exit(1);
+}
