@@ -29,8 +29,7 @@ export const postsRepo = {
     const blog = await blogsRepo.findBlog(postProps.blogId);
     const blogName = blog?.name as string;
     const createdAt = new Date().toISOString();
-    const isMembership = false;
-    const newPost = { id, ...postProps, blogName, createdAt, isMembership };
+    const newPost = { id, ...postProps, blogName, createdAt };
     const createResult = await postsColl.insertOne(newPost);
     const insertedPost = await postsColl.findOne({ _id: createResult.insertedId }, { projection: { _id: 0 } });
     return insertedPost as PostType;

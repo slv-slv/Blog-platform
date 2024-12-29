@@ -6,5 +6,4 @@ export type PostType = {
   blogId: string;
   blogName: string;
   createdAt: string;
-  isMembership: boolean;
 };
