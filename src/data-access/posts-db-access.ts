@@ -1,24 +1,22 @@
 import { SETTINGS } from '../settings.js';
 import { db } from '../db/db.js';
 import { PostType } from '../types/posts-types.js';
-import { ObjectId } from 'mongodb';
 import { blogsRepo } from './blogs-db-access.js';
 
-const postsColl = db.collection(SETTINGS.DB_COLLECTIONS.POSTS);
+const postsColl = db.collection<PostType>(SETTINGS.DB_COLLECTIONS.POSTS);
 
 export const postsRepo = {
   getPosts: async (): Promise<PostType[]> => {
-    const posts = await postsColl.find({}).toArray();
-    return posts as PostType[];
+    const posts = await postsColl.find({}, { projection: { _id: 0 } }).toArray();
+    return posts;
   },
 
   findPost: async (id: string): Promise<PostType | null> => {
-    const _id = new ObjectId(id);
-    const foundPost = await postsColl.findOne({ _id });
+    const foundPost = await postsColl.findOne({ id }, { projection: { _id: 0 } });
     if (!foundPost) {
       return null;
     }
-    return foundPost as PostType;
+    return foundPost;
   },
 
   createPost: async (postProps: {
@@ -26,17 +24,15 @@ export const postsRepo = {
     shortDescription: string;
     content: string;
     blogId: string;
-  }): Promise<PostType | null> => {
+  }): Promise<PostType> => {
+    const id = ((await postsColl.countDocuments()) + 1 || 1).toString();
     const blog = await blogsRepo.findBlog(postProps.blogId);
-    if (!blog) {
-      return null;
-    }
-    const blogName = blog.name;
+    const blogName = blog?.name as string;
     const createdAt = new Date().toISOString();
     const isMembership = false;
-    const newPost = { ...postProps, blogName, createdAt, isMembership };
-    const result = await postsColl.insertOne(newPost);
-    const insertedPost = await postsColl.findOne({ _id: result.insertedId });
+    const newPost = { id, ...postProps, blogName, createdAt, isMembership };
+    const createResult = await postsColl.insertOne(newPost);
+    const insertedPost = await postsColl.findOne({ _id: createResult.insertedId }, { projection: { _id: 0 } });
     return insertedPost as PostType;
   },
 
@@ -49,21 +45,18 @@ export const postsRepo = {
       blogId: string;
     },
   ): Promise<boolean> => {
-    const post = await postsRepo.findPost(id);
-    if (!post) {
-      return false;
-    }
-    const _id = new ObjectId(id);
     const blog = await blogsRepo.findBlog(postProps.blogId);
     const blogName = blog?.name;
-    await postsColl.updateOne({ _id }, { $set: { ...postProps, blogName } });
+    const updateResult = await postsColl.updateOne({ id }, { $set: { ...postProps, blogName } });
+    if (!updateResult.matchedCount) {
+      return false;
+    }
     return true;
   },
 
   deletePost: async (id: string): Promise<boolean> => {
-    const _id = new ObjectId(id);
-    const result = await postsColl.deleteOne({ _id });
-    if (!result.deletedCount) {
+    const deleteResult = await postsColl.deleteOne({ id });
+    if (!deleteResult.deletedCount) {
       return false;
     }
     return true;
