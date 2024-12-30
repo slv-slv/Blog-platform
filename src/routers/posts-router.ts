@@ -1,9 +1,5 @@
 import { Router } from 'express';
-import { getPosts } from './get-posts.js';
-import { findPost } from './find-post.js';
-import { createPost } from './create-post.js';
-import { updatePost } from './update-post.js';
-import { deletePost } from './delete-post.js';
+import { postsController } from '../controllers/posts-controller.js';
 import { checkAuth } from '../authorization/authorization.js';
 import {
   blogExistsValidation,
@@ -11,11 +7,12 @@ import {
   postDescriptionValidation,
   postTitleValidation,
 } from '../validation/posts-validation.js';
+
 export const postsRouter = Router();
 
-postsRouter.get('/', getPosts);
+postsRouter.get('/', postsController.getPosts);
 
-postsRouter.get('/:id', findPost);
+postsRouter.get('/:id', postsController.findPost);
 
 postsRouter.post(
   '/',
@@ -24,7 +21,7 @@ postsRouter.post(
   postTitleValidation,
   postDescriptionValidation,
   postContentValidation,
-  createPost,
+  postsController.createPost,
 );
 
 postsRouter.put(
@@ -34,7 +31,7 @@ postsRouter.put(
   postTitleValidation,
   postDescriptionValidation,
   postContentValidation,
-  updatePost,
+  postsController.updatePost,
 );
 
-postsRouter.delete('/:id', checkAuth, deletePost);
+postsRouter.delete('/:id', checkAuth, postsController.deletePost);

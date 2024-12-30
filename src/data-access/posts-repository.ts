@@ -1,7 +1,7 @@
 import { SETTINGS } from '../settings.js';
 import { db } from '../db/db.js';
 import { PostType } from '../types/posts-types.js';
-import { blogsRepo } from './blogs-db-access.js';
+import { blogsRepo } from './blogs-repository.js';
 
 const postsColl = db.collection<PostType>(SETTINGS.DB_COLLECTIONS.POSTS);
 

@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { blogsRepo } from '../data-access/blogs-db-access.js';
+import { blogsRepo } from '../data-access/blogs-repository.js';
 
 export const blogExistsValidation = body('blogId')
   .exists()

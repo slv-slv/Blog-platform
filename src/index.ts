@@ -1,10 +1,10 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import { SETTINGS } from './settings.js';
-import { blogsRouter } from './blogs/blogs-router.js';
-import { postsRouter } from './posts/posts-router.js';
-import { blogsRepo } from './data-access/blogs-db-access.js';
-import { postsRepo } from './data-access/posts-db-access.js';
+import { blogsRouter } from './routers/blogs-router.js';
+import { postsRouter } from './routers/posts-router.js';
+import { blogsRepo } from './data-access/blogs-repository.js';
+import { postsRepo } from './data-access/posts-repository.js';
 import { dbClient, runDb } from './db/db.js';
 
 const app = express();
