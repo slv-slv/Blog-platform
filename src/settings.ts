@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { PaginationParams } from './types/pagination-params.js';
 dotenv.config();
 
 export const SETTINGS = {
@@ -13,4 +14,10 @@ export const SETTINGS = {
     POSTS: 'posts',
   },
   MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017',
+  PAGINATION_DEFAULT_PARAMS: {
+    sortBy: 'createdAt',
+    sortDirection: 'desc',
+    pageNumber: 1,
+    pageSize: 10,
+  } as PaginationParams,
 };

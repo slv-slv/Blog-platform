@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { blogsRepo } from '../data-access/blogs-repository.js';
+import { blogsViewModelRepo } from '../repositories/view-models/blogs-view-model-repo.js';
 
 export const blogExistsValidation = body('blogId')
   .exists()
@@ -10,7 +10,7 @@ export const blogExistsValidation = body('blogId')
   .notEmpty()
   .withMessage('Blog ID must not be empty')
   .custom(async (blogId) => {
-    const blogFound = await blogsRepo.findBlog(blogId);
+    const blogFound = await blogsViewModelRepo.findBlog(blogId);
     if (!blogFound) {
       throw new Error('Blog does not exist');
     }

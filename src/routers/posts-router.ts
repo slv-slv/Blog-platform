@@ -7,10 +7,23 @@ import {
   postDescriptionValidation,
   postTitleValidation,
 } from '../validation/posts-validation.js';
+import {
+  pageNumberValidation,
+  pageSizeValidation,
+  postsSortByValidation,
+  sortDirectionValidation,
+} from '../validation/pagination-params-validation.js';
 
 export const postsRouter = Router();
 
-postsRouter.get('/', postsController.getPosts);
+postsRouter.get(
+  '/',
+  postsSortByValidation,
+  sortDirectionValidation,
+  pageNumberValidation,
+  pageSizeValidation,
+  postsController.getAllPosts,
+);
 
 postsRouter.get('/:id', postsController.findPost);
 

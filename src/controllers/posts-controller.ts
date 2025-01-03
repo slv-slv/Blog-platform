@@ -1,17 +1,20 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { postsRepo } from '../data-access/posts-repository.js';
 import { formatErrors } from '../validation/format-errors.js';
+import { postsViewModelRepo } from '../repositories/view-models/posts-view-model-repo.js';
+import { postsService } from '../services/posts-service.js';
+import { getPaginationParams } from '../helpers/get-pagination-params.js';
 
 export const postsController = {
-  getPosts: async (req: Request, res: Response) => {
-    const posts = await postsRepo.getPosts();
+  getAllPosts: async (req: Request, res: Response) => {
+    const paginationParams = getPaginationParams(req);
+    const posts = await postsViewModelRepo.getPosts(paginationParams);
     res.status(200).json(posts);
   },
 
   findPost: async (req: Request, res: Response) => {
-    const postId = req.params.id;
-    const foundPost = await postsRepo.findPost(postId);
+    const id = req.params.id;
+    const foundPost = await postsViewModelRepo.findPost(id);
     if (!foundPost) {
       res.status(404).json({ error: 'Post not found' });
       return;
@@ -26,18 +29,12 @@ export const postsController = {
       return;
     }
 
-    const newPost = await postsRepo.createPost(req.body);
+    const { title, shortDescription, content, blogId } = req.body;
+    const newPost = await postsService.createPost(title, shortDescription, content, blogId);
     res.status(201).json(newPost);
   },
 
   updatePost: async (req: Request, res: Response) => {
-    const postId = req.params.id;
-    const postFound = await postsRepo.findPost(postId);
-    if (!postFound) {
-      res.status(404).json({ error: 'Post not found' });
-      return;
-    }
-
     const errors = validationResult(req);
     console.log(formatErrors(errors));
     if (!errors.isEmpty()) {
@@ -45,18 +42,24 @@ export const postsController = {
       return;
     }
 
-    await postsRepo.updatePost(postId, req.body);
-    res.status(204).end();
-  },
-
-  deletePost: async (req: Request, res: Response) => {
-    const postId = req.params.id;
-    const isDeleted = await postsRepo.deletePost(postId);
-    if (!isDeleted) {
+    const id = req.params.id;
+    const { title, shortDescription, content } = req.body;
+    const postFound = await postsService.updatePost(id, title, shortDescription, content);
+    if (!postFound) {
       res.status(404).json({ error: 'Post not found' });
       return;
     }
 
+    res.status(204).end();
+  },
+
+  deletePost: async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const isDeleted = await postsService.deletePost(id);
+    if (!isDeleted) {
+      res.status(404).json({ error: 'Post not found' });
+      return;
+    }
     res.status(204).end();
   },
 };

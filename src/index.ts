@@ -3,8 +3,8 @@ import { Request, Response } from 'express';
 import { SETTINGS } from './settings.js';
 import { blogsRouter } from './routers/blogs-router.js';
 import { postsRouter } from './routers/posts-router.js';
-import { blogsRepo } from './data-access/blogs-repository.js';
-import { postsRepo } from './data-access/posts-repository.js';
+import { blogsRepo } from './repositories/business-logic/blogs-repo.js';
+import { postsRepo } from './repositories/business-logic/posts-repo.js';
 import { dbClient, runDb } from './db/db.js';
 
 const app = express();
