@@ -6,6 +6,7 @@ import { postsRouter } from './routers/posts-router.js';
 import { usersRouter } from './routers/users-router.js';
 import { blogsRepo } from './repositories/business-logic/blogs-repo.js';
 import { postsRepo } from './repositories/business-logic/posts-repo.js';
+import { usersRepo } from './repositories/business-logic/users-repo.js';
 import { dbClient, runDb } from './db/db.js';
 import { authRouter } from './routers/auth-router.js';
 
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 app.delete('/testing/all-data', (req: Request, res: Response) => {
   blogsRepo.deleteAllBlogs();
   postsRepo.deleteAllPosts();
+  usersRepo.deleteAllUsers();
   res.status(204).json({ message: 'All data has been deleted' });
 });
 

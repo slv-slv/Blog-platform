@@ -23,6 +23,10 @@ export const usersRepo = {
     return deleteResult.deletedCount > 0;
   },
 
+  deleteAllUsers: async (): Promise<void> => {
+    await usersColl.deleteMany({});
+  },
+
   isLoginUnique: async (login: string): Promise<boolean> => {
     const user = await usersColl.findOne({ login });
     if (user) {
