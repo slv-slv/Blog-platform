@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { postsController } from '../controllers/posts-controller.js';
-import { checkAuth } from '../authorization/authorization.js';
+import { checkBasicAuth } from '../authorization/basic-auth.js';
 import {
   blogExistsValidation,
   postContentValidation,
@@ -29,7 +29,7 @@ postsRouter.get('/:id', postsController.findPost);
 
 postsRouter.post(
   '/',
-  checkAuth,
+  checkBasicAuth,
   blogExistsValidation,
   postTitleValidation,
   postDescriptionValidation,
@@ -39,7 +39,7 @@ postsRouter.post(
 
 postsRouter.put(
   '/:id',
-  checkAuth,
+  checkBasicAuth,
   blogExistsValidation,
   postTitleValidation,
   postDescriptionValidation,
@@ -47,4 +47,4 @@ postsRouter.put(
   postsController.updatePost,
 );
 
-postsRouter.delete('/:id', checkAuth, postsController.deletePost);
+postsRouter.delete('/:id', checkBasicAuth, postsController.deletePost);

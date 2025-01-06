@@ -1,9 +1,6 @@
-import { SETTINGS } from '../../settings.js';
-import { db } from '../../db/db.js';
 import { BlogsPaginatedViewModel, BlogType } from '../../types/blog-types.js';
 import { PaginationParams } from '../../types/pagination-params.js';
-
-const blogsColl = db.collection<BlogType>(SETTINGS.DB_COLLECTIONS.BLOGS);
+import { blogsColl } from '../business-logic/blogs-repo.js';
 
 export const blogsViewModelRepo = {
   getAllBlogs: async (

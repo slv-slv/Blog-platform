@@ -1,9 +1,6 @@
-import { SETTINGS } from '../../settings.js';
-import { db } from '../../db/db.js';
-import { PostsPaginatedViewModel, PostType } from '../../types/posts-types.js';
+import { PostsPaginatedViewModel, PostType } from '../../types/post-types.js';
 import { PaginationParams } from '../../types/pagination-params.js';
-
-const postsColl = db.collection<PostType>(SETTINGS.DB_COLLECTIONS.POSTS);
+import { postsColl } from '../business-logic/posts-repo.js';
 
 export const postsViewModelRepo = {
   getPosts: async (paginationParams: PaginationParams, blogId?: string): Promise<PostsPaginatedViewModel> => {

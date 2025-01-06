@@ -2,7 +2,7 @@ import { SETTINGS } from '../../settings.js';
 import { db } from '../../db/db.js';
 import { BlogType } from '../../types/blog-types.js';
 
-const blogsColl = db.collection<BlogType>(SETTINGS.DB_COLLECTIONS.BLOGS);
+export const blogsColl = db.collection<BlogType>(SETTINGS.DB_COLLECTIONS.BLOGS);
 
 export const blogsRepo = {
   // getBlogs: async (): Promise<BlogType[]> => {

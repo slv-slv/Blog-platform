@@ -1,11 +1,7 @@
 import { query } from 'express-validator';
 import { BlogTypeKeys } from '../types/blog-types.js';
-import { PostTypeKeys } from '../types/posts-types.js';
-
-export const searchNameTermValidation = query('searchNameTerm')
-  .optional()
-  .isString()
-  .withMessage('searchNameTerm must be a string');
+import { PostTypeKeys } from '../types/post-types.js';
+import { UserTypeKeys } from '../types/user-types.js';
 
 export const blogsSortByValidation = query('sortBy')
   .optional()
@@ -15,6 +11,11 @@ export const blogsSortByValidation = query('sortBy')
 export const postsSortByValidation = query('sortBy')
   .optional()
   .isIn(Object.values(PostTypeKeys))
+  .withMessage('Invalid sortBy value');
+
+export const usersSortByValidation = query('sortBy')
+  .optional()
+  .isIn(Object.values(UserTypeKeys))
   .withMessage('Invalid sortBy value');
 
 export const sortDirectionValidation = query('sortDirection')

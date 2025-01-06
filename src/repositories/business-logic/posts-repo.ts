@@ -1,9 +1,9 @@
 import { SETTINGS } from '../../settings.js';
 import { db } from '../../db/db.js';
-import { PostType } from '../../types/posts-types.js';
+import { PostType } from '../../types/post-types.js';
 import { blogsViewModelRepo } from '../view-models/blogs-view-model-repo.js';
 
-const postsColl = db.collection<PostType>(SETTINGS.DB_COLLECTIONS.POSTS);
+export const postsColl = db.collection<PostType>(SETTINGS.DB_COLLECTIONS.POSTS);
 
 export const postsRepo = {
   // getPosts: async (): Promise<PostType[]> => {

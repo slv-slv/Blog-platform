@@ -1,13 +1,17 @@
 import { Router } from 'express';
 import { blogsController } from '../controllers/blogs-controller.js';
-import { checkAuth } from '../authorization/authorization.js';
-import { blogDescriptionValidation, blogNameValidation, blogUrlValidation } from '../validation/blogs-validation.js';
+import { checkBasicAuth } from '../authorization/basic-auth.js';
+import {
+  searchNameTermValidation,
+  blogNameValidation,
+  blogDescriptionValidation,
+  blogUrlValidation,
+} from '../validation/blogs-validation.js';
 import {
   blogsSortByValidation,
   pageNumberValidation,
   pageSizeValidation,
   postsSortByValidation,
-  searchNameTermValidation,
   sortDirectionValidation,
 } from '../validation/pagination-params-validation.js';
 import {
@@ -30,7 +34,7 @@ blogsRouter.get(
 
 blogsRouter.post(
   '/',
-  checkAuth,
+  checkBasicAuth,
   blogNameValidation,
   blogDescriptionValidation,
   blogUrlValidation,
@@ -41,14 +45,14 @@ blogsRouter.get('/:id', blogsController.findBlog);
 
 blogsRouter.put(
   '/:id',
-  checkAuth,
+  checkBasicAuth,
   blogNameValidation,
   blogDescriptionValidation,
   blogUrlValidation,
   blogsController.updateBlog,
 );
 
-blogsRouter.delete('/:id', checkAuth, blogsController.deleteBlog);
+blogsRouter.delete('/:id', checkBasicAuth, blogsController.deleteBlog);
 
 blogsRouter.get(
   '/:blogId/posts',
@@ -61,7 +65,7 @@ blogsRouter.get(
 
 blogsRouter.post(
   '/:blogId/posts',
-  checkAuth,
+  checkBasicAuth,
   postTitleValidation,
   postDescriptionValidation,
   postContentValidation,

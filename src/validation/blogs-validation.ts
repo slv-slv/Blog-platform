@@ -1,4 +1,9 @@
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
+
+export const searchNameTermValidation = query('searchNameTerm')
+  .optional()
+  .isString()
+  .withMessage('searchNameTerm must be a string');
 
 export const blogNameValidation = body('name')
   .exists()

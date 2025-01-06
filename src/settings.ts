@@ -7,11 +7,13 @@ export const SETTINGS = {
   PATH: {
     BLOGS: '/blogs',
     POSTS: '/posts',
+    USERS: '/users',
   },
   DB_NAME: 'blogs',
   DB_COLLECTIONS: {
     BLOGS: 'blogs',
     POSTS: 'posts',
+    USERS: 'users',
   },
   MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017',
   PAGINATION_DEFAULT_PARAMS: {
