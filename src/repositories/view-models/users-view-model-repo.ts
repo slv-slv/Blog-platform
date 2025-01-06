@@ -10,9 +10,17 @@ export const usersViewModelRepo = {
   ): Promise<UsersPaginatedViewModel> => {
     const { sortBy, sortDirection, pageNumber, pageSize } = paginationParams;
 
+    let filter = {};
     const loginFilter = searchLoginTerm ? { login: { $regex: searchLoginTerm, $options: 'i' } } : {};
     const emailFilter = searchEmailTerm ? { email: { $regex: searchEmailTerm, $options: 'i' } } : {};
-    const filter = { ...loginFilter, ...emailFilter };
+
+    if (searchEmailTerm && searchLoginTerm) {
+      filter = { $or: [loginFilter, emailFilter] };
+    } else if (searchEmailTerm) {
+      filter = emailFilter;
+    } else if (searchLoginTerm) {
+      filter = loginFilter;
+    }
 
     const totalCount = await usersColl.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
