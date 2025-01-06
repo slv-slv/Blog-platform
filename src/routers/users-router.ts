@@ -18,7 +18,7 @@ import {
 export const usersRouter = Router();
 
 usersRouter.get(
-  '/users',
+  '/',
   checkBasicAuth,
   usersSortByValidation,
   sortDirectionValidation,
@@ -30,7 +30,7 @@ usersRouter.get(
 );
 
 usersRouter.post(
-  '/users',
+  '/',
   checkBasicAuth,
   loginValidation,
   newPasswordValidation,
@@ -38,4 +38,4 @@ usersRouter.post(
   usersController.createUser,
 );
 
-usersRouter.delete('/users/:id', checkBasicAuth, usersController.deleteUser);
+usersRouter.delete('/:id', checkBasicAuth, usersController.deleteUser);
