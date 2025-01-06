@@ -39,5 +39,12 @@ export const usersRepo = {
     return true;
   },
 
-  // getPasswordHash: async (loginOrEmail: string): Promise<string> => {},
+  getPasswordHash: async (loginOrEmail: string): Promise<string | null> => {
+    const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
+    const user = await usersColl.findOne(filter, { projection: { _id: 0, hash: 1 } });
+    if (!user) {
+      return null;
+    }
+    return user.hash;
+  },
 };

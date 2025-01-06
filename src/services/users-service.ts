@@ -22,7 +22,11 @@ export const usersService = {
     return await usersRepo.isEmailUnique(email);
   },
 
-  // checkPassword: async (loginOrEmail: string, password: string): Promise<boolean> => {
-  //   const hash = usersRepo.getPasswordHash(loginOrEmail);
-  // },
+  checkPassword: async (loginOrEmail: string, password: string): Promise<boolean> => {
+    const hash = await usersRepo.getPasswordHash(loginOrEmail);
+    if (!hash) {
+      return false;
+    }
+    return await bcrypt.compare(password, hash);
+  },
 };
