@@ -15,12 +15,12 @@ export const usersRepo = {
   },
 
   deleteUser: async (id: string): Promise<boolean> => {
-    const _id = new ObjectId(id);
-    const deleteResult = await usersColl.deleteOne({ _id });
-    if (!deleteResult.deletedCount) {
+    if (!ObjectId.isValid(id)) {
       return false;
     }
-    return true;
+    const _id = new ObjectId(id);
+    const deleteResult = await usersColl.deleteOne({ _id });
+    return deleteResult.deletedCount > 0;
   },
 
   isLoginUnique: async (login: string): Promise<boolean> => {
