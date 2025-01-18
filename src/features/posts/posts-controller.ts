@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { formatErrors } from '../helpers/format-errors.js';
-import { postsViewModelRepo } from '../posts/posts-view-model-repo.js';
-import { postsService } from '../posts/posts-service.js';
-import { getPagingParams } from '../helpers/get-paging-params.js';
+import { formatErrors } from '../../utils/format-errors.js';
+import { postsViewModelRepo } from './posts-view-model-repo.js';
+import { postsService } from './posts-service.js';
+import { getPagingParams } from '../../utils/get-paging-params.js';
 
 export const postsController = {
   getAllPosts: async (req: Request, res: Response) => {

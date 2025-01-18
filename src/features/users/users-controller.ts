@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { formatErrors } from '../helpers/format-errors.js';
+import { formatErrors } from '../../utils/format-errors.js';
 import { usersService } from './users-service.js';
-import { getPagingParams } from '../helpers/get-paging-params.js';
+import { getPagingParams } from '../../utils/get-paging-params.js';
 import { usersViewModelRepo } from './users-view-model-repo.js';
 
 export const usersController = {

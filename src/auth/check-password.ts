@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { formatErrors } from '../helpers/format-errors.js';
-import { usersService } from '../users/users-service.js';
+import { formatErrors } from '../utils/format-errors.js';
+import { usersService } from '../features/users/users-service.js';
 
 export const checkPassword = async (req: Request, res: Response) => {
   const errors = validationResult(req);

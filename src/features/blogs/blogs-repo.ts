@@ -1,5 +1,5 @@
-import { SETTINGS } from '../settings.js';
-import { db } from '../db/db.js';
+import { SETTINGS } from '../../settings.js';
+import { db } from '../../db/db.js';
 import { BlogType } from './blog-types.js';
 
 export const blogsColl = db.collection<BlogType>(SETTINGS.DB_COLLECTIONS.BLOGS);

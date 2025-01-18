@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { blogsController } from './blogs-controller.js';
-import { checkBasicAuth } from '../authorization/basic-auth.js';
+import { checkBasicAuth } from '../../auth/basic-auth.js';
 import {
   searchNameTermValidation,
   blogNameValidation,
@@ -13,7 +13,7 @@ import {
   pageSizeValidation,
   postsSortByValidation,
   sortDirectionValidation,
-} from '../validation/paging-params-validation.js';
+} from '../../validation/paging-params-validation.js';
 import { postContentValidation, postDescriptionValidation, postTitleValidation } from '../posts/posts-validation.js';
 
 export const blogsRouter = Router();

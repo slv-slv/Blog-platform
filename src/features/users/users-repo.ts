@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import { SETTINGS } from '../settings.js';
-import { db } from '../db/db.js';
+import { SETTINGS } from '../../settings.js';
+import { db } from '../../db/db.js';
 import { UserDBType, UserType } from './user-types.js';
 
 export const usersColl = db.collection<UserDBType>(SETTINGS.DB_COLLECTIONS.USERS);

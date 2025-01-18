@@ -1,18 +1,18 @@
 import { Router } from 'express';
 import { postsController } from './posts-controller.js';
-import { checkBasicAuth } from '../authorization/basic-auth.js';
+import { checkBasicAuth } from '../../auth/basic-auth.js';
 import {
   blogExistsValidation,
   postContentValidation,
   postDescriptionValidation,
   postTitleValidation,
-} from '../posts/posts-validation.js';
+} from './posts-validation.js';
 import {
   pageNumberValidation,
   pageSizeValidation,
   postsSortByValidation,
   sortDirectionValidation,
-} from '../validation/paging-params-validation.js';
+} from '../../validation/paging-params-validation.js';
 
 export const postsRouter = Router();
 

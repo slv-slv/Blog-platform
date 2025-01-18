@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { usersController } from './users-controller.js';
-import { checkBasicAuth } from '../authorization/basic-auth.js';
+import { checkBasicAuth } from '../../auth/basic-auth.js';
 import {
   pageNumberValidation,
   pageSizeValidation,
   sortDirectionValidation,
   usersSortByValidation,
-} from '../validation/paging-params-validation.js';
+} from '../../validation/paging-params-validation.js';
 import {
   emailValidation,
   loginValidation,

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { blogsService } from './blogs-service.js';
-import { formatErrors } from '../helpers/format-errors.js';
+import { formatErrors } from '../../utils/format-errors.js';
 import { blogsViewModelRepo } from './blogs-view-model-repo.js';
-import { getPagingParams } from '../helpers/get-paging-params.js';
+import { getPagingParams } from '../../utils/get-paging-params.js';
 import { postsViewModelRepo } from '../posts/posts-view-model-repo.js';
 import { postsService } from '../posts/posts-service.js';
 

@@ -1,5 +1,5 @@
 import { BlogsPaginatedViewModel, BlogType } from './blog-types.js';
-import { PagingParams } from '../types/paging-params.js';
+import { PagingParams } from '../../types/paging-params.js';
 import { blogsColl } from './blogs-repo.js';
 
 export const blogsViewModelRepo = {
