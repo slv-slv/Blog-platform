@@ -16,7 +16,7 @@ export const SETTINGS = {
     USERS: 'users',
   },
   MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017',
-  PAGINATION_DEFAULT_PARAMS: {
+  PAGING_DEFAULT_PARAMS: {
     sortBy: 'createdAt',
     sortDirection: 'desc',
     pageNumber: 1,

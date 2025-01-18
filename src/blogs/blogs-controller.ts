@@ -10,13 +10,13 @@ import { postsService } from '../posts/posts-service.js';
 export const blogsController = {
   getAllBlogs: async (req: Request, res: Response) => {
     const searchNameTerm = (req.query.searchNameTerm as string) ?? null;
-    const paginationParams = getPagingParams(req);
-    const blogs = await blogsViewModelRepo.getAllBlogs(searchNameTerm, paginationParams);
+    const pagingParams = getPagingParams(req);
+    const blogs = await blogsViewModelRepo.getAllBlogs(searchNameTerm, pagingParams);
     res.status(200).json(blogs);
   },
 
   getPostsByBlogId: async (req: Request, res: Response) => {
-    const paginationParams = getPagingParams(req);
+    const pagingParams = getPagingParams(req);
     const blogId = req.params.blogId;
     const foundBlog = await blogsViewModelRepo.findBlog(blogId);
     if (!foundBlog) {
@@ -24,7 +24,7 @@ export const blogsController = {
       return;
     }
 
-    const posts = await postsViewModelRepo.getPosts(paginationParams, blogId);
+    const posts = await postsViewModelRepo.getPosts(pagingParams, blogId);
     res.status(200).json(posts);
   },
 

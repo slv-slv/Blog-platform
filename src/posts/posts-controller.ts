@@ -7,8 +7,8 @@ import { getPagingParams } from '../helpers/get-paging-params.js';
 
 export const postsController = {
   getAllPosts: async (req: Request, res: Response) => {
-    const paginationParams = getPagingParams(req);
-    const posts = await postsViewModelRepo.getPosts(paginationParams);
+    const pagingParams = getPagingParams(req);
+    const posts = await postsViewModelRepo.getPosts(pagingParams);
     res.status(200).json(posts);
   },
 

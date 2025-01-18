@@ -4,14 +4,6 @@ import { BlogsPaginatedViewModel, BlogType } from './blog-types.js';
 import { PagingParams } from '../types/paging-params.js';
 
 export const blogsService = {
-  // getAllBlogs: async (paginationParams: PaginationParams): Promise<BlogsPaginatedViewModel> => {
-  //   return await blogsViewModelRepo.getAllBlogs(paginationParams);
-  // },
-
-  // findBlog: async (id: string): Promise<BlogType | null> => {
-  //   return await blogsViewModelRepo.findBlog(id);
-  // },
-
   createBlog: async (name: string, description: string, websiteUrl: string): Promise<BlogType> => {
     const createdAt = new Date().toISOString();
     const isMembership = false;

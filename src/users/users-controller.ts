@@ -9,8 +9,8 @@ export const usersController = {
   getAllUsers: async (req: Request, res: Response) => {
     const searchLoginTerm = (req.query.searchLoginTerm as string) ?? null;
     const searchEmailTerm = (req.query.searchEmailTerm as string) ?? null;
-    const paginationParams = getPagingParams(req);
-    const users = await usersViewModelRepo.getAllUsers(searchLoginTerm, searchEmailTerm, paginationParams);
+    const pagingParams = getPagingParams(req);
+    const users = await usersViewModelRepo.getAllUsers(searchLoginTerm, searchEmailTerm, pagingParams);
     res.status(200).json(users);
   },
 
