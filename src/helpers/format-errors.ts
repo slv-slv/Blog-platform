@@ -1,5 +1,5 @@
 import { Result, ValidationError } from 'express-validator';
-import { ErrorType } from '../types/error-types.js';
+import { ErrorType } from '../types/error-type.js';
 
 export const formatErrors = (errors: Result<ValidationError>): ErrorType[] => {
   return errors.array({ onlyFirstError: true }).map((err) => {

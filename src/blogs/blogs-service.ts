@@ -1,7 +1,7 @@
-import { blogsRepo } from '../repositories/business-logic/blogs-repo.js';
-import { blogsViewModelRepo } from '../repositories/view-models/blogs-view-model-repo.js';
-import { BlogsPaginatedViewModel, BlogType } from '../types/blog-types.js';
-import { PaginationParams } from '../types/pagination-params.js';
+import { blogsRepo } from './blogs-repo.js';
+import { blogsViewModelRepo } from './blogs-view-model-repo.js';
+import { BlogsPaginatedViewModel, BlogType } from './blog-types.js';
+import { PagingParams } from '../types/paging-params.js';
 
 export const blogsService = {
   // getAllBlogs: async (paginationParams: PaginationParams): Promise<BlogsPaginatedViewModel> => {

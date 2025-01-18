@@ -1,8 +1,9 @@
-import { credentials } from './credentials.js';
+import { SETTINGS } from '../settings.js';
 import { NextFunction, Request, Response } from 'express';
 
 export const checkBasicAuth = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
+  const credentials = SETTINGS.CREDENTIALS;
   let isAuth = false;
 
   if (authHeader) {

@@ -1,7 +1,7 @@
 import { query } from 'express-validator';
-import { BlogTypeKeys } from '../types/blog-types.js';
-import { PostTypeKeys } from '../types/post-types.js';
-import { UserTypeKeys } from '../types/user-types.js';
+import { BlogTypeKeys } from '../blogs/blog-types.js';
+import { PostTypeKeys } from '../posts/post-types.js';
+import { UserTypeKeys } from '../users/user-types.js';
 
 export const blogsSortByValidation = query('sortBy')
   .optional()

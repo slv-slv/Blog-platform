@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { PaginationParams } from './types/pagination-params.js';
+import { PagingParams } from './types/paging-params.js';
 dotenv.config();
 
 export const SETTINGS = {
@@ -21,5 +21,6 @@ export const SETTINGS = {
     sortDirection: 'desc',
     pageNumber: 1,
     pageSize: 10,
-  } as PaginationParams,
+  } as PagingParams,
+  CREDENTIALS: [{ login: 'admin', base64: 'YWRtaW46cXdlcnR5' }],
 };

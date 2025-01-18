@@ -1,13 +1,10 @@
-import { BlogsPaginatedViewModel, BlogType } from '../../types/blog-types.js';
-import { PaginationParams } from '../../types/pagination-params.js';
-import { blogsColl } from '../business-logic/blogs-repo.js';
+import { BlogsPaginatedViewModel, BlogType } from './blog-types.js';
+import { PagingParams } from '../types/paging-params.js';
+import { blogsColl } from './blogs-repo.js';
 
 export const blogsViewModelRepo = {
-  getAllBlogs: async (
-    searchNameTerm: string | null,
-    paginationParams: PaginationParams,
-  ): Promise<BlogsPaginatedViewModel> => {
-    const { sortBy, sortDirection, pageNumber, pageSize } = paginationParams;
+  getAllBlogs: async (searchNameTerm: string | null, pagingParams: PagingParams): Promise<BlogsPaginatedViewModel> => {
+    const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const filter = searchNameTerm ? { name: { $regex: searchNameTerm, $options: 'i' } } : {};
 

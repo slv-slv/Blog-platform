@@ -1,24 +1,20 @@
 import { Router } from 'express';
-import { blogsController } from '../controllers/blogs-controller.js';
+import { blogsController } from './blogs-controller.js';
 import { checkBasicAuth } from '../authorization/basic-auth.js';
 import {
   searchNameTermValidation,
   blogNameValidation,
   blogDescriptionValidation,
   blogUrlValidation,
-} from '../validation/blogs-validation.js';
+} from './blogs-validation.js';
 import {
   blogsSortByValidation,
   pageNumberValidation,
   pageSizeValidation,
   postsSortByValidation,
   sortDirectionValidation,
-} from '../validation/pagination-params-validation.js';
-import {
-  postContentValidation,
-  postDescriptionValidation,
-  postTitleValidation,
-} from '../validation/posts-validation.js';
+} from '../validation/paging-params-validation.js';
+import { postContentValidation, postDescriptionValidation, postTitleValidation } from '../posts/posts-validation.js';
 
 export const blogsRouter = Router();
 

@@ -1,14 +1,14 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import { SETTINGS } from './settings.js';
-import { blogsRouter } from './routers/blogs-router.js';
-import { postsRouter } from './routers/posts-router.js';
-import { usersRouter } from './routers/users-router.js';
-import { blogsRepo } from './repositories/business-logic/blogs-repo.js';
-import { postsRepo } from './repositories/business-logic/posts-repo.js';
-import { usersRepo } from './repositories/business-logic/users-repo.js';
+import { blogsRouter } from './blogs/blogs-router.js';
+import { postsRouter } from './posts/posts-router.js';
+import { usersRouter } from './users/users-router.js';
+import { blogsRepo } from './blogs/blogs-repo.js';
+import { postsRepo } from './posts/posts-repo.js';
+import { usersRepo } from './users/users-repo.js';
 import { dbClient, runDb } from './db/db.js';
-import { authRouter } from './routers/auth-router.js';
+import { authRouter } from './authorization/auth-router.js';
 
 const app = express();
 

@@ -1,14 +1,14 @@
-import { PaginationParams } from '../../types/pagination-params.js';
-import { UsersPaginatedViewModel } from '../../types/user-types.js';
-import { usersColl } from '../business-logic/users-repo.js';
+import { PagingParams } from '../types/paging-params.js';
+import { UsersPaginatedViewModel } from './user-types.js';
+import { usersColl } from './users-repo.js';
 
 export const usersViewModelRepo = {
   getAllUsers: async (
     searchLoginTerm: string,
     searchEmailTerm: string,
-    paginationParams: PaginationParams,
+    pagingParams: PagingParams,
   ): Promise<UsersPaginatedViewModel> => {
-    const { sortBy, sortDirection, pageNumber, pageSize } = paginationParams;
+    const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     let filter = {};
     const loginFilter = searchLoginTerm ? { login: { $regex: searchLoginTerm, $options: 'i' } } : {};

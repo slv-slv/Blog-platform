@@ -1,10 +1,10 @@
-import { PostsPaginatedViewModel, PostType } from '../../types/post-types.js';
-import { PaginationParams } from '../../types/pagination-params.js';
-import { postsColl } from '../business-logic/posts-repo.js';
+import { PostsPaginatedViewModel, PostType } from './post-types.js';
+import { PagingParams } from '../types/paging-params.js';
+import { postsColl } from './posts-repo.js';
 
 export const postsViewModelRepo = {
-  getPosts: async (paginationParams: PaginationParams, blogId?: string): Promise<PostsPaginatedViewModel> => {
-    const { sortBy, sortDirection, pageNumber, pageSize } = paginationParams;
+  getPosts: async (pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedViewModel> => {
+    const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const filter = blogId ? { blogId } : {};
 

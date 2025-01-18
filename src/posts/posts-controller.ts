@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { formatErrors } from '../validation/format-errors.js';
-import { postsViewModelRepo } from '../repositories/view-models/posts-view-model-repo.js';
-import { postsService } from '../services/posts-service.js';
-import { getPaginationParams } from '../helpers/get-pagination-params.js';
+import { formatErrors } from '../helpers/format-errors.js';
+import { postsViewModelRepo } from '../posts/posts-view-model-repo.js';
+import { postsService } from '../posts/posts-service.js';
+import { getPagingParams } from '../helpers/get-paging-params.js';
 
 export const postsController = {
   getAllPosts: async (req: Request, res: Response) => {
-    const paginationParams = getPaginationParams(req);
+    const paginationParams = getPagingParams(req);
     const posts = await postsViewModelRepo.getPosts(paginationParams);
     res.status(200).json(posts);
   },

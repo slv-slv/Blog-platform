@@ -1,6 +1,6 @@
-import { BlogType } from './blog-types.js';
+import { BlogType } from '../blogs/blog-types.js';
 
-export type PaginationParams = {
+export type PagingParams = {
   sortBy: keyof BlogType;
   sortDirection: 'asc' | 'desc';
   pageNumber: number;

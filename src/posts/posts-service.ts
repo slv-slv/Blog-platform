@@ -1,5 +1,5 @@
-import { postsRepo } from '../repositories/business-logic/posts-repo.js';
-import { PostType } from '../types/post-types.js';
+import { postsRepo } from './posts-repo.js';
+import { PostType } from './post-types.js';
 
 export const postsService = {
   createPost: async (title: string, shortDescription: string, content: string, blogId: string): Promise<PostType> => {

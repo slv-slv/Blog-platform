@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { formatErrors } from '../validation/format-errors.js';
-import { usersService } from '../services/users-service.js';
-import { getPaginationParams } from '../helpers/get-pagination-params.js';
-import { usersViewModelRepo } from '../repositories/view-models/users-view-model-repo.js';
+import { formatErrors } from '../helpers/format-errors.js';
+import { usersService } from './users-service.js';
+import { getPagingParams } from '../helpers/get-paging-params.js';
+import { usersViewModelRepo } from './users-view-model-repo.js';
 
 export const usersController = {
   getAllUsers: async (req: Request, res: Response) => {
     const searchLoginTerm = (req.query.searchLoginTerm as string) ?? null;
     const searchEmailTerm = (req.query.searchEmailTerm as string) ?? null;
-    const paginationParams = getPaginationParams(req);
+    const paginationParams = getPagingParams(req);
     const users = await usersViewModelRepo.getAllUsers(searchLoginTerm, searchEmailTerm, paginationParams);
     res.status(200).json(users);
   },

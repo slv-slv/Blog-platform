@@ -1,5 +1,5 @@
-import { usersRepo } from '../repositories/business-logic/users-repo.js';
-import { UserType } from '../types/user-types.js';
+import { usersRepo } from './users-repo.js';
+import { UserType } from './user-types.js';
 import bcrypt from 'bcrypt';
 
 export const usersService = {

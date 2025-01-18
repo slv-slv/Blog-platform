@@ -1,22 +1,22 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { blogsService } from '../services/blogs-service.js';
-import { formatErrors } from '../validation/format-errors.js';
-import { blogsViewModelRepo } from '../repositories/view-models/blogs-view-model-repo.js';
-import { getPaginationParams } from '../helpers/get-pagination-params.js';
-import { postsViewModelRepo } from '../repositories/view-models/posts-view-model-repo.js';
-import { postsService } from '../services/posts-service.js';
+import { blogsService } from './blogs-service.js';
+import { formatErrors } from '../helpers/format-errors.js';
+import { blogsViewModelRepo } from './blogs-view-model-repo.js';
+import { getPagingParams } from '../helpers/get-paging-params.js';
+import { postsViewModelRepo } from '../posts/posts-view-model-repo.js';
+import { postsService } from '../posts/posts-service.js';
 
 export const blogsController = {
   getAllBlogs: async (req: Request, res: Response) => {
     const searchNameTerm = (req.query.searchNameTerm as string) ?? null;
-    const paginationParams = getPaginationParams(req);
+    const paginationParams = getPagingParams(req);
     const blogs = await blogsViewModelRepo.getAllBlogs(searchNameTerm, paginationParams);
     res.status(200).json(blogs);
   },
 
   getPostsByBlogId: async (req: Request, res: Response) => {
-    const paginationParams = getPaginationParams(req);
+    const paginationParams = getPagingParams(req);
     const blogId = req.params.blogId;
     const foundBlog = await blogsViewModelRepo.findBlog(blogId);
     if (!foundBlog) {

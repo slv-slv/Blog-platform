@@ -1,19 +1,19 @@
 import { Router } from 'express';
-import { usersController } from '../controllers/users-controller.js';
+import { usersController } from './users-controller.js';
 import { checkBasicAuth } from '../authorization/basic-auth.js';
 import {
   pageNumberValidation,
   pageSizeValidation,
   sortDirectionValidation,
   usersSortByValidation,
-} from '../validation/pagination-params-validation.js';
+} from '../validation/paging-params-validation.js';
 import {
   emailValidation,
   loginValidation,
   newPasswordValidation,
   searchEmailTermValidation,
   searchLoginTermValidation,
-} from '../validation/users-validation.js';
+} from './users-validation.js';
 
 export const usersRouter = Router();
 
