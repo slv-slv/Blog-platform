@@ -28,19 +28,13 @@ export const usersRepo = {
   },
 
   isLoginUnique: async (login: string): Promise<boolean> => {
-    const user = await usersColl.findOne({ login });
-    if (user) {
-      return false;
-    }
-    return true;
+    const foundLogin = await usersColl.countDocuments({ login });
+    return foundLogin === 0;
   },
 
   isEmailUnique: async (email: string): Promise<boolean> => {
-    const user = await usersColl.findOne({ email });
-    if (user) {
-      return false;
-    }
-    return true;
+    const foundEmail = await usersColl.countDocuments({ email });
+    return foundEmail === 0;
   },
 
   getPasswordHash: async (loginOrEmail: string): Promise<string | null> => {
