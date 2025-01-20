@@ -1,7 +1,15 @@
 import { Router } from 'express';
-import { checkPassword } from './check-password.js';
-import { authPasswordValidation, loginOrEmailValidation } from '../validation/login-validation.js';
+import { authController } from './auth-controller.js';
+import { authPasswordValidation, loginOrEmailValidation } from './auth-validation.js';
 
 export const authRouter = Router();
 
-authRouter.post('/login', loginOrEmailValidation, authPasswordValidation, checkPassword);
+authRouter.post(
+  '/login',
+  loginOrEmailValidation,
+  authPasswordValidation,
+  authController.checkPassword,
+  authController.issueJWT,
+);
+
+authRouter.get('/me', authController.verifyJWT, authController.getCurrentUser);
