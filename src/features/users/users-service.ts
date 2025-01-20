@@ -1,11 +1,10 @@
 import { usersRepo } from './users-repo.js';
 import { UserType } from './user-types.js';
-import bcrypt from 'bcrypt';
+import { authService } from '../../auth/auth-service.js';
 
 export const usersService = {
   createUser: async (login: string, email: string, password: string): Promise<UserType> => {
-    const saltRounds = 10;
-    const hash = await bcrypt.hash(password, saltRounds);
+    const hash = await authService.hashPassword(password);
     const createdAt = new Date().toISOString();
     return await usersRepo.createUser(login, email, hash, createdAt);
   },
@@ -20,13 +19,5 @@ export const usersService = {
 
   isEmailUnique: async (email: string): Promise<boolean> => {
     return await usersRepo.isEmailUnique(email);
-  },
-
-  checkPassword: async (loginOrEmail: string, password: string): Promise<boolean> => {
-    const hash = await usersRepo.getPasswordHash(loginOrEmail);
-    if (!hash) {
-      return false;
-    }
-    return await bcrypt.compare(password, hash);
   },
 };
