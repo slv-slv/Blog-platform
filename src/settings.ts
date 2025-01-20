@@ -23,4 +23,5 @@ export const SETTINGS = {
     pageSize: 10,
   } as PagingParams,
   CREDENTIALS: [{ login: 'admin', base64: 'YWRtaW46cXdlcnR5' }],
+  JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY,
 };
