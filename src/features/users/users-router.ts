@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { usersController } from './users-controller.js';
-import { checkBasicAuth } from '../../auth/basic-auth.js';
+import { authController } from '../../auth/auth-controller.js';
 import {
   pageNumberValidation,
   pageSizeValidation,
   sortDirectionValidation,
   usersSortByValidation,
-} from '../../validation/paging-params-validation.js';
+} from '../../common/validation/paging-params-validation.js';
 import {
   emailValidation,
   loginValidation,
@@ -19,7 +19,7 @@ export const usersRouter = Router();
 
 usersRouter.get(
   '/',
-  checkBasicAuth,
+  authController.basicAuth,
   usersSortByValidation,
   sortDirectionValidation,
   pageNumberValidation,
@@ -31,11 +31,11 @@ usersRouter.get(
 
 usersRouter.post(
   '/',
-  checkBasicAuth,
+  authController.basicAuth,
   loginValidation,
   newPasswordValidation,
   emailValidation,
   usersController.createUser,
 );
 
-usersRouter.delete('/:id', checkBasicAuth, usersController.deleteUser);
+usersRouter.delete('/:id', authController.basicAuth, usersController.deleteUser);

@@ -1,4 +1,4 @@
-import { BlogType } from '../features/blogs/blog-types.js';
+import { BlogType } from '../../features/blogs/blog-types.js';
 
 export type PagingParams = {
   sortBy: keyof BlogType;

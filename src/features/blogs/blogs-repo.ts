@@ -5,19 +5,6 @@ import { BlogType } from './blog-types.js';
 export const blogsColl = db.collection<BlogType>(SETTINGS.DB_COLLECTIONS.BLOGS);
 
 export const blogsRepo = {
-  // getBlogs: async (): Promise<BlogType[]> => {
-  //   const blogs = await blogsColl.find({}, { projection: { _id: 0 } }).toArray();
-  //   return blogs;
-  // },
-
-  // findBlog: async (id: string): Promise<BlogType | null> => {
-  //   const foundBlog = await blogsColl.findOne({ id }, { projection: { _id: 0 } });
-  //   if (!foundBlog) {
-  //     return null;
-  //   }
-  //   return foundBlog;
-  // },
-
   createBlog: async (
     name: string,
     description: string,

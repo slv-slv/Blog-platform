@@ -1,4 +1,4 @@
-import { PagingParams } from '../../types/paging-params.js';
+import { PagingParams } from '../../common/types/paging-params.js';
 import { UsersPaginatedViewModel } from './user-types.js';
 import { usersColl } from './users-repo.js';
 

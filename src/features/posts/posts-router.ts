@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { postsController } from './posts-controller.js';
-import { checkBasicAuth } from '../../auth/basic-auth.js';
+import { authController } from '../../auth/auth-controller.js';
 import {
   blogExistsValidation,
   postContentValidation,
@@ -12,7 +12,7 @@ import {
   pageSizeValidation,
   postsSortByValidation,
   sortDirectionValidation,
-} from '../../validation/paging-params-validation.js';
+} from '../../common/validation/paging-params-validation.js';
 
 export const postsRouter = Router();
 
@@ -29,7 +29,7 @@ postsRouter.get('/:id', postsController.findPost);
 
 postsRouter.post(
   '/',
-  checkBasicAuth,
+  authController.basicAuth,
   blogExistsValidation,
   postTitleValidation,
   postDescriptionValidation,
@@ -39,7 +39,7 @@ postsRouter.post(
 
 postsRouter.put(
   '/:id',
-  checkBasicAuth,
+  authController.basicAuth,
   blogExistsValidation,
   postTitleValidation,
   postDescriptionValidation,
@@ -47,4 +47,4 @@ postsRouter.put(
   postsController.updatePost,
 );
 
-postsRouter.delete('/:id', checkBasicAuth, postsController.deletePost);
+postsRouter.delete('/:id', authController.basicAuth, postsController.deletePost);

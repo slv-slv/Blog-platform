@@ -6,19 +6,6 @@ import { PostType } from './post-types.js';
 export const postsColl = db.collection<PostType>(SETTINGS.DB_COLLECTIONS.POSTS);
 
 export const postsRepo = {
-  // getPosts: async (): Promise<PostType[]> => {
-  //   const posts = await postsColl.find({}, { projection: { _id: 0 } }).toArray();
-  //   return posts;
-  // },
-
-  // findPost: async (id: string): Promise<PostType | null> => {
-  //   const foundPost = await postsColl.findOne({ id }, { projection: { _id: 0 } });
-  //   if (!foundPost) {
-  //     return null;
-  //   }
-  //   return foundPost;
-  // },
-
   createPost: async (
     title: string,
     shortDescription: string,

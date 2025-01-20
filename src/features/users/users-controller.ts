@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { formatErrors } from '../../utils/format-errors.js';
+import { formatErrors } from '../../common/utils/format-errors.js';
 import { usersService } from './users-service.js';
-import { getPagingParams } from '../../utils/get-paging-params.js';
+import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { usersViewModelRepo } from './users-view-model-repo.js';
-import { HTTP_STATUS } from '../../types/http-status-codes.js';
+import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 
 export const usersController = {
   getAllUsers: async (req: Request, res: Response) => {

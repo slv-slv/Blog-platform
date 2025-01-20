@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { PagingParams } from './types/paging-params.js';
+import { PagingParams } from './common/types/paging-params.js';
 dotenv.config();
 
 export const SETTINGS = {

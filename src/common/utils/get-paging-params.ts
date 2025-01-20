@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { PagingParams } from '../types/paging-params.js';
-import { SETTINGS } from '../settings.js';
+import { SETTINGS } from '../../settings.js';
 
 export const getPagingParams = (req: Request): PagingParams => {
   const sortBy = req.query.sortBy ? req.query.sortBy : SETTINGS.PAGING_DEFAULT_PARAMS.sortBy;

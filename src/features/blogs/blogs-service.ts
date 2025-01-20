@@ -1,7 +1,5 @@
 import { blogsRepo } from './blogs-repo.js';
-import { blogsViewModelRepo } from './blogs-view-model-repo.js';
-import { BlogsPaginatedViewModel, BlogType } from './blog-types.js';
-import { PagingParams } from '../../types/paging-params.js';
+import { BlogType } from './blog-types.js';
 
 export const blogsService = {
   createBlog: async (name: string, description: string, websiteUrl: string): Promise<BlogType> => {

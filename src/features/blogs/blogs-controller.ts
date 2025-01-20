@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { blogsService } from './blogs-service.js';
-import { formatErrors } from '../../utils/format-errors.js';
+import { formatErrors } from '../../common/utils/format-errors.js';
 import { blogsViewModelRepo } from './blogs-view-model-repo.js';
-import { getPagingParams } from '../../utils/get-paging-params.js';
+import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { postsViewModelRepo } from '../posts/posts-view-model-repo.js';
 import { postsService } from '../posts/posts-service.js';
-import { HTTP_STATUS } from '../../types/http-status-codes.js';
+import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 
 export const blogsController = {
   getAllBlogs: async (req: Request, res: Response) => {
