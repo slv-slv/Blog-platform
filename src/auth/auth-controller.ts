@@ -50,6 +50,12 @@ export const authController = {
     next();
   },
 
+  getCurrentUser: async (req: Request, res: Response) => {
+    const jwtPayload = res.locals.jwtPayload;
+    const user = await usersViewModelRepo.getCurrentUser(jwtPayload.userId);
+    res.status(HTTP_STATUS.OK_200).json(user);
+  },
+
   basicAuth: async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     const credentials = SETTINGS.CREDENTIALS;

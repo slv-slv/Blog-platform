@@ -22,6 +22,12 @@ export type UserDBType = {
   createdAt: string;
 };
 
+export type CurrentUserType = {
+  email: string;
+  login: string;
+  userId: string;
+};
+
 export type UsersPaginatedViewModel = {
   pagesCount: number;
   page: number;
