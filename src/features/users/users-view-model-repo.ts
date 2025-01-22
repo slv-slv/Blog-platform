@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { CurrentUserType, UsersPaginatedViewModel, UserType } from './user-types.js';
+import { CurrentUserType, UsersPaginatedViewModel } from './user-types.js';
 import { usersColl } from './users-repo.js';
 
 export const usersViewModelRepo = {
@@ -26,14 +26,14 @@ export const usersViewModelRepo = {
     const totalCount = await usersColl.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
-    const usersObjectId = await usersColl
+    const usersWithObjectId = await usersColl
       .find(filter, { projection: { hash: 0 } })
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .toArray();
 
-    const users = usersObjectId.map((user) => {
+    const users = usersWithObjectId.map((user) => {
       return {
         id: user._id.toString(),
         login: user.login,
