@@ -37,7 +37,6 @@ export const postsController = {
 
   updatePost: async (req: Request, res: Response) => {
     const errors = validationResult(req);
-    console.log(formatErrors(errors));
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
       return;
