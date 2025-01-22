@@ -15,12 +15,12 @@ export const postsController = {
 
   findPost: async (req: Request, res: Response) => {
     const id = req.params.id;
-    const foundPost = await postsViewModelRepo.findPost(id);
-    if (!foundPost) {
+    const post = await postsViewModelRepo.findPost(id);
+    if (!post) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Post not found' });
       return;
     }
-    res.status(HTTP_STATUS.OK_200).json(foundPost);
+    res.status(HTTP_STATUS.OK_200).json(post);
   },
 
   createPost: async (req: Request, res: Response) => {

@@ -19,8 +19,8 @@ export const blogsController = {
   getPostsByBlogId: async (req: Request, res: Response) => {
     const pagingParams = getPagingParams(req);
     const blogId = req.params.blogId;
-    const foundBlog = await blogsViewModelRepo.findBlog(blogId);
-    if (!foundBlog) {
+    const blog = await blogsViewModelRepo.findBlog(blogId);
+    if (!blog) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Blog not found' });
       return;
     }
@@ -31,12 +31,12 @@ export const blogsController = {
 
   findBlog: async (req: Request, res: Response) => {
     const id = req.params.id;
-    const foundBlog = await blogsViewModelRepo.findBlog(id);
-    if (!foundBlog) {
+    const blog = await blogsViewModelRepo.findBlog(id);
+    if (!blog) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Blog not found' });
       return;
     }
-    res.status(HTTP_STATUS.OK_200).json(foundBlog);
+    res.status(HTTP_STATUS.OK_200).json(blog);
   },
 
   createBlog: async (req: Request, res: Response) => {
@@ -59,8 +59,8 @@ export const blogsController = {
     }
 
     const blogId = req.params.blogId;
-    const foundBlog = await blogsViewModelRepo.findBlog(blogId);
-    if (!foundBlog) {
+    const blog = await blogsViewModelRepo.findBlog(blogId);
+    if (!blog) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Blog not found' });
       return;
     }
