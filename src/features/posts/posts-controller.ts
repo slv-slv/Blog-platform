@@ -44,8 +44,8 @@ export const postsController = {
 
     const id = req.params.id;
     const { title, shortDescription, content } = req.body;
-    const postFound = await postsService.updatePost(id, title, shortDescription, content);
-    if (!postFound) {
+    const isUpdated = await postsService.updatePost(id, title, shortDescription, content);
+    if (!isUpdated) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Post not found' });
       return;
     }

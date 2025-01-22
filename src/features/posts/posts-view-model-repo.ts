@@ -27,10 +27,10 @@ export const postsViewModelRepo = {
   },
 
   findPost: async (id: string): Promise<PostType | null> => {
-    const foundPost = await postsColl.findOne({ id }, { projection: { _id: 0 } });
-    if (!foundPost) {
+    const post = await postsColl.findOne({ id }, { projection: { _id: 0 } });
+    if (!post) {
       return null;
     }
-    return foundPost;
+    return post;
   },
 };

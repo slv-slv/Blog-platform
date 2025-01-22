@@ -27,10 +27,10 @@ export const blogsViewModelRepo = {
   },
 
   findBlog: async (id: string): Promise<BlogType | null> => {
-    const foundBlog = await blogsColl.findOne({ id }, { projection: { _id: 0 } });
-    if (!foundBlog) {
+    const blog = await blogsColl.findOne({ id }, { projection: { _id: 0 } });
+    if (!blog) {
       return null;
     }
-    return foundBlog;
+    return blog;
   },
 };

@@ -51,7 +51,7 @@ export const blogsController = {
     res.status(HTTP_STATUS.CREATED_201).json(newBlog);
   },
 
-  createPostForBlogId: async (req: Request, res: Response) => {
+  createPostForBlog: async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -80,8 +80,8 @@ export const blogsController = {
 
     const id = req.params.id;
     const { name, description, websiteUrl } = req.body;
-    const blogFound = await blogsService.updateBlog(id, name, description, websiteUrl);
-    if (!blogFound) {
+    const isUpdated = await blogsService.updateBlog(id, name, description, websiteUrl);
+    if (!isUpdated) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Blog not found' });
       return;
     }

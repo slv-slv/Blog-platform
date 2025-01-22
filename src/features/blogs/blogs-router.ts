@@ -65,5 +65,5 @@ blogsRouter.post(
   postTitleValidation,
   postDescriptionValidation,
   postContentValidation,
-  blogsController.createPostForBlogId,
+  blogsController.createPostForBlog,
 );
