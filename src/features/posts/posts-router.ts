@@ -8,11 +8,13 @@ import {
   postTitleValidation,
 } from './posts-validation.js';
 import {
+  commentsSortByValidation,
   pageNumberValidation,
   pageSizeValidation,
   postsSortByValidation,
   sortDirectionValidation,
 } from '../../common/validation/paging-params-validation.js';
+import { contentValidation } from '../comments/comments-validation.js';
 
 export const postsRouter = Router();
 
@@ -48,3 +50,19 @@ postsRouter.put(
 );
 
 postsRouter.delete('/:id', authController.basicAuth, postsController.deletePost);
+
+postsRouter.get(
+  '/:postId/comments',
+  commentsSortByValidation,
+  sortDirectionValidation,
+  pageNumberValidation,
+  pageSizeValidation,
+  postsController.getCommentsForPost,
+);
+
+postsRouter.post(
+  '/:postId/comments',
+  authController.verifyJWT,
+  contentValidation,
+  postsController.createComment,
+);

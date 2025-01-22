@@ -7,17 +7,10 @@ import { PagingParams } from '../../common/types/paging-params.js';
 export const commentsColl = db.collection<CommentDBType>(SETTINGS.DB_COLLECTIONS.COMMENTS);
 
 export const commentsViewModelRepo = {
-  getCommentsForPost: async (
-    postId: string,
-    pagingParams: PagingParams,
-  ): Promise<CommentsPaginatedViewModel | null> => {
+  getCommentsForPost: async (postId: string, pagingParams: PagingParams): Promise<CommentsPaginatedViewModel> => {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const totalCount = await commentsColl.countDocuments({ postId });
-    if (totalCount === 0) {
-      return null;
-    }
-
     const pagesCount = Math.ceil(totalCount / pageSize);
 
     const commentsWithObjectId = await commentsColl
@@ -47,10 +40,10 @@ export const commentsViewModelRepo = {
 
   findComment: async (id: string): Promise<CommentType | null> => {
     const _id = new ObjectId(id);
-    const foundComment = await commentsColl.findOne({ _id }, { projection: { _id: 0 } });
-    if (!foundComment) {
+    const comment = await commentsColl.findOne({ _id }, { projection: { _id: 0 } });
+    if (!comment) {
       return null;
     }
-    return { id, ...foundComment };
+    return { id, ...comment };
   },
 };

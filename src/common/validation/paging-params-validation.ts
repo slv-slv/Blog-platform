@@ -2,6 +2,7 @@ import { query } from 'express-validator';
 import { BlogTypeKeys } from '../../features/blogs/blog-types.js';
 import { PostTypeKeys } from '../../features/posts/post-types.js';
 import { UserTypeKeys } from '../../features/users/user-types.js';
+import { CommentTypeKeys } from '../../features/comments/comment-types.js';
 
 export const blogsSortByValidation = query('sortBy')
   .optional()
@@ -16,6 +17,11 @@ export const postsSortByValidation = query('sortBy')
 export const usersSortByValidation = query('sortBy')
   .optional()
   .isIn(Object.values(UserTypeKeys))
+  .withMessage('Invalid sortBy value');
+
+export const commentsSortByValidation = query('sortBy')
+  .optional()
+  .isIn(Object.values(CommentTypeKeys))
   .withMessage('Invalid sortBy value');
 
 export const sortDirectionValidation = query('sortDirection')
