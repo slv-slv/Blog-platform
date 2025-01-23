@@ -14,7 +14,7 @@ export const commentsService = {
     const newComment = await commentsRepo.createComment(postId, content, user, createdAt);
 
     return {
-      status: RESULT_STATUS.SUCCESS,
+      status: RESULT_STATUS.CREATED,
       data: newComment,
     };
   },
