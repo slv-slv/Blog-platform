@@ -4,7 +4,6 @@ import { formatErrors } from '../common/utils/format-errors.js';
 import { SETTINGS } from '../settings.js';
 import { HTTP_STATUS } from '../common/types/http-status-codes.js';
 import { authService } from './auth-service.js';
-import { verify } from 'crypto';
 import { usersViewModelRepo } from '../features/users/users-view-model-repo.js';
 
 export const authController = {

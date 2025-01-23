@@ -20,8 +20,8 @@ export const authService = {
   },
 
   issueJWT: async (loginOrEmail: string): Promise<string> => {
-    const user = await usersViewModelRepo.getCurrentUser(loginOrEmail);
-    const { userId } = user;
+    const user = await usersViewModelRepo.findUser(loginOrEmail);
+    const userId = user.id;
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
