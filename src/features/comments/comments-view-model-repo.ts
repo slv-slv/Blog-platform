@@ -42,6 +42,9 @@ export const commentsViewModelRepo = {
   },
 
   findComment: async (id: string): Promise<CommentType | null> => {
+    if (!ObjectId.isValid(id)) {
+      return null;
+    }
     const _id = new ObjectId(id);
     const comment = await commentsColl.findOne({ _id }, { projection: { _id: 0, postId: 0 } });
     if (!comment) {

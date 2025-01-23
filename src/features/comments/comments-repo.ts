@@ -29,6 +29,9 @@ export const commentsRepo = {
   },
 
   updateComment: async (id: string, content: string): Promise<boolean> => {
+    if (!ObjectId.isValid(id)) {
+      return false;
+    }
     const _id = new ObjectId(id);
     const updateResult = await commentsColl.updateOne({ _id }, { $set: { content } });
     if (!updateResult.matchedCount) {
