@@ -14,8 +14,8 @@ export const commentsRepo = {
     createdAt: string,
   ): Promise<CommentType> => {
     const newComment = {
-      content,
       postId,
+      content,
       commentatorInfo: { userId: user.userId, userLogin: user.login },
       createdAt,
     };
