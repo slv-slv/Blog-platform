@@ -1,39 +1,28 @@
 import { Router } from 'express';
 import { blogsController } from './blogs-controller.js';
 import { authController } from '../../auth/auth-controller.js';
-import {
-  searchNameTermValidation,
-  blogNameValidation,
-  blogDescriptionValidation,
-  blogUrlValidation,
-} from './blogs-validation.js';
-import {
-  blogsSortByValidation,
-  pageNumberValidation,
-  pageSizeValidation,
-  postsSortByValidation,
-  sortDirectionValidation,
-} from '../../common/validation/paging-params-validation.js';
-import { postContentValidation, postDescriptionValidation, postTitleValidation } from '../posts/posts-validation.js';
+import { pagingValidators } from '../../common/validation/paging-params-validation.js';
+import { blogValidators } from './blogs-validation.js';
+import { postValidators } from '../posts/posts-validation.js';
 
 export const blogsRouter = Router();
 
 blogsRouter.get(
   '/',
-  searchNameTermValidation,
-  blogsSortByValidation,
-  sortDirectionValidation,
-  pageNumberValidation,
-  pageSizeValidation,
+  blogValidators.searchNameTerm,
+  pagingValidators.blogsSortBy,
+  pagingValidators.sortDirection,
+  pagingValidators.pageNumber,
+  pagingValidators.pageSize,
   blogsController.getAllBlogs,
 );
 
 blogsRouter.post(
   '/',
   authController.basicAuth,
-  blogNameValidation,
-  blogDescriptionValidation,
-  blogUrlValidation,
+  blogValidators.blogName,
+  blogValidators.blogDescription,
+  blogValidators.blogUrl,
   blogsController.createBlog,
 );
 
@@ -42,9 +31,9 @@ blogsRouter.get('/:id', blogsController.findBlog);
 blogsRouter.put(
   '/:id',
   authController.basicAuth,
-  blogNameValidation,
-  blogDescriptionValidation,
-  blogUrlValidation,
+  blogValidators.blogName,
+  blogValidators.blogDescription,
+  blogValidators.blogUrl,
   blogsController.updateBlog,
 );
 
@@ -52,18 +41,18 @@ blogsRouter.delete('/:id', authController.basicAuth, blogsController.deleteBlog)
 
 blogsRouter.get(
   '/:blogId/posts',
-  postsSortByValidation,
-  sortDirectionValidation,
-  pageNumberValidation,
-  pageSizeValidation,
+  pagingValidators.postsSortBy,
+  pagingValidators.sortDirection,
+  pagingValidators.pageNumber,
+  pagingValidators.pageSize,
   blogsController.getPostsByBlogId,
 );
 
 blogsRouter.post(
   '/:blogId/posts',
   authController.basicAuth,
-  postTitleValidation,
-  postDescriptionValidation,
-  postContentValidation,
+  postValidators.postTitle,
+  postValidators.postDescription,
+  postValidators.postContent,
   blogsController.createPostForBlog,
 );

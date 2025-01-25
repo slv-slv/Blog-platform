@@ -1,29 +1,18 @@
 import { Router } from 'express';
 import { postsController } from './posts-controller.js';
 import { authController } from '../../auth/auth-controller.js';
-import {
-  blogExistsValidation,
-  postContentValidation,
-  postDescriptionValidation,
-  postTitleValidation,
-} from './posts-validation.js';
-import {
-  commentsSortByValidation,
-  pageNumberValidation,
-  pageSizeValidation,
-  postsSortByValidation,
-  sortDirectionValidation,
-} from '../../common/validation/paging-params-validation.js';
-import { contentValidation } from '../comments/comments-validation.js';
+import { postValidators } from './posts-validation.js';
+import { pagingValidators } from '../../common/validation/paging-params-validation.js';
+import { commentValidators } from '../comments/comments-validation.js';
 
 export const postsRouter = Router();
 
 postsRouter.get(
   '/',
-  postsSortByValidation,
-  sortDirectionValidation,
-  pageNumberValidation,
-  pageSizeValidation,
+  pagingValidators.postsSortBy,
+  pagingValidators.sortDirection,
+  pagingValidators.pageNumber,
+  pagingValidators.pageSize,
   postsController.getAllPosts,
 );
 
@@ -32,20 +21,20 @@ postsRouter.get('/:id', postsController.findPost);
 postsRouter.post(
   '/',
   authController.basicAuth,
-  blogExistsValidation,
-  postTitleValidation,
-  postDescriptionValidation,
-  postContentValidation,
+  postValidators.blogExists,
+  postValidators.postTitle,
+  postValidators.postDescription,
+  postValidators.postContent,
   postsController.createPost,
 );
 
 postsRouter.put(
   '/:id',
   authController.basicAuth,
-  blogExistsValidation,
-  postTitleValidation,
-  postDescriptionValidation,
-  postContentValidation,
+  postValidators.blogExists,
+  postValidators.postTitle,
+  postValidators.postDescription,
+  postValidators.postContent,
   postsController.updatePost,
 );
 
@@ -53,16 +42,16 @@ postsRouter.delete('/:id', authController.basicAuth, postsController.deletePost)
 
 postsRouter.get(
   '/:postId/comments',
-  commentsSortByValidation,
-  sortDirectionValidation,
-  pageNumberValidation,
-  pageSizeValidation,
+  pagingValidators.commentsSortBy,
+  pagingValidators.sortDirection,
+  pagingValidators.pageNumber,
+  pagingValidators.pageSize,
   postsController.getCommentsForPost,
 );
 
 postsRouter.post(
   '/:postId/comments',
   authController.verifyJWT,
-  contentValidation,
+  commentValidators.content,
   postsController.createComment,
 );

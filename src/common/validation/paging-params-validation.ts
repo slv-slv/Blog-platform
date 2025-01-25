@@ -4,31 +4,33 @@ import { PostTypeKeys } from '../../features/posts/post-types.js';
 import { UserTypeKeys } from '../../features/users/user-types.js';
 import { CommentTypeKeys } from '../../features/comments/comment-types.js';
 
-export const blogsSortByValidation = query('sortBy')
-  .optional()
-  .isIn(Object.values(BlogTypeKeys))
-  .withMessage('Invalid sortBy value');
+export const pagingValidators = {
+  blogsSortBy: query('sortBy')
+    .optional()
+    .isIn(Object.values(BlogTypeKeys))
+    .withMessage('Invalid sortBy value'),
 
-export const postsSortByValidation = query('sortBy')
-  .optional()
-  .isIn(Object.values(PostTypeKeys))
-  .withMessage('Invalid sortBy value');
+  postsSortBy: query('sortBy')
+    .optional()
+    .isIn(Object.values(PostTypeKeys))
+    .withMessage('Invalid sortBy value'),
 
-export const usersSortByValidation = query('sortBy')
-  .optional()
-  .isIn(Object.values(UserTypeKeys))
-  .withMessage('Invalid sortBy value');
+  usersSortBy: query('sortBy')
+    .optional()
+    .isIn(Object.values(UserTypeKeys))
+    .withMessage('Invalid sortBy value'),
 
-export const commentsSortByValidation = query('sortBy')
-  .optional()
-  .isIn(Object.values(CommentTypeKeys))
-  .withMessage('Invalid sortBy value');
+  commentsSortBy: query('sortBy')
+    .optional()
+    .isIn(Object.values(CommentTypeKeys))
+    .withMessage('Invalid sortBy value'),
 
-export const sortDirectionValidation = query('sortDirection')
-  .optional()
-  .isIn(['asc', 'desc'])
-  .withMessage('Invalid sortDirection value');
+  sortDirection: query('sortDirection')
+    .optional()
+    .isIn(['asc', 'desc'])
+    .withMessage('Invalid sortDirection value'),
 
-export const pageNumberValidation = query('page').optional().isInt({ min: 1 }).withMessage('Invalid page number');
+  pageNumber: query('page').optional().isInt({ min: 1 }).withMessage('Invalid page number'),
 
-export const pageSizeValidation = query('pageSize').optional().isInt({ min: 1 }).withMessage('Invalid page size');
+  pageSize: query('pageSize').optional().isInt({ min: 1 }).withMessage('Invalid page size'),
+};
