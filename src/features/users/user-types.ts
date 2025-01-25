@@ -15,7 +15,7 @@ export enum UserTypeKeys {
 }
 
 export type UserDBType = {
-  // _id: ObjectId;
+  _id: ObjectId;
   login: string;
   email: string;
   hash: string;
