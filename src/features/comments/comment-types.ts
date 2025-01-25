@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb';
+
 export type CommentType = {
   id: string;
   content: string;
@@ -16,7 +18,7 @@ export enum CommentTypeKeys {
 }
 
 export type CommentDBType = {
-  // id: string;
+  _id: ObjectId;
   postId: string;
   content: string;
   commentatorInfo: {
