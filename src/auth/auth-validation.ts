@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 
-export const authValidators = {
+export const authValidator = {
   loginOrEmail: body('loginOrEmail')
     .exists()
     .withMessage('Login or email is required')

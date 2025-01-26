@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 
-export const commentValidators = {
+export const commentsValidator = {
   content: body('content')
     .exists()
     .withMessage('Content is required')

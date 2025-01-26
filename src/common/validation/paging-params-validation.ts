@@ -4,7 +4,7 @@ import { PostTypeKeys } from '../../features/posts/post-types.js';
 import { UserTypeKeys } from '../../features/users/user-types.js';
 import { CommentTypeKeys } from '../../features/comments/comment-types.js';
 
-export const pagingValidators = {
+export const pagingValidator = {
   blogsSortBy: query('sortBy')
     .optional()
     .isIn(Object.values(BlogTypeKeys))

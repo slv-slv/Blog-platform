@@ -1,6 +1,6 @@
 import { body, query } from 'express-validator';
 
-export const userValidators = {
+export const usersValidator = {
   searchLoginTerm: query('searchLoginTerm')
     .optional()
     .isString()

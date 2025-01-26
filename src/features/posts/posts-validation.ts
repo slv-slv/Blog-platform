@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 import { blogsViewModelRepo } from '../blogs/blogs-view-model-repo.js';
 
-export const postValidators = {
+export const postsValidator = {
   blogExists: body('blogId')
     .exists()
     .withMessage('Blog ID is required')
