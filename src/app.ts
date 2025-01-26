@@ -18,8 +18,8 @@ app.use('/users', usersRouter);
 app.use('/comments', commentsRouter);
 app.use('/auth', authRouter);
 
-app.delete('/testing/all-data', (req: Request, res: Response) => {
-  mongoCluster.dropDb(SETTINGS.DB_NAME);
+app.delete('/testing/all-data', async (req: Request, res: Response) => {
+  await mongoCluster.dropDb(SETTINGS.DB_NAME);
   res.status(204).end();
 });
 
