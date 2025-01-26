@@ -1,16 +1,17 @@
-import { MongoClient } from 'mongodb';
 import { SETTINGS } from '../settings.js';
+import { MongoCluster } from './mongo-manager.js';
 
-export const dbClient = new MongoClient(SETTINGS.MONGO_URL);
-export const db = dbClient.db(SETTINGS.DB_NAME);
+export const mongoCluster = new MongoCluster(SETTINGS.MONGO_URL);
+export const mongoClient = mongoCluster.getClient();
+export const db = mongoCluster.getDb(SETTINGS.DB_NAME);
 
-export const runDb = async (client: MongoClient) => {
-  try {
-    await client.connect();
-    await db.command({ ping: 1 });
-    console.log('Connected to MongoDB');
-  } catch (dbError) {
-    await client.close();
-    throw dbError;
-  }
-};
+// export const clearDatabase = async (client: MongoClient) => {
+//   if (client) {
+//     const db = client.db();
+//     const collections = await db.collections();
+
+//     for (const collection of collections) {
+//       await collection.deleteMany({});
+//     }
+//   }
+// };
