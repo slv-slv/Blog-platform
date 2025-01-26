@@ -32,21 +32,32 @@ export const authController = {
 
   verifyJWT: async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
-    let isAuth = false;
 
-    if (authHeader) {
-      const [authMethod, token] = authHeader.split(' ');
-      const jwtPayload = authService.verifyJWT(token);
-      res.locals.jwtPayload = jwtPayload;
-      isAuth = authMethod === 'Bearer' && jwtPayload !== null;
-    }
-
-    if (!authHeader || !isAuth) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Unsuccessful authorization' });
+    if (!authHeader) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Authorization header missing' });
       return;
     }
 
-    next();
+    const [authMethod, token] = authHeader.split(' ');
+
+    if (authMethod !== 'Bearer' || !token) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid authorization method' });
+      return;
+    }
+
+    try {
+      const jwtPayload = authService.verifyJWT(token);
+
+      if (!jwtPayload) {
+        res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid access token' });
+        return;
+      }
+
+      res.locals.jwtPayload = jwtPayload;
+      next();
+    } catch {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Access token verification failed' });
+    }
   },
 
   getCurrentUser: async (req: Request, res: Response) => {
@@ -57,16 +68,22 @@ export const authController = {
 
   basicAuth: async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
-    const credentials = SETTINGS.CREDENTIALS;
-    let isAuth = false;
 
-    if (authHeader) {
-      const [authMethod, credsBase64] = authHeader.split(' ');
-      isAuth = authMethod === 'Basic' && credentials.map((user) => user.base64).includes(credsBase64);
+    if (!authHeader) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Authorization header missing' });
+      return;
     }
 
-    if (!authHeader || !isAuth) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Unsuccessful authorization' });
+    const [authMethod, credsBase64] = authHeader.split(' ');
+    const credentials = SETTINGS.CREDENTIALS;
+
+    if (authMethod !== 'Basic' || !credsBase64) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid authorization method' });
+      return;
+    }
+
+    if (!credentials.map((user) => user.base64).includes(credsBase64)) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Incorrect credentials' });
       return;
     }
 
