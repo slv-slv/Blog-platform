@@ -7,6 +7,15 @@ export class MongoCluster {
     this.client = new MongoClient(url);
   }
 
+  async run() {
+    try {
+      await this.client.connect();
+      console.log('Connected to MongoDB');
+    } catch {
+      await this.client.close();
+    }
+  }
+
   getClient() {
     return this.client;
   }
@@ -15,12 +24,12 @@ export class MongoCluster {
     return this.client.db(name);
   }
 
-  async run() {
-    try {
-      await this.client.connect();
-      console.log('Connected to MongoDB');
-    } catch {
-      await this.client.close();
+  async dropDb(name: string) {
+    const db = this.getDb(name);
+    const collections = await db.collections();
+
+    for (const collection of collections) {
+      await collection.deleteMany({});
     }
   }
 }

@@ -5,10 +5,8 @@ import { postsRouter } from './features/posts/posts-router.js';
 import { usersRouter } from './features/users/users-router.js';
 import { commentsRouter } from './features/comments/comments-router.js';
 import { authRouter } from './auth/auth-router.js';
-import { blogsRepo } from './features/blogs/blogs-repo.js';
-import { postsRepo } from './features/posts/posts-repo.js';
-import { usersRepo } from './features/users/users-repo.js';
-import { commentsRepo } from './features/comments/comments-repo.js';
+import { mongoCluster } from './db/db.js';
+import { SETTINGS } from './settings.js';
 
 export const app = express();
 
@@ -21,10 +19,7 @@ app.use('/comments', commentsRouter);
 app.use('/auth', authRouter);
 
 app.delete('/testing/all-data', (req: Request, res: Response) => {
-  blogsRepo.deleteAllBlogs();
-  postsRepo.deleteAllPosts();
-  usersRepo.deleteAllUsers();
-  commentsRepo.deleteAllComments();
+  mongoCluster.dropDb(SETTINGS.DB_NAME);
   res.status(204).end();
 });
 
