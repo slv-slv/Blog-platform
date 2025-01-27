@@ -27,10 +27,6 @@ export const usersRepo = {
     return deleteResult.deletedCount > 0;
   },
 
-  deleteAllUsers: async (): Promise<void> => {
-    await usersColl.deleteMany({});
-  },
-
   isLoginUnique: async (login: string): Promise<boolean> => {
     const loginCount = await usersColl.countDocuments({ login });
     return loginCount === 0;

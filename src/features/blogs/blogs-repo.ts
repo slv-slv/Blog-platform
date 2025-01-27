@@ -15,7 +15,10 @@ export const blogsRepo = {
     const id = ((await blogsColl.countDocuments()) + 1 || 1).toString();
     const newBlog = { id, name, description, websiteUrl, createdAt, isMembership };
     const createResult = await blogsColl.insertOne(newBlog);
-    const insertedBlog = await blogsColl.findOne({ _id: createResult.insertedId }, { projection: { _id: 0 } });
+    const insertedBlog = await blogsColl.findOne(
+      { _id: createResult.insertedId },
+      { projection: { _id: 0 } },
+    );
     return insertedBlog as BlogType;
   },
 
@@ -33,9 +36,5 @@ export const blogsRepo = {
       return false;
     }
     return true;
-  },
-
-  deleteAllBlogs: async (): Promise<void> => {
-    await blogsColl.deleteMany({});
   },
 };

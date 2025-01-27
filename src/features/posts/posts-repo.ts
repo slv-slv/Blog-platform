@@ -18,11 +18,19 @@ export const postsRepo = {
     const blogName = blog!.name as string;
     const newPost = { id, title, shortDescription, content, blogId, blogName, createdAt };
     const createResult = await postsColl.insertOne(newPost);
-    const insertedPost = await postsColl.findOne({ _id: createResult.insertedId }, { projection: { _id: 0 } });
+    const insertedPost = await postsColl.findOne(
+      { _id: createResult.insertedId },
+      { projection: { _id: 0 } },
+    );
     return insertedPost as PostType;
   },
 
-  updatePost: async (id: string, title: string, shortDescription: string, content: string): Promise<boolean> => {
+  updatePost: async (
+    id: string,
+    title: string,
+    shortDescription: string,
+    content: string,
+  ): Promise<boolean> => {
     const updateResult = await postsColl.updateOne({ id }, { $set: { title, shortDescription, content } });
     if (!updateResult.matchedCount) {
       return false;
@@ -36,9 +44,5 @@ export const postsRepo = {
       return false;
     }
     return true;
-  },
-
-  deleteAllPosts: async (): Promise<void> => {
-    await postsColl.deleteMany({});
   },
 };

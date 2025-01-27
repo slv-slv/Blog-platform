@@ -50,8 +50,4 @@ export const commentsRepo = {
     const deleteResult = await commentsColl.deleteOne({ _id });
     return deleteResult.deletedCount > 0;
   },
-
-  deleteAllComments: async (): Promise<void> => {
-    await commentsColl.deleteMany({});
-  },
 };
