@@ -1,4 +1,4 @@
-import { SETTINGS } from '../settings.js';
+import { SETTINGS } from '../../settings.js';
 import { MongoCluster } from './mongo-manager.js';
 
 export const mongoCluster = new MongoCluster(SETTINGS.MONGO_URL);

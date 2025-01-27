@@ -1,5 +1,5 @@
 import { blogsViewModelRepo } from '../blogs/blogs-view-model-repo.js';
-import { db } from '../../db/db.js';
+import { db } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { PostType } from './post-types.js';
 

@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { db } from '../../db/db.js';
+import { db } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { CurrentUserType } from '../users/user-types.js';
 import { CommentType, CommentDBType } from './comment-types.js';

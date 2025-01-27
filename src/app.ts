@@ -5,7 +5,7 @@ import { postsRouter } from './features/posts/posts-router.js';
 import { usersRouter } from './features/users/users-router.js';
 import { commentsRouter } from './features/comments/comments-router.js';
 import { authRouter } from './auth/auth-router.js';
-import { mongoCluster } from './db/db.js';
+import { mongoCluster } from './infrastructure/db/db.js';
 import { SETTINGS } from './settings.js';
 
 export const app = express();

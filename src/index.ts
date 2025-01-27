@@ -1,6 +1,6 @@
 import { app } from './app.js';
 import { SETTINGS } from './settings.js';
-import { mongoCluster } from './db/db.js';
+import { mongoCluster } from './infrastructure/db/db.js';
 
 try {
   await mongoCluster.run();
