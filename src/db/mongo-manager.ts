@@ -7,6 +7,14 @@ export class MongoCluster {
     this.client = new MongoClient(url);
   }
 
+  getClient() {
+    return this.client;
+  }
+
+  getDb(name: string) {
+    return this.client.db(name);
+  }
+
   async run() {
     try {
       await this.client.connect();
@@ -14,14 +22,6 @@ export class MongoCluster {
     } catch {
       await this.client.close();
     }
-  }
-
-  getClient() {
-    return this.client;
-  }
-
-  getDb(name: string) {
-    return this.client.db(name);
   }
 
   async dropDb(name: string) {
