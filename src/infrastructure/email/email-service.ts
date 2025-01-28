@@ -1,17 +1,17 @@
 import { emailTransport } from './nodemailer-transport.js';
 
 export const emailService = {
-  sendConfirmation: async (subject: string, uuid: string): Promise<void> => {
+  sendConfirmation: async (to: string, code: string): Promise<void> => {
     try {
       const url = new URL('/registration/confirmation', 'https://nightingale.com/');
-      url.searchParams.set('code', uuid);
+      url.searchParams.set('code', code);
 
       const info = await emailTransport.sendMail({
-        from: '"Vyacheslav Solovev" <xNightingale@yandex.ru>',
-        to: subject,
+        from: '"Vyacheslav Solovev" <slavyan1990@rambler.ru>',
+        to: to,
         subject: 'Confirm your email',
-        text: `Thank for your registration. To confirm your profile please follow the link below:\n${url.href}`,
-        html: `<h1>Thank for your registration</h1><p>To confirm your profile please follow the link below:<a href='${url.href}'>Complete registration</a></p>`,
+        text: `Thank you for your registration. To confirm your profile please follow the link below:\n${url.href}`,
+        html: `<h1>Thank you for your registration</h1><p>To confirm your profile please follow the link below:</p><a href='${url.href}'>Complete registration</a>`,
       });
 
       console.log(info);
