@@ -31,7 +31,7 @@ export const usersService = {
       expiration,
     };
 
-    // await emailService.sendConfirmation(email, code);
+    await emailService.sendConfirmation(email, code);
 
     return await usersRepo.createUser(login, email, hash, createdAt, confirmation);
   },
@@ -49,7 +49,7 @@ export const usersService = {
       return null;
     }
 
-    // await emailService.sendConfirmation(email, code);
+    await emailService.sendConfirmation(email, code);
 
     return code;
   },
