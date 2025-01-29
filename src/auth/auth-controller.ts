@@ -79,7 +79,9 @@ export const authController = {
     const confirmationResult = await usersService.confirmUser(code);
 
     if (confirmationResult.status !== RESULT_STATUS.NO_CONTENT) {
-      res.status(httpCodeByResult(confirmationResult.status)).json(confirmationResult.extensions);
+      res
+        .status(httpCodeByResult(confirmationResult.status))
+        .json({ errorsMessages: confirmationResult.extensions });
       return;
     }
 
