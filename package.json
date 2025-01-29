@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "node --watch --inspect dist/index.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest -i --forceExit"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest -i"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
