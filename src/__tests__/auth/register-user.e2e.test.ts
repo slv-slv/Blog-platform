@@ -19,7 +19,7 @@ describe('REGISTER USER', () => {
   const newUser = {
     login: 'NewUser',
     password: 'NewPassword',
-    email: 'slv.nightingale@gmail.com',
+    email: 'slvsl@vk.com',
   };
 
   it('should register new user', async () => {

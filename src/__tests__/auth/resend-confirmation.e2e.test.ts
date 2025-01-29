@@ -20,7 +20,7 @@ describe('RESEND CONFIRMATION', () => {
   const newUser: UserDBType = {
     _id: new ObjectId(),
     login: 'NewUser',
-    email: 'example@example.com',
+    email: 'slvsl@vk.com',
     hash: 'somehash',
     createdAt: '2025-01-28T23:06:37.379Z',
     confirmation: {
