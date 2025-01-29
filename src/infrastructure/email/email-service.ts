@@ -7,7 +7,7 @@ export const emailService = {
       url.searchParams.set('code', code);
 
       const info = await emailTransport.sendMail({
-        from: '"Vyacheslav Solovev" <i@slvsl.ru>',
+        from: '"Vyacheslav Solovev" <slv.nightingale@gmail.com>',
         to: to,
         subject: 'Confirm your email',
         text: `Thank you for your registration. To confirm your profile please follow the link below:\n${url.href}`,

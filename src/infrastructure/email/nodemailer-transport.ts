@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import { SETTINGS } from '../../settings.js';
 
 export const emailTransport = nodemailer.createTransport({
-  host: 'smtp.yandex.ru',
+  host: 'smtp.gmail.com',
   port: 587,
   secure: false,
   auth: {
