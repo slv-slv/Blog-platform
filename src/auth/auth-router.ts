@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authController } from './auth-controller.js';
 import { authValidator } from './auth-validation.js';
+import { usersValidator } from '../features/users/users-validation.js';
 
 export const authRouter = Router();
 
@@ -13,3 +14,19 @@ authRouter.post(
 );
 
 authRouter.get('/me', authController.verifyJWT, authController.getCurrentUser);
+
+authRouter.post(
+  '/registration',
+  usersValidator.login,
+  usersValidator.newPassword,
+  usersValidator.email,
+  authController.sendConfirmation,
+);
+
+authRouter.post('/registration-email-resending', usersValidator.email, authController.resendConfirmation);
+
+authRouter.post(
+  '/registration-confirmation',
+  authValidator.confirmationCode,
+  authController.confirmRegistration,
+);

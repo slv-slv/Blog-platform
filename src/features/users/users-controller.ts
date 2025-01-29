@@ -24,14 +24,14 @@ export const usersController = {
 
     const { login, password, email } = req.body;
 
-    if (!usersService.isLoginUnique(login)) {
+    if (!(await usersService.isLoginUnique(login))) {
       res
         .status(HTTP_STATUS.BAD_REQUEST_400)
         .json({ errorsMessages: [{ message: 'Login already exists', field: 'login' }] });
       return;
     }
 
-    if (!usersService.isEmailUnique(email)) {
+    if (!(await usersService.isEmailUnique(email))) {
       res
         .status(HTTP_STATUS.BAD_REQUEST_400)
         .json({ errorsMessages: [{ message: 'Email already exists', field: 'email' }] });

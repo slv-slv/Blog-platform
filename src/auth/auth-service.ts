@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { usersRepo } from '../features/users/users-repo.js';
 import { usersViewModelRepo } from '../features/users/users-view-model-repo.js';
 import { SETTINGS } from '../settings.js';
 import { JwtPayloadType } from './auth-types.js';
@@ -12,7 +11,7 @@ export const authService = {
   },
 
   checkPassword: async (loginOrEmail: string, password: string): Promise<boolean> => {
-    const hash = await usersRepo.getPasswordHash(loginOrEmail);
+    const hash = await usersViewModelRepo.getPasswordHash(loginOrEmail);
     if (!hash) {
       return false;
     }
@@ -21,7 +20,7 @@ export const authService = {
 
   issueJWT: async (loginOrEmail: string): Promise<string> => {
     const user = await usersViewModelRepo.findUser(loginOrEmail);
-    const userId = user.id;
+    const userId = user!.id;
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });

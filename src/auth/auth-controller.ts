@@ -5,8 +5,87 @@ import { SETTINGS } from '../settings.js';
 import { HTTP_STATUS } from '../common/types/http-status-codes.js';
 import { authService } from './auth-service.js';
 import { usersViewModelRepo } from '../features/users/users-view-model-repo.js';
+import { usersService } from '../features/users/users-service.js';
+import { httpCodeByResult, RESULT_STATUS } from '../common/types/result-status-codes.js';
 
 export const authController = {
+  sendConfirmation: async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
+      return;
+    }
+
+    const { login, email, password } = req.body;
+
+    if (!(await usersService.isLoginUnique(login))) {
+      res
+        .status(HTTP_STATUS.BAD_REQUEST_400)
+        .json({ errorsMessages: [{ message: 'Login already exists', field: 'login' }] });
+      return;
+    }
+
+    if (!(await usersService.isEmailUnique(email))) {
+      res
+        .status(HTTP_STATUS.BAD_REQUEST_400)
+        .json({ errorsMessages: [{ message: 'Email already exists', field: 'email' }] });
+      return;
+    }
+
+    if (await usersService.isConfirmed(email)) {
+      res
+        .status(HTTP_STATUS.BAD_REQUEST_400)
+        .json({ errorsMessages: [{ message: 'Email already confirmed', field: 'email' }] });
+    }
+
+    await usersService.registerUser(login, email, password);
+    res.status(HTTP_STATUS.NO_CONTENT_204).end();
+  },
+
+  resendConfirmation: async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
+      return;
+    }
+
+    const { email } = req.body;
+
+    if (!(await usersViewModelRepo.findUser(email))) {
+      res
+        // 404 отсутствует в ТЗ из Swagger
+        .status(HTTP_STATUS.BAD_REQUEST_400)
+        .json({ errorsMessages: [{ message: 'Incorrect email', field: 'email' }] });
+    }
+
+    if (await usersService.isConfirmed(email)) {
+      res
+        .status(HTTP_STATUS.BAD_REQUEST_400)
+        .json({ errorsMessages: [{ message: 'Email already confirmed', field: 'email' }] });
+    }
+
+    await usersService.updateConfirmationCode(email);
+    res.status(HTTP_STATUS.NO_CONTENT_204).end();
+  },
+
+  confirmRegistration: async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
+      return;
+    }
+
+    const code = req.body.code;
+    const confirmationResult = await usersService.confirmUser(code);
+
+    if (confirmationResult.status !== RESULT_STATUS.NO_CONTENT) {
+      res.status(httpCodeByResult(confirmationResult.status)).json(confirmationResult.extensions);
+      return;
+    }
+
+    res.status(HTTP_STATUS.NO_CONTENT_204).end();
+  },
+
   checkPassword: async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

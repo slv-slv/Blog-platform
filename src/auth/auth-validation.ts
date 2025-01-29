@@ -18,4 +18,13 @@ export const authValidator = {
     .trim()
     .notEmpty()
     .withMessage('Password must not be empty'),
+
+  confirmationCode: body('code')
+    .exists()
+    .withMessage('Confirmation code is required')
+    .isString()
+    .withMessage('Confirmation code must be a string')
+    .trim()
+    .notEmpty()
+    .withMessage('Confirmation code must not be empty'),
 };

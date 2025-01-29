@@ -20,6 +20,7 @@ export type UserDBType = {
   email: string;
   hash: string;
   createdAt: string;
+  confirmation: ConfirmationInfo;
 };
 
 export type CurrentUserType = {
@@ -35,3 +36,14 @@ export type UsersPaginatedViewModel = {
   totalCount: number;
   items: UserType[];
 };
+
+export type ConfirmationInfo = {
+  status: CONFIRMATION_STATUS;
+  code: string | null;
+  expiration: string | null;
+};
+
+export enum CONFIRMATION_STATUS {
+  CONFIRMED = 'CONFIRMED',
+  NOT_CONFIRMED = 'NOT_CONFIRMED',
+}

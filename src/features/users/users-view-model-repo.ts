@@ -1,6 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { CurrentUserType, UsersPaginatedViewModel, UserType } from './user-types.js';
+import {
+  CONFIRMATION_STATUS,
+  ConfirmationInfo,
+  CurrentUserType,
+  UsersPaginatedViewModel,
+  UserType,
+} from './user-types.js';
 import { usersColl } from './users-repo.js';
 
 export const usersViewModelRepo = {
@@ -39,6 +45,7 @@ export const usersViewModelRepo = {
         login: user.login,
         email: user.email,
         createdAt: user.createdAt,
+        confirmation: user.confirmation,
       };
     });
 
@@ -51,10 +58,13 @@ export const usersViewModelRepo = {
     };
   },
 
-  findUser: async (loginOrEmail: string): Promise<UserType> => {
+  findUser: async (loginOrEmail: string): Promise<UserType | null> => {
     const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
     const user = await usersColl.findOne(filter, { projection: { hash: 0 } });
-    const { _id, login, email, createdAt } = user!;
+    if (!user) {
+      return null;
+    }
+    const { _id, login, email, createdAt } = user;
     const id = _id.toString();
     return { id, login, email, createdAt };
   },
@@ -64,5 +74,40 @@ export const usersViewModelRepo = {
     const user = await usersColl.findOne({ _id }, { projection: { email: 1, login: 1 } });
     const { email, login } = user!;
     return { email, login, userId };
+  },
+
+  isConfirmed: async (email: string): Promise<boolean> => {
+    const user = await usersColl.findOne({ email }, { projection: { _id: 0, 'confirmation.status': 1 } });
+    if (!user) {
+      return false;
+    }
+    return user.confirmation.status === CONFIRMATION_STATUS.CONFIRMED;
+  },
+
+  getConfirmationInfo: async (code: string): Promise<ConfirmationInfo | null> => {
+    const user = await usersColl.findOne({ 'confirmation.code': code }, { projection: { confirmation: 1 } });
+    if (!user) {
+      return null;
+    }
+    return user.confirmation;
+  },
+
+  isLoginUnique: async (login: string): Promise<boolean> => {
+    const loginCount = await usersColl.countDocuments({ login });
+    return loginCount === 0;
+  },
+
+  isEmailUnique: async (email: string): Promise<boolean> => {
+    const emailCount = await usersColl.countDocuments({ email });
+    return emailCount === 0;
+  },
+
+  getPasswordHash: async (loginOrEmail: string): Promise<string | null> => {
+    const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
+    const user = await usersColl.findOne(filter, { projection: { _id: 0, hash: 1 } });
+    if (!user) {
+      return null;
+    }
+    return user.hash;
   },
 };
