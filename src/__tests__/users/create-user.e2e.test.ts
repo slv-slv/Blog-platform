@@ -17,9 +17,9 @@ describe('CREATE USER', () => {
   });
 
   const newUser = {
-    login: 'NewUser123',
+    login: 'NewUser',
     password: 'qwerty123',
-    email: 'example123@example.com',
+    email: 'example@example.com',
   };
 
   it('admin should create a new user and return user object', async () => {

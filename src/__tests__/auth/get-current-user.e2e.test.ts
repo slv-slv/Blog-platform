@@ -7,7 +7,6 @@ import { ObjectId } from 'mongodb';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { usersColl } from '../../features/users/users-repo.js';
-import { response } from 'express';
 
 beforeAll(async () => {
   await mongoClient.connect();
