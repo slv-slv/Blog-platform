@@ -36,21 +36,18 @@ describe('GET CURRENT USER', () => {
   const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
 
   it('should return unauthorized 401 if no token sent', async () => {
-    const response = await request(app).get('/auth/me').expect(HTTP_STATUS.UNAUTHORIZED_401);
+    await request(app).get('/auth/me').expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
   it('should return unauthorized 401 for not existing user', async () => {
-    const response = await request(app)
-      .get('/auth/me')
-      .auth(token, { type: 'bearer' })
-      .expect(HTTP_STATUS.UNAUTHORIZED_401);
+    await request(app).get('/auth/me').auth(token, { type: 'bearer' }).expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
   it('should return unauthorized 401 if invalid token sent', async () => {
     await usersColl.insertOne(newUser);
     const fakeToken = jwt.sign(payload, 'somefakesecretkey', { algorithm: 'HS256', expiresIn: '15 m' });
 
-    const response = await request(app)
+    await request(app)
       .get('/auth/me')
       .auth(fakeToken, { type: 'bearer' })
       .expect(HTTP_STATUS.UNAUTHORIZED_401);

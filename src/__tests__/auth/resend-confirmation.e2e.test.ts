@@ -31,7 +31,7 @@ describe('RESEND CONFIRMATION', () => {
   };
 
   it('should not resend code for not existing user', async () => {
-    const response = await request(app)
+    await request(app)
       .post('/auth/registration-email-resending')
       .send({ email: 'unknown@mail.io' })
       .expect(HTTP_STATUS.BAD_REQUEST_400);
@@ -40,7 +40,7 @@ describe('RESEND CONFIRMATION', () => {
   it('should not resend code for confirmed user', async () => {
     await usersColl.insertOne(newUser);
 
-    const response = await request(app)
+    await request(app)
       .post('/auth/registration-email-resending')
       .send({ email: newUser.email })
       .expect(HTTP_STATUS.BAD_REQUEST_400);
@@ -52,7 +52,7 @@ describe('RESEND CONFIRMATION', () => {
       { $set: { 'confirmation.status': CONFIRMATION_STATUS.NOT_CONFIRMED } },
     );
 
-    const response = await request(app)
+    await request(app)
       .post('/auth/registration-email-resending')
       .send({ email: newUser.email })
       .expect(HTTP_STATUS.NO_CONTENT_204);

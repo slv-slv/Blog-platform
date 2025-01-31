@@ -23,10 +23,7 @@ describe('REGISTER USER', () => {
   };
 
   it('should register new user', async () => {
-    const response = await request(app)
-      .post('/auth/registration')
-      .send(newUser)
-      .expect(HTTP_STATUS.NO_CONTENT_204);
+    await request(app).post('/auth/registration').send(newUser).expect(HTTP_STATUS.NO_CONTENT_204);
 
     const insertedUser = await usersColl.findOne({ login: newUser.login });
 
@@ -48,9 +45,6 @@ describe('REGISTER USER', () => {
       { $set: { 'confirmation.status': CONFIRMATION_STATUS.CONFIRMED } },
     );
 
-    const response = await request(app)
-      .post('/auth/registration')
-      .send(newUser)
-      .expect(HTTP_STATUS.BAD_REQUEST_400);
+    await request(app).post('/auth/registration').send(newUser).expect(HTTP_STATUS.BAD_REQUEST_400);
   });
 });
