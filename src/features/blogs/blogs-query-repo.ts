@@ -2,7 +2,7 @@ import { BlogsPaginatedViewModel, BlogType } from './blogs-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { blogsColl } from './blogs-repo.js';
 
-export const blogsViewModelRepo = {
+export const blogsQueryRepo = {
   getAllBlogs: async (
     searchNameTerm: string | null,
     pagingParams: PagingParams,

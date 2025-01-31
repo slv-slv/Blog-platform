@@ -9,7 +9,7 @@ import {
 } from './users-types.js';
 import { usersColl } from './users-repo.js';
 
-export const usersViewModelRepo = {
+export const usersQueryRepo = {
   getAllUsers: async (
     searchLoginTerm: string,
     searchEmailTerm: string,

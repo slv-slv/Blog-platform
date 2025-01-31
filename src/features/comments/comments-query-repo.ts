@@ -6,7 +6,7 @@ import { PagingParams } from '../../common/types/paging-params.js';
 
 export const commentsColl = db.collection<CommentDBType>(SETTINGS.DB_COLLECTIONS.COMMENTS);
 
-export const commentsViewModelRepo = {
+export const commentsQueryRepo = {
   getCommentsForPost: async (
     postId: string,
     pagingParams: PagingParams,

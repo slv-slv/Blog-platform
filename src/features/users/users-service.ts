@@ -6,7 +6,7 @@ import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { Result } from '../../common/types/result-object.js';
 import crypto from 'crypto';
 import { SETTINGS } from '../../settings.js';
-import { usersViewModelRepo } from './users-view-model-repo.js';
+import { usersQueryRepo } from './users-query-repo.js';
 
 export const usersService = {
   createUser: async (login: string, email: string, password: string): Promise<UserType> => {
@@ -55,7 +55,7 @@ export const usersService = {
   },
 
   confirmUser: async (code: string): Promise<Result<null>> => {
-    const confirmationInfo = await usersViewModelRepo.getConfirmationInfo(code);
+    const confirmationInfo = await usersQueryRepo.getConfirmationInfo(code);
     if (!confirmationInfo) {
       return {
         status: RESULT_STATUS.BAD_REQUEST,
@@ -99,14 +99,14 @@ export const usersService = {
   },
 
   isLoginUnique: async (login: string): Promise<boolean> => {
-    return await usersViewModelRepo.isLoginUnique(login);
+    return await usersQueryRepo.isLoginUnique(login);
   },
 
   isEmailUnique: async (email: string): Promise<boolean> => {
-    return await usersViewModelRepo.isEmailUnique(email);
+    return await usersQueryRepo.isEmailUnique(email);
   },
 
   isConfirmed: async (email: string): Promise<boolean> => {
-    return await usersViewModelRepo.isConfirmed(email);
+    return await usersQueryRepo.isConfirmed(email);
   },
 };

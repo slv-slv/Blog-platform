@@ -4,7 +4,7 @@ import { formatErrors } from '../common/utils/format-errors.js';
 import { SETTINGS } from '../settings.js';
 import { HTTP_STATUS } from '../common/types/http-status-codes.js';
 import { authService } from './auth-service.js';
-import { usersViewModelRepo } from '../features/users/users-view-model-repo.js';
+import { usersQueryRepo } from '../features/users/users-query-repo.js';
 import { usersService } from '../features/users/users-service.js';
 import { httpCodeByResult, RESULT_STATUS } from '../common/types/result-status-codes.js';
 
@@ -51,7 +51,7 @@ export const authController = {
 
     const { email } = req.body;
 
-    if (!(await usersViewModelRepo.findUser(email))) {
+    if (!(await usersQueryRepo.findUser(email))) {
       res
         // 404 отсутствует в ТЗ из Swagger
         .status(HTTP_STATUS.BAD_REQUEST_400)
@@ -143,7 +143,7 @@ export const authController = {
 
   getCurrentUser: async (req: Request, res: Response) => {
     const jwtPayload = res.locals.jwtPayload;
-    const user = await usersViewModelRepo.getCurrentUser(jwtPayload.userId);
+    const user = await usersQueryRepo.getCurrentUser(jwtPayload.userId);
     res.status(HTTP_STATUS.OK_200).json(user);
   },
 

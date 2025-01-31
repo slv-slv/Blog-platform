@@ -2,7 +2,7 @@ import { PostsPaginatedViewModel, PostType } from './posts-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { postsColl } from './posts-repo.js';
 
-export const postsViewModelRepo = {
+export const postsQueryRepo = {
   getPosts: async (pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedViewModel> => {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 

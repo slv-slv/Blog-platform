@@ -3,16 +3,16 @@ import { validationResult } from 'express-validator';
 import { formatErrors } from '../../common/utils/format-errors.js';
 import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { commentsViewModelRepo } from './comments-view-model-repo.js';
+import { commentsQueryRepo } from './comments-query-repo.js';
 import { commentsService } from './comments-service.js';
-import { usersViewModelRepo } from '../users/users-view-model-repo.js';
-import { postsViewModelRepo } from '../posts/posts-view-model-repo.js';
+import { usersQueryRepo } from '../users/users-query-repo.js';
+import { postsQueryRepo } from '../posts/posts-query-repo.js';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
 
 export const commentsController = {
   findComment: async (req: Request, res: Response) => {
     const id = req.params.id;
-    const comment = await commentsViewModelRepo.findComment(id);
+    const comment = await commentsQueryRepo.findComment(id);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
       return;
@@ -28,7 +28,7 @@ export const commentsController = {
     }
 
     const id = req.params.commentId;
-    const comment = await commentsViewModelRepo.findComment(id);
+    const comment = await commentsQueryRepo.findComment(id);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
       return;
@@ -54,7 +54,7 @@ export const commentsController = {
 
   deleteComment: async (req: Request, res: Response) => {
     const id = req.params.commentId;
-    const comment = await commentsViewModelRepo.findComment(id);
+    const comment = await commentsQueryRepo.findComment(id);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
       return;

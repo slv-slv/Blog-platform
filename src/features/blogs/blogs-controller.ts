@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { blogsService } from './blogs-service.js';
 import { formatErrors } from '../../common/utils/format-errors.js';
-import { blogsViewModelRepo } from './blogs-view-model-repo.js';
+import { blogsQueryRepo } from './blogs-query-repo.js';
 import { getPagingParams } from '../../common/utils/get-paging-params.js';
-import { postsViewModelRepo } from '../posts/posts-view-model-repo.js';
+import { postsQueryRepo } from '../posts/posts-query-repo.js';
 import { postsService } from '../posts/posts-service.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 
@@ -12,26 +12,26 @@ export const blogsController = {
   getAllBlogs: async (req: Request, res: Response) => {
     const searchNameTerm = (req.query.searchNameTerm as string) ?? null;
     const pagingParams = getPagingParams(req);
-    const blogs = await blogsViewModelRepo.getAllBlogs(searchNameTerm, pagingParams);
+    const blogs = await blogsQueryRepo.getAllBlogs(searchNameTerm, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(blogs);
   },
 
   getPostsByBlogId: async (req: Request, res: Response) => {
     const pagingParams = getPagingParams(req);
     const blogId = req.params.blogId;
-    const blog = await blogsViewModelRepo.findBlog(blogId);
+    const blog = await blogsQueryRepo.findBlog(blogId);
     if (!blog) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Blog not found' });
       return;
     }
 
-    const posts = await postsViewModelRepo.getPosts(pagingParams, blogId);
+    const posts = await postsQueryRepo.getPosts(pagingParams, blogId);
     res.status(HTTP_STATUS.OK_200).json(posts);
   },
 
   findBlog: async (req: Request, res: Response) => {
     const id = req.params.id;
-    const blog = await blogsViewModelRepo.findBlog(id);
+    const blog = await blogsQueryRepo.findBlog(id);
     if (!blog) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Blog not found' });
       return;
@@ -59,7 +59,7 @@ export const blogsController = {
     }
 
     const blogId = req.params.blogId;
-    const blog = await blogsViewModelRepo.findBlog(blogId);
+    const blog = await blogsQueryRepo.findBlog(blogId);
     if (!blog) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Blog not found' });
       return;

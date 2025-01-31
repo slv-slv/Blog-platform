@@ -3,7 +3,7 @@ import { validationResult } from 'express-validator';
 import { formatErrors } from '../../common/utils/format-errors.js';
 import { usersService } from './users-service.js';
 import { getPagingParams } from '../../common/utils/get-paging-params.js';
-import { usersViewModelRepo } from './users-view-model-repo.js';
+import { usersQueryRepo } from './users-query-repo.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 
 export const usersController = {
@@ -11,7 +11,7 @@ export const usersController = {
     const searchLoginTerm = (req.query.searchLoginTerm as string) ?? null;
     const searchEmailTerm = (req.query.searchEmailTerm as string) ?? null;
     const pagingParams = getPagingParams(req);
-    const users = await usersViewModelRepo.getAllUsers(searchLoginTerm, searchEmailTerm, pagingParams);
+    const users = await usersQueryRepo.getAllUsers(searchLoginTerm, searchEmailTerm, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(users);
   },
 

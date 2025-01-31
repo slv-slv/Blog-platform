@@ -1,4 +1,4 @@
-import { blogsViewModelRepo } from '../blogs/blogs-view-model-repo.js';
+import { blogsQueryRepo } from '../blogs/blogs-query-repo.js';
 import { db } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { PostType } from './posts-types.js';
@@ -14,7 +14,7 @@ export const postsRepo = {
     createdAt: string,
   ): Promise<PostType> => {
     const id = ((await postsColl.countDocuments()) + 1 || 1).toString();
-    const blog = await blogsViewModelRepo.findBlog(blogId);
+    const blog = await blogsQueryRepo.findBlog(blogId);
     const blogName = blog!.name as string;
     const newPost = { id, title, shortDescription, content, blogId, blogName, createdAt };
     const createResult = await postsColl.insertOne(newPost);
