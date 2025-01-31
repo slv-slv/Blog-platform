@@ -10,10 +10,10 @@ authRouter.post(
   authValidator.loginOrEmail,
   authValidator.authPassword,
   authController.checkPassword,
-  authController.issueJWT,
+  authController.issueJwtPair,
 );
 
-authRouter.get('/me', authController.verifyJWT, authController.getCurrentUser);
+authRouter.get('/me', authController.verifyJwt, authController.getCurrentUser);
 
 authRouter.post(
   '/registration',

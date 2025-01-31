@@ -106,12 +106,24 @@ export const authController = {
     next();
   },
 
-  issueJWT: async (req: Request, res: Response) => {
-    const token = await authService.issueJWT(req.body.loginOrEmail);
-    res.status(HTTP_STATUS.OK_200).json({ accessToken: token });
+  issueJwtPair: async (req: Request, res: Response) => {
+    const { accessToken, refreshToken } = await authService.issueJwtPair(req.body.loginOrEmail);
+
+    const cookieExpiration = new Date();
+    cookieExpiration.setFullYear(new Date().getFullYear() + 1);
+
+    res
+      .status(HTTP_STATUS.OK_200)
+      .cookie('token', refreshToken, {
+        expires: cookieExpiration,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      })
+      .json({ accessToken });
   },
 
-  verifyJWT: async (req: Request, res: Response, next: NextFunction) => {
+  verifyJwt: async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -127,7 +139,7 @@ export const authController = {
     }
 
     try {
-      const jwtPayload = authService.verifyJWT(token);
+      const jwtPayload = authService.verifyJwt(token);
 
       if (!jwtPayload) {
         res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid access token' });

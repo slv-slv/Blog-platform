@@ -51,7 +51,7 @@ postsRouter.get(
 
 postsRouter.post(
   '/:postId/comments',
-  authController.verifyJWT,
+  authController.verifyJwt,
   commentsValidator.content,
   postsController.createComment,
 );

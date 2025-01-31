@@ -9,9 +9,9 @@ commentsRouter.get('/:id', commentsController.findComment);
 
 commentsRouter.put(
   '/:commentId',
-  authController.verifyJWT,
+  authController.verifyJwt,
   commentsValidator.content,
   commentsController.updateComment,
 );
 
-commentsRouter.delete('/:commentId', authController.verifyJWT, commentsController.deleteComment);
+commentsRouter.delete('/:commentId', authController.verifyJwt, commentsController.deleteComment);
