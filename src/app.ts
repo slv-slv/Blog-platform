@@ -7,10 +7,12 @@ import { commentsRouter } from './features/comments/comments-router.js';
 import { authRouter } from './auth/auth-router.js';
 import { mongoCluster } from './infrastructure/db/db.js';
 import { SETTINGS } from './settings.js';
+import cookieParser from 'cookie-parser';
 
 export const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use('/blogs', blogsRouter);
 app.use('/posts', postsRouter);
