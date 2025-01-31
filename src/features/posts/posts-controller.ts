@@ -99,7 +99,10 @@ export const postsController = {
     const jwtPayload = res.locals.jwtPayload;
     const userId = jwtPayload.userId;
     const user = await usersQueryRepo.getCurrentUser(userId);
-
+    if (!user) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'User not found' });
+      return;
+    }
     const result = await commentsService.createComment(postId, content, user);
     res.status(httpCodeByResult(result.status)).json(result.data);
   },

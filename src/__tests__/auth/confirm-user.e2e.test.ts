@@ -5,6 +5,7 @@ import { SETTINGS } from '../../settings.js';
 import { app } from '../../app.js';
 import { usersColl } from '../../features/users/users-repo.js';
 import { CONFIRMATION_STATUS, UserDBType } from '../../features/users/users-types.js';
+import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 
 beforeAll(async () => {
   await mongoClient.connect();
@@ -39,7 +40,7 @@ describe('CONFIRM USER', () => {
     await request(app)
       .post('/auth/registration-confirmation')
       .send({ code: newUser.confirmation.code })
-      .expect(400);
+      .expect(HTTP_STATUS.BAD_REQUEST_400);
   });
 
   it('should not confirm user with expired code', async () => {
@@ -48,7 +49,7 @@ describe('CONFIRM USER', () => {
     await request(app)
       .post('/auth/registration-confirmation')
       .send({ code: newUser.confirmation.code })
-      .expect(400);
+      .expect(HTTP_STATUS.BAD_REQUEST_400);
   });
 
   it('should confirm user with valid code', async () => {
@@ -60,7 +61,7 @@ describe('CONFIRM USER', () => {
     await request(app)
       .post('/auth/registration-confirmation')
       .send({ code: newUser.confirmation.code })
-      .expect(204);
+      .expect(HTTP_STATUS.NO_CONTENT_204);
 
     const confirmedUser = await usersColl.findOne({ email: newUser.email });
 
@@ -72,6 +73,6 @@ describe('CONFIRM USER', () => {
     await request(app)
       .post('/auth/registration-confirmation')
       .send({ code: newUser.confirmation.code })
-      .expect(400);
+      .expect(HTTP_STATUS.BAD_REQUEST_400);
   });
 });

@@ -69,10 +69,13 @@ export const usersQueryRepo = {
     return { id, login, email, createdAt };
   },
 
-  getCurrentUser: async (userId: string): Promise<CurrentUserType> => {
+  getCurrentUser: async (userId: string): Promise<CurrentUserType | null> => {
     const _id = new ObjectId(userId);
     const user = await usersColl.findOne({ _id }, { projection: { email: 1, login: 1 } });
-    const { email, login } = user!;
+    if (!user) {
+      return null;
+    }
+    const { email, login } = user;
     return { email, login, userId };
   },
 

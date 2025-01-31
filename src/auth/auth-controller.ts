@@ -144,6 +144,10 @@ export const authController = {
   getCurrentUser: async (req: Request, res: Response) => {
     const jwtPayload = res.locals.jwtPayload;
     const user = await usersQueryRepo.getCurrentUser(jwtPayload.userId);
+    if (!user) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'User not found' });
+      return;
+    }
     res.status(HTTP_STATUS.OK_200).json(user);
   },
 

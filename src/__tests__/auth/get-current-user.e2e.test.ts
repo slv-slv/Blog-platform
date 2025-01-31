@@ -7,6 +7,7 @@ import { ObjectId } from 'mongodb';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { usersColl } from '../../features/users/users-repo.js';
+import { response } from 'express';
 
 beforeAll(async () => {
   await mongoClient.connect();
@@ -35,10 +36,37 @@ describe('GET CURRENT USER', () => {
   const secret = SETTINGS.JWT_PRIVATE_KEY!;
   const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
 
-  it('should not resend code for not existing user', async () => {
+  it('should return unauthorized 401 if no token sent', async () => {
+    const response = await request(app).get('/auth/me').expect(HTTP_STATUS.UNAUTHORIZED_401);
+  });
+
+  it('should return unauthorized 401 for not existing user', async () => {
     const response = await request(app)
-      .post('/auth/registration-email-resending')
-      .send({ email: 'unknown@mail.io' })
-      .expect(HTTP_STATUS.BAD_REQUEST_400);
+      .get('/auth/me')
+      .auth(token, { type: 'bearer' })
+      .expect(HTTP_STATUS.UNAUTHORIZED_401);
+  });
+
+  it('should return unauthorized 401 if invalid token sent', async () => {
+    await usersColl.insertOne(newUser);
+    const fakeToken = jwt.sign(payload, 'somefakesecretkey', { algorithm: 'HS256', expiresIn: '15 m' });
+
+    const response = await request(app)
+      .get('/auth/me')
+      .auth(fakeToken, { type: 'bearer' })
+      .expect(HTTP_STATUS.UNAUTHORIZED_401);
+  });
+
+  it('should return existing user if valid token sent', async () => {
+    const response = await request(app)
+      .get('/auth/me')
+      .auth(token, { type: 'bearer' })
+      .expect(HTTP_STATUS.OK_200);
+
+    expect(response.body).toEqual({
+      email: newUser.email,
+      login: newUser.login,
+      userId: newUser._id.toString(),
+    });
   });
 });
