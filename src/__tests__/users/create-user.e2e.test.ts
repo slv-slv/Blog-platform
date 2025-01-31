@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
-import { CONFIRMATION_STATUS } from '../../features/users/user-types.js';
+import { CONFIRMATION_STATUS } from '../../features/users/users-types.js';
 
 describe('CREATE USER', () => {
   beforeAll(async () => {

@@ -1,4 +1,4 @@
-import { PostsPaginatedViewModel, PostType } from './post-types.js';
+import { PostsPaginatedViewModel, PostType } from './posts-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { postsColl } from './posts-repo.js';
 

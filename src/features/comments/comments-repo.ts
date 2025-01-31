@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { db } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
-import { CurrentUserType } from '../users/user-types.js';
-import { CommentType, CommentDBType } from './comment-types.js';
+import { CurrentUserType } from '../users/users-types.js';
+import { CommentType, CommentDBType } from './comments-types.js';
 
 export const commentsColl = db.collection<CommentDBType>(SETTINGS.DB_COLLECTIONS.COMMENTS);
 

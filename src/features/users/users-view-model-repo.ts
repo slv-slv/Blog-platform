@@ -6,7 +6,7 @@ import {
   CurrentUserType,
   UsersPaginatedViewModel,
   UserType,
-} from './user-types.js';
+} from './users-types.js';
 import { usersColl } from './users-repo.js';
 
 export const usersViewModelRepo = {

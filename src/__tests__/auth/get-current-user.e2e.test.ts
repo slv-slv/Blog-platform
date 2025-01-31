@@ -1,4 +1,5 @@
 import request from 'supertest';
+import jwt from 'jsonwebtoken';
 import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { CONFIRMATION_STATUS, UserDBType } from '../../features/users/users-types.js';
@@ -16,45 +17,28 @@ afterAll(async () => {
   await mongoClient.close();
 });
 
-describe('RESEND CONFIRMATION', () => {
+describe('GET CURRENT USER', () => {
   const newUser: UserDBType = {
     _id: new ObjectId(),
     login: 'NewUser',
-    email: 'slvsl@vk.com',
-    hash: 'somehash',
-    createdAt: '2025-01-28T23:06:37.379Z',
+    email: 'example@gmail.com',
+    hash: 'etrdfghcvbn',
+    createdAt: new Date().toISOString(),
     confirmation: {
       status: CONFIRMATION_STATUS.CONFIRMED,
-      code: 'somecode',
+      code: crypto.randomUUID(),
       expiration: null,
     },
   };
+
+  const payload = { userId: newUser._id.toString() };
+  const secret = SETTINGS.JWT_PRIVATE_KEY!;
+  const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
 
   it('should not resend code for not existing user', async () => {
     const response = await request(app)
       .post('/auth/registration-email-resending')
       .send({ email: 'unknown@mail.io' })
       .expect(HTTP_STATUS.BAD_REQUEST_400);
-  });
-
-  it('should not resend code for confirmed user', async () => {
-    await usersColl.insertOne(newUser);
-
-    const response = await request(app)
-      .post('/auth/registration-email-resending')
-      .send({ email: newUser.email })
-      .expect(HTTP_STATUS.BAD_REQUEST_400);
-  });
-
-  it('should resend code for not confirmed user', async () => {
-    await usersColl.updateOne(
-      { email: newUser.email },
-      { $set: { 'confirmation.status': CONFIRMATION_STATUS.NOT_CONFIRMED } },
-    );
-
-    const response = await request(app)
-      .post('/auth/registration-email-resending')
-      .send({ email: newUser.email })
-      .expect(HTTP_STATUS.NO_CONTENT_204);
   });
 });

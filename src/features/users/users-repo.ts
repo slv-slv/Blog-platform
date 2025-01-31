@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { SETTINGS } from '../../settings.js';
 import { db } from '../../infrastructure/db/db.js';
-import { ConfirmationInfo, CONFIRMATION_STATUS, UserDBType, UserType } from './user-types.js';
+import { ConfirmationInfo, CONFIRMATION_STATUS, UserDBType, UserType } from './users-types.js';
 
 export const usersColl = db.collection<UserDBType>(SETTINGS.DB_COLLECTIONS.USERS);
 

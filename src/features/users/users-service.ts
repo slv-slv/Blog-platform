@@ -1,5 +1,5 @@
 import { usersRepo } from './users-repo.js';
-import { CONFIRMATION_STATUS, UserType } from './user-types.js';
+import { CONFIRMATION_STATUS, UserType } from './users-types.js';
 import { authService } from '../../auth/auth-service.js';
 import { emailService } from '../../infrastructure/email/email-service.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
@@ -31,7 +31,7 @@ export const usersService = {
       expiration,
     };
 
-    await emailService.sendConfirmation(email, code);
+    // await emailService.sendConfirmation(email, code);
 
     return await usersRepo.createUser(login, email, hash, createdAt, confirmation);
   },
@@ -49,7 +49,7 @@ export const usersService = {
       return null;
     }
 
-    await emailService.sendConfirmation(email, code);
+    // await emailService.sendConfirmation(email, code);
 
     return code;
   },

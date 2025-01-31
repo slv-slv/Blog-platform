@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { db } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
-import { CommentType, CommentDBType, CommentsPaginatedViewModel } from './comment-types.js';
+import { CommentType, CommentDBType, CommentsPaginatedViewModel } from './comments-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 
 export const commentsColl = db.collection<CommentDBType>(SETTINGS.DB_COLLECTIONS.COMMENTS);

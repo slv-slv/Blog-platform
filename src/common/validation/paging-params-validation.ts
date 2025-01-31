@@ -1,8 +1,8 @@
 import { query } from 'express-validator';
-import { BlogTypeKeys } from '../../features/blogs/blog-types.js';
-import { PostTypeKeys } from '../../features/posts/post-types.js';
-import { UserTypeKeys } from '../../features/users/user-types.js';
-import { CommentTypeKeys } from '../../features/comments/comment-types.js';
+import { BlogTypeKeys } from '../../features/blogs/blogs-types.js';
+import { PostTypeKeys } from '../../features/posts/posts-types.js';
+import { UserTypeKeys } from '../../features/users/users-types.js';
+import { CommentTypeKeys } from '../../features/comments/comments-types.js';
 
 export const pagingValidator = {
   blogsSortBy: query('sortBy')

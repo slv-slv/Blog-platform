@@ -1,7 +1,7 @@
 import { Result } from '../../common/types/result-object.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
-import { CurrentUserType } from '../users/user-types.js';
-import { CommentType } from './comment-types.js';
+import { CurrentUserType } from '../users/users-types.js';
+import { CommentType } from './comments-types.js';
 import { commentsRepo } from './comments-repo.js';
 
 export const commentsService = {

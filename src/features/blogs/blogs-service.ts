@@ -1,5 +1,5 @@
 import { blogsRepo } from './blogs-repo.js';
-import { BlogType } from './blog-types.js';
+import { BlogType } from './blogs-types.js';
 
 export const blogsService = {
   createBlog: async (name: string, description: string, websiteUrl: string): Promise<BlogType> => {

@@ -4,7 +4,7 @@ import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { usersColl } from '../../features/users/users-repo.js';
-import { CONFIRMATION_STATUS } from '../../features/users/user-types.js';
+import { CONFIRMATION_STATUS } from '../../features/users/users-types.js';
 
 beforeAll(async () => {
   await mongoClient.connect();

@@ -1,9 +1,12 @@
-import { BlogsPaginatedViewModel, BlogType } from './blog-types.js';
+import { BlogsPaginatedViewModel, BlogType } from './blogs-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { blogsColl } from './blogs-repo.js';
 
 export const blogsViewModelRepo = {
-  getAllBlogs: async (searchNameTerm: string | null, pagingParams: PagingParams): Promise<BlogsPaginatedViewModel> => {
+  getAllBlogs: async (
+    searchNameTerm: string | null,
+    pagingParams: PagingParams,
+  ): Promise<BlogsPaginatedViewModel> => {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const filter = searchNameTerm ? { name: { $regex: searchNameTerm, $options: 'i' } } : {};
