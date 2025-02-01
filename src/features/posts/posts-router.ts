@@ -20,7 +20,7 @@ postsRouter.get('/:id', postsController.findPost);
 
 postsRouter.post(
   '/',
-  authController.checkBasicAuth,
+  authController.verifyBasicAuth,
   postsValidator.blogExists,
   postsValidator.postTitle,
   postsValidator.postDescription,
@@ -30,7 +30,7 @@ postsRouter.post(
 
 postsRouter.put(
   '/:id',
-  authController.checkBasicAuth,
+  authController.verifyBasicAuth,
   postsValidator.blogExists,
   postsValidator.postTitle,
   postsValidator.postDescription,
@@ -38,7 +38,7 @@ postsRouter.put(
   postsController.updatePost,
 );
 
-postsRouter.delete('/:id', authController.checkBasicAuth, postsController.deletePost);
+postsRouter.delete('/:id', authController.verifyBasicAuth, postsController.deletePost);
 
 postsRouter.get(
   '/:postId/comments',

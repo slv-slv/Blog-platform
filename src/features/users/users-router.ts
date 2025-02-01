@@ -8,7 +8,7 @@ export const usersRouter = Router();
 
 usersRouter.get(
   '/',
-  authController.checkBasicAuth,
+  authController.verifyBasicAuth,
   pagingValidator.usersSortBy,
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
@@ -20,11 +20,11 @@ usersRouter.get(
 
 usersRouter.post(
   '/',
-  authController.checkBasicAuth,
+  authController.verifyBasicAuth,
   usersValidator.login,
   usersValidator.newPassword,
   usersValidator.email,
   usersController.createUser,
 );
 
-usersRouter.delete('/:id', authController.checkBasicAuth, usersController.deleteUser);
+usersRouter.delete('/:id', authController.verifyBasicAuth, usersController.deleteUser);
