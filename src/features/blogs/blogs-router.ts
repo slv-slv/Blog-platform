@@ -19,7 +19,7 @@ blogsRouter.get(
 
 blogsRouter.post(
   '/',
-  authController.basicAuth,
+  authController.checkBasicAuth,
   blogsValidator.blogName,
   blogsValidator.blogDescription,
   blogsValidator.blogUrl,
@@ -30,14 +30,14 @@ blogsRouter.get('/:id', blogsController.findBlog);
 
 blogsRouter.put(
   '/:id',
-  authController.basicAuth,
+  authController.checkBasicAuth,
   blogsValidator.blogName,
   blogsValidator.blogDescription,
   blogsValidator.blogUrl,
   blogsController.updateBlog,
 );
 
-blogsRouter.delete('/:id', authController.basicAuth, blogsController.deleteBlog);
+blogsRouter.delete('/:id', authController.checkBasicAuth, blogsController.deleteBlog);
 
 blogsRouter.get(
   '/:blogId/posts',
@@ -50,7 +50,7 @@ blogsRouter.get(
 
 blogsRouter.post(
   '/:blogId/posts',
-  authController.basicAuth,
+  authController.checkBasicAuth,
   postsValidator.postTitle,
   postsValidator.postDescription,
   postsValidator.postContent,
