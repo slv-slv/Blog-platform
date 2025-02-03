@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 
 export class MongoCluster {
-  client: MongoClient;
+  private client: MongoClient;
 
   constructor(url: string) {
     this.client = new MongoClient(url);
@@ -11,8 +11,12 @@ export class MongoCluster {
     return this.client;
   }
 
-  getDb(name: string) {
-    return this.client.db(name);
+  getDb(dbName: string) {
+    return this.client.db(dbName);
+  }
+
+  getCollection(dbName: string, collectionName: string) {
+    return this.client.db(dbName).collection(collectionName);
   }
 
   async run() {
@@ -24,8 +28,8 @@ export class MongoCluster {
     }
   }
 
-  async dropDb(name: string) {
-    const db = this.getDb(name);
+  async dropDb(dbName: string) {
+    const db = this.getDb(dbName);
     const collections = await db.collections();
 
     for (const collection of collections) {

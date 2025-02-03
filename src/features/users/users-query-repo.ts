@@ -4,18 +4,13 @@ import {
   CONFIRMATION_STATUS,
   ConfirmationInfo,
   CurrentUserType,
-  UserDBType,
+  UserDbType,
   UsersPaginatedViewModel,
   UserType,
 } from './users-types.js';
-import { SETTINGS } from '../../settings.js';
-import { Repository } from '../../infrastructure/db/repository.js';
+import { Repository } from '../../infrastructure/db/repository-class.js';
 
-class UsersQueryRepo extends Repository<UserDBType> {
-  constructor(collectionName: string) {
-    super(collectionName);
-  }
-
+export class UsersQueryRepo extends Repository<UserDbType> {
   async getAllUsers(
     searchLoginTerm: string,
     searchEmailTerm: string,
@@ -126,5 +121,3 @@ class UsersQueryRepo extends Repository<UserDBType> {
     return user.hash;
   }
 }
-
-export const usersQueryRepo = new UsersQueryRepo(SETTINGS.DB_COLLECTIONS.USERS);

@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { JwtPayloadType } from '../../auth/auth-types.js';
-import { sessionsRepo } from '../../features/sessions/sessions-repo.js';
+import { sessionsColl } from '../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
   await mongoClient.connect();
@@ -18,8 +18,6 @@ afterAll(async () => {
 });
 
 describe('REFRESH-TOKEN', () => {
-  const sessionsColl = sessionsRepo.getCollection();
-
   const userId = new ObjectId().toString();
 
   const payload = { userId };

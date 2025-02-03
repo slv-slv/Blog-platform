@@ -1,13 +1,8 @@
 import { ObjectId } from 'mongodb';
-import { SETTINGS } from '../../settings.js';
 import { SessionDbType } from './sessions-types.js';
-import { Repository } from '../../infrastructure/db/repository.js';
+import { Repository } from '../../infrastructure/db/repository-class.js';
 
-class SessionsRepo extends Repository<SessionDbType> {
-  constructor(collectionName: string) {
-    super(collectionName);
-  }
-
+export class SessionsRepo extends Repository<SessionDbType> {
   async createSession(userId: string, iat: number): Promise<void> {
     await this.collection.deleteMany({ userId });
 
@@ -24,5 +19,3 @@ class SessionsRepo extends Repository<SessionDbType> {
     return session !== null;
   }
 }
-
-export const sessionsRepo = new SessionsRepo(SETTINGS.DB_COLLECTIONS.SESSIONS);

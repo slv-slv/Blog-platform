@@ -17,7 +17,7 @@ export enum CommentTypeKeys {
   createdAt = 'createdAt',
 }
 
-export type CommentDBType = {
+export type CommentDbType = {
   _id: ObjectId;
   postId: string;
   content: string;

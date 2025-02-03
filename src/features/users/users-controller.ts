@@ -3,8 +3,8 @@ import { validationResult } from 'express-validator';
 import { formatErrors } from '../../common/utils/format-errors.js';
 import { usersService } from './users-service.js';
 import { getPagingParams } from '../../common/utils/get-paging-params.js';
-import { usersQueryRepo } from './users-query-repo.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
+import { usersQueryRepo } from '../../infrastructure/db/repositories.js';
 
 class UsersController {
   async getAllUsers(req: Request, res: Response) {

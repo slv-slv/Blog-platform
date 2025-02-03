@@ -1,13 +1,8 @@
-import { blogsQueryRepo } from '../blogs/blogs-query-repo.js';
-import { SETTINGS } from '../../settings.js';
 import { PostType } from './posts-types.js';
-import { Repository } from '../../infrastructure/db/repository.js';
+import { Repository } from '../../infrastructure/db/repository-class.js';
+import { blogsQueryRepo } from '../../infrastructure/db/repositories.js';
 
-class PostsRepo extends Repository<PostType> {
-  constructor(collectionName: string) {
-    super(collectionName);
-  }
-
+export class PostsRepo extends Repository<PostType> {
   async createPost(
     title: string,
     shortDescription: string,
@@ -46,5 +41,3 @@ class PostsRepo extends Repository<PostType> {
     return true;
   }
 }
-
-export const postsRepo = new PostsRepo(SETTINGS.DB_COLLECTIONS.POSTS);

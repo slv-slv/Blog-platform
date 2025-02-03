@@ -1,4 +1,4 @@
-import { blogsRepo } from './blogs-repo.js';
+import { blogsRepo } from '../../infrastructure/db/repositories.js';
 import { BlogType } from './blogs-types.js';
 
 class BlogsService {

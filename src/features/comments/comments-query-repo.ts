@@ -1,14 +1,9 @@
 import { ObjectId } from 'mongodb';
-import { SETTINGS } from '../../settings.js';
-import { CommentType, CommentDBType, CommentsPaginatedViewModel } from './comments-types.js';
+import { CommentType, CommentDbType, CommentsPaginatedViewModel } from './comments-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { Repository } from '../../infrastructure/db/repository.js';
+import { Repository } from '../../infrastructure/db/repository-class.js';
 
-class CommentsQueryRepo extends Repository<CommentDBType> {
-  constructor(collectionName: string) {
-    super(collectionName);
-  }
-
+export class CommentsQueryRepo extends Repository<CommentDbType> {
   async getCommentsForPost(postId: string, pagingParams: PagingParams): Promise<CommentsPaginatedViewModel> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
@@ -52,5 +47,3 @@ class CommentsQueryRepo extends Repository<CommentDBType> {
     return { id, ...comment };
   }
 }
-
-export const commentsQueryRepo = new CommentsQueryRepo(SETTINGS.DB_COLLECTIONS.COMMENTS);

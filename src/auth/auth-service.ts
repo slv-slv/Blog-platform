@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { usersQueryRepo } from '../features/users/users-query-repo.js';
 import { SETTINGS } from '../settings.js';
 import { JwtPairType, JwtPayloadType } from './auth-types.js';
 import { sessionsService } from '../features/sessions/sessions-service.js';
+import { usersQueryRepo } from '../infrastructure/db/repositories.js';
 
 export class AuthService {
   async hashPassword(password: string): Promise<string> {

@@ -1,13 +1,8 @@
 import { BlogsPaginatedViewModel, BlogType } from './blogs-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { SETTINGS } from '../../settings.js';
-import { Repository } from '../../infrastructure/db/repository.js';
+import { Repository } from '../../infrastructure/db/repository-class.js';
 
-class BlogsQueryRepo extends Repository<BlogType> {
-  constructor(collectionName: string) {
-    super(collectionName);
-  }
-
+export class BlogsQueryRepo extends Repository<BlogType> {
   async getAllBlogs(
     searchNameTerm: string | null,
     pagingParams: PagingParams,
@@ -42,5 +37,3 @@ class BlogsQueryRepo extends Repository<BlogType> {
     return blog;
   }
 }
-
-export const blogsQueryRepo = new BlogsQueryRepo(SETTINGS.DB_COLLECTIONS.BLOGS);

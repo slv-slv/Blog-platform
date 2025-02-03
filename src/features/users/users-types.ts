@@ -14,7 +14,7 @@ export enum UserTypeKeys {
   createdAt = 'createdAt',
 }
 
-export type UserDBType = {
+export type UserDbType = {
   _id: ObjectId;
   login: string;
   email: string;

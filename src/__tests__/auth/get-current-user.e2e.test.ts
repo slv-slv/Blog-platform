@@ -2,11 +2,11 @@ import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
-import { CONFIRMATION_STATUS, UserDBType } from '../../features/users/users-types.js';
+import { CONFIRMATION_STATUS, UserDbType } from '../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { usersRepo } from '../../features/users/users-repo.js';
+import { usersColl } from '../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
   await mongoClient.connect();
@@ -18,9 +18,7 @@ afterAll(async () => {
 });
 
 describe('GET CURRENT USER', () => {
-  const usersColl = usersRepo.getCollection();
-
-  const newUser: UserDBType = {
+  const newUser: UserDbType = {
     _id: new ObjectId(),
     login: 'NewUser',
     email: 'example@gmail.com',

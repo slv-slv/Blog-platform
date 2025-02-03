@@ -4,10 +4,10 @@ import { formatErrors } from '../common/utils/format-errors.js';
 import { SETTINGS } from '../settings.js';
 import { HTTP_STATUS } from '../common/types/http-status-codes.js';
 import { authService } from './auth-service.js';
-import { usersQueryRepo } from '../features/users/users-query-repo.js';
 import { usersService } from '../features/users/users-service.js';
 import { httpCodeByResult, RESULT_STATUS } from '../common/types/result-status-codes.js';
 import { sessionsService } from '../features/sessions/sessions-service.js';
+import { usersQueryRepo } from '../infrastructure/db/repositories.js';
 
 export class AuthController {
   async sendConfirmation(req: Request, res: Response) {

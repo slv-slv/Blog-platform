@@ -1,12 +1,7 @@
-import { SETTINGS } from '../../settings.js';
 import { BlogType } from './blogs-types.js';
-import { Repository } from '../../infrastructure/db/repository.js';
+import { Repository } from '../../infrastructure/db/repository-class.js';
 
-class BlogsRepo extends Repository<BlogType> {
-  constructor(collectionName: string) {
-    super(collectionName);
-  }
-
+export class BlogsRepo extends Repository<BlogType> {
   async createBlog(
     name: string,
     description: string,
@@ -40,5 +35,3 @@ class BlogsRepo extends Repository<BlogType> {
     return true;
   }
 }
-
-export const blogsRepo = new BlogsRepo(SETTINGS.DB_COLLECTIONS.BLOGS);

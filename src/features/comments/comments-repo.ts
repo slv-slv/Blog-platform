@@ -1,14 +1,9 @@
 import { ObjectId } from 'mongodb';
-import { SETTINGS } from '../../settings.js';
 import { CurrentUserType } from '../users/users-types.js';
-import { CommentType, CommentDBType } from './comments-types.js';
-import { Repository } from '../../infrastructure/db/repository.js';
+import { CommentType, CommentDbType } from './comments-types.js';
+import { Repository } from '../../infrastructure/db/repository-class.js';
 
-class CommentsRepo extends Repository<CommentDBType> {
-  constructor(collectionName: string) {
-    super(collectionName);
-  }
-
+export class CommentsRepo extends Repository<CommentDbType> {
   async createComment(
     postId: string,
     content: string,
@@ -53,5 +48,3 @@ class CommentsRepo extends Repository<CommentDBType> {
     return deleteResult.deletedCount > 0;
   }
 }
-
-export const commentsRepo = new CommentsRepo(SETTINGS.DB_COLLECTIONS.COMMENTS);

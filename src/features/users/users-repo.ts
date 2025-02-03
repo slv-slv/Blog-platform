@@ -1,13 +1,8 @@
 import { ObjectId } from 'mongodb';
-import { SETTINGS } from '../../settings.js';
-import { ConfirmationInfo, CONFIRMATION_STATUS, UserDBType, UserType } from './users-types.js';
-import { Repository } from '../../infrastructure/db/repository.js';
+import { ConfirmationInfo, CONFIRMATION_STATUS, UserDbType, UserType } from './users-types.js';
+import { Repository } from '../../infrastructure/db/repository-class.js';
 
-class UsersRepo extends Repository<UserDBType> {
-  constructor(collectionName: string) {
-    super(collectionName);
-  }
-
+export class UsersRepo extends Repository<UserDbType> {
   async createUser(
     login: string,
     email: string,
@@ -51,5 +46,3 @@ class UsersRepo extends Repository<UserDBType> {
     return deleteResult.deletedCount > 0;
   }
 }
-
-export const usersRepo = new UsersRepo(SETTINGS.DB_COLLECTIONS.USERS);

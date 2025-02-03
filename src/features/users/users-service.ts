@@ -1,4 +1,3 @@
-import { usersRepo } from './users-repo.js';
 import { CONFIRMATION_STATUS, UserType } from './users-types.js';
 import { authService } from '../../auth/auth-service.js';
 import { emailService } from '../../infrastructure/email/email-service.js';
@@ -6,7 +5,7 @@ import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { Result } from '../../common/types/result-object.js';
 import crypto from 'crypto';
 import { SETTINGS } from '../../settings.js';
-import { usersQueryRepo } from './users-query-repo.js';
+import { usersQueryRepo, usersRepo } from '../../infrastructure/db/repositories.js';
 
 class UsersService {
   async createUser(login: string, email: string, password: string): Promise<UserType> {

@@ -4,7 +4,7 @@ import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { CONFIRMATION_STATUS } from '../../features/users/users-types.js';
-import { usersRepo } from '../../features/users/users-repo.js';
+import { usersColl } from '../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
   await mongoClient.connect();
@@ -16,8 +16,6 @@ afterAll(async () => {
 });
 
 describe('REGISTER USER', () => {
-  const usersColl = usersRepo.getCollection();
-
   const newUser = {
     login: 'NewUser',
     password: 'NewPassword',

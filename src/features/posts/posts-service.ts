@@ -1,4 +1,4 @@
-import { postsRepo } from './posts-repo.js';
+import { postsRepo } from '../../infrastructure/db/repositories.js';
 import { PostType } from './posts-types.js';
 
 class PostsService {

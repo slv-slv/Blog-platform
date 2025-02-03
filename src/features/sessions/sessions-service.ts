@@ -1,6 +1,6 @@
 import { Result } from '../../common/types/result-object.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
-import { sessionsRepo } from './sessions-repo.js';
+import { sessionsRepo } from '../../infrastructure/db/repositories.js';
 
 class SessionsService {
   async createSession(userId: string, iat: number): Promise<void> {

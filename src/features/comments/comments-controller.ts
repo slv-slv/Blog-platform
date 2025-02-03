@@ -1,13 +1,10 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { formatErrors } from '../../common/utils/format-errors.js';
-import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { commentsQueryRepo } from './comments-query-repo.js';
 import { commentsService } from './comments-service.js';
-import { usersQueryRepo } from '../users/users-query-repo.js';
-import { postsQueryRepo } from '../posts/posts-query-repo.js';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
+import { commentsQueryRepo } from '../../infrastructure/db/repositories.js';
 
 class CommentsController {
   async findComment(req: Request, res: Response) {

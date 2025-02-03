@@ -1,12 +1,8 @@
 import { PostsPaginatedViewModel, PostType } from './posts-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { Repository } from '../../infrastructure/db/repository.js';
+import { Repository } from '../../infrastructure/db/repository-class.js';
 
-class PostsQueryRepo extends Repository<PostType> {
-  constructor(collectionName: string) {
-    super(collectionName);
-  }
-
+export class PostsQueryRepo extends Repository<PostType> {
   async getPosts(pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedViewModel> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
@@ -38,5 +34,3 @@ class PostsQueryRepo extends Repository<PostType> {
     return post;
   }
 }
-
-export const postsQueryRepo = new PostsQueryRepo('posts');
