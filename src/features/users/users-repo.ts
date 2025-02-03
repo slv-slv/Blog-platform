@@ -20,12 +20,8 @@ export const usersRepo = {
     const _id = new ObjectId();
     const newUser = { _id, login, email, hash, createdAt, confirmation };
     const createResult = await usersColl.insertOne(newUser);
-    const insertedUser = await usersColl.findOne(
-      { _id: createResult.insertedId },
-      { projection: { _id: 0, hash: 0 } },
-    );
     const id = createResult.insertedId.toString();
-    return { id, ...insertedUser } as UserType;
+    return { id, login, email, createdAt };
   },
 
   updateConfirmationCode: async (email: string, code: string, expiration: string): Promise<boolean> => {
