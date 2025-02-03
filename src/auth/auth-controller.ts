@@ -124,7 +124,7 @@ export const authController = {
 
     res
       .status(HTTP_STATUS.OK_200)
-      .cookie('token', refreshToken, {
+      .cookie('refreshToken', refreshToken, {
         expires: cookieExpiration,
         httpOnly: true,
         secure: true,
@@ -161,7 +161,7 @@ export const authController = {
   },
 
   verifyRefreshJwt: async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies.token;
+    const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
       res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid authorization method' });

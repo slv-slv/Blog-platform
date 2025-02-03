@@ -33,7 +33,7 @@ describe('LOGOUT', () => {
 
     await request(app)
       .post('/auth/logout')
-      .set('Cookie', `token=${token}`)
+      .set('Cookie', `refreshToken=${token}`)
       .expect(HTTP_STATUS.NO_CONTENT_204);
 
     expect(await sessionsColl.countDocuments({ userId })).toEqual(0);

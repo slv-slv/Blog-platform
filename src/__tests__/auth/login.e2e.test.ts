@@ -108,7 +108,7 @@ describe('LOGIN', () => {
     expect(cookies).toBeDefined;
 
     const cookiesArray = Array.isArray(cookies) ? cookies : [cookies];
-    const tokenCookie = cookiesArray.find((cookie: string) => cookie.startsWith('token='));
+    const tokenCookie = cookiesArray.find((cookie: string) => cookie.startsWith('refreshToken='));
     expect(tokenCookie).toBeDefined;
     const refreshToken = tokenCookie.split('; ')[0].split('=')[1];
     expect(jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;

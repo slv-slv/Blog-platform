@@ -34,7 +34,7 @@ describe('REFRESH-TOKEN', () => {
   it('should return unauthorized 401 for not existing session', async () => {
     await request(app)
       .post('/auth/refresh-token')
-      .set('Cookie', `token=${token}`)
+      .set('Cookie', `refreshToken=${token}`)
       .expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
@@ -46,14 +46,14 @@ describe('REFRESH-TOKEN', () => {
 
     await request(app)
       .post('/auth/refresh-token')
-      .set('Cookie', `token=${fakeToken}`)
+      .set('Cookie', `refreshToken=${fakeToken}`)
       .expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
   it('should return new pair of tokens and create new session', async () => {
     const response = await request(app)
       .post('/auth/refresh-token')
-      .set('Cookie', `token=${token}`)
+      .set('Cookie', `refreshToken=${token}`)
       .expect(HTTP_STATUS.OK_200);
 
     const { accessToken } = response.body;
@@ -65,7 +65,7 @@ describe('REFRESH-TOKEN', () => {
     expect(cookies).toBeDefined;
 
     const cookiesArray = Array.isArray(cookies) ? cookies : [cookies];
-    const tokenCookie = cookiesArray.find((cookie: string) => cookie.startsWith('token='));
+    const tokenCookie = cookiesArray.find((cookie: string) => cookie.startsWith('refreshToken='));
     expect(tokenCookie).toBeDefined;
     const refreshToken = tokenCookie.split('; ')[0].split('=')[1];
     expect(jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
@@ -76,7 +76,7 @@ describe('REFRESH-TOKEN', () => {
   it('it should return unauthorized if the user sends the same token a second time', async () => {
     await request(app)
       .post('/auth/refresh-token')
-      .set('Cookie', `token=${token}`)
+      .set('Cookie', `refreshToken=${token}`)
       .expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 });
