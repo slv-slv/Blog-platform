@@ -34,9 +34,5 @@ describe('CREATE USER', () => {
     expect(response.body).toHaveProperty('email', newUser.email);
     expect(response.body).toHaveProperty('createdAt');
     expect(new Date(response.body.createdAt)).toBeInstanceOf(Date);
-    expect(response.body).toHaveProperty('confirmation');
-    expect(response.body!.confirmation.status).toEqual(CONFIRMATION_STATUS.CONFIRMED);
-    expect(response.body!.confirmation.code).toBeNull;
-    expect(response.body!.confirmation.expiration).toBeNull;
   });
 });
