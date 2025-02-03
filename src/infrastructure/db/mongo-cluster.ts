@@ -15,9 +15,9 @@ export class MongoCluster {
     return this.client.db(dbName);
   }
 
-  getCollection(dbName: string, collectionName: string) {
-    return this.client.db(dbName).collection(collectionName);
-  }
+  // getCollection(dbName: string, collectionName: string) {
+  //   return this.client.db(dbName).collection(collectionName);
+  // }
 
   async run() {
     try {
