@@ -128,7 +128,7 @@ export const authController = {
         expires: cookieExpiration,
         httpOnly: true,
         secure: true,
-        sameSite: 'strict',
+        // sameSite: 'strict',
       })
       .json({ accessToken });
   },
