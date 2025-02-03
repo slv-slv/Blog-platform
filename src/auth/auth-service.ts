@@ -5,23 +5,21 @@ import { SETTINGS } from '../settings.js';
 import { JwtPairType, JwtPayloadType } from './auth-types.js';
 import { sessionsService } from '../features/sessions/sessions-service.js';
 
-export const authService = {
-  hashPassword: async (password: string): Promise<string> => {
+export class AuthService {
+  async hashPassword(password: string): Promise<string> {
     const saltRounds = 10;
     return await bcrypt.hash(password, saltRounds);
-  },
+  }
 
-  verifyPassword: async (loginOrEmail: string, password: string): Promise<boolean> => {
+  async verifyPassword(loginOrEmail: string, password: string): Promise<boolean> {
     const hash = await usersQueryRepo.getPasswordHash(loginOrEmail);
     if (!hash) {
       return false;
     }
     return await bcrypt.compare(password, hash);
-  },
+  }
 
-  issueJwtPair: async (userId: string): Promise<JwtPairType> => {
-    // const user = await usersQueryRepo.findUser(loginOrEmail);
-    // const userId = user!.id;
+  async issueJwtPair(userId: string): Promise<JwtPairType> {
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     const accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '10 s' });
@@ -32,13 +30,15 @@ export const authService = {
     await sessionsService.createSession(userId, iat);
 
     return { accessToken, refreshToken };
-  },
+  }
 
-  verifyJwt: (token: string): JwtPayloadType | null => {
+  verifyJwt(token: string): JwtPayloadType | null {
     try {
       return jwt.verify(token, SETTINGS.JWT_PRIVATE_KEY!) as JwtPayloadType;
     } catch {
       return null;
     }
-  },
-};
+  }
+}
+
+export const authService = new AuthService();

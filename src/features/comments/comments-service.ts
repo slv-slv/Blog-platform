@@ -4,12 +4,8 @@ import { CurrentUserType } from '../users/users-types.js';
 import { CommentType } from './comments-types.js';
 import { commentsRepo } from './comments-repo.js';
 
-export const commentsService = {
-  createComment: async (
-    postId: string,
-    content: string,
-    user: CurrentUserType,
-  ): Promise<Result<CommentType>> => {
+class CommentsService {
+  async createComment(postId: string, content: string, user: CurrentUserType): Promise<Result<CommentType>> {
     const createdAt = new Date().toISOString();
     const newComment = await commentsRepo.createComment(postId, content, user, createdAt);
 
@@ -17,9 +13,9 @@ export const commentsService = {
       status: RESULT_STATUS.CREATED,
       data: newComment,
     };
-  },
+  }
 
-  updateComment: async (id: string, content: string): Promise<Result<null>> => {
+  async updateComment(id: string, content: string): Promise<Result<null>> {
     const isUpdated = await commentsRepo.updateComment(id, content);
     // Дублирование логики, так как в контроллере извлекаем владельца комментария для авторизации
     if (!isUpdated) {
@@ -34,9 +30,9 @@ export const commentsService = {
       status: RESULT_STATUS.NO_CONTENT,
       data: null,
     };
-  },
+  }
 
-  deleteComment: async (id: string): Promise<Result<null>> => {
+  async deleteComment(id: string): Promise<Result<null>> {
     const isDeleted = await commentsRepo.deleteComment(id);
     // Дублирование логики, так как в контроллере извлекаем владельца комментария для авторизации
     if (!isDeleted) {
@@ -51,5 +47,7 @@ export const commentsService = {
       status: RESULT_STATUS.NO_CONTENT,
       data: null,
     };
-  },
-};
+  }
+}
+
+export const commentsService = new CommentsService();

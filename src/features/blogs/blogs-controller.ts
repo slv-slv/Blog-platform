@@ -8,15 +8,15 @@ import { postsQueryRepo } from '../posts/posts-query-repo.js';
 import { postsService } from '../posts/posts-service.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 
-export const blogsController = {
-  getAllBlogs: async (req: Request, res: Response) => {
+class BlogsController {
+  async getAllBlogs(req: Request, res: Response) {
     const searchNameTerm = (req.query.searchNameTerm as string) ?? null;
     const pagingParams = getPagingParams(req);
     const blogs = await blogsQueryRepo.getAllBlogs(searchNameTerm, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(blogs);
-  },
+  }
 
-  getPostsByBlogId: async (req: Request, res: Response) => {
+  async getPostsByBlogId(req: Request, res: Response) {
     const pagingParams = getPagingParams(req);
     const blogId = req.params.blogId;
     const blog = await blogsQueryRepo.findBlog(blogId);
@@ -27,9 +27,9 @@ export const blogsController = {
 
     const posts = await postsQueryRepo.getPosts(pagingParams, blogId);
     res.status(HTTP_STATUS.OK_200).json(posts);
-  },
+  }
 
-  findBlog: async (req: Request, res: Response) => {
+  async findBlog(req: Request, res: Response) {
     const id = req.params.id;
     const blog = await blogsQueryRepo.findBlog(id);
     if (!blog) {
@@ -37,9 +37,9 @@ export const blogsController = {
       return;
     }
     res.status(HTTP_STATUS.OK_200).json(blog);
-  },
+  }
 
-  createBlog: async (req: Request, res: Response) => {
+  async createBlog(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -49,9 +49,9 @@ export const blogsController = {
     const { name, description, websiteUrl } = req.body;
     const newBlog = await blogsService.createBlog(name, description, websiteUrl);
     res.status(HTTP_STATUS.CREATED_201).json(newBlog);
-  },
+  }
 
-  createPostForBlog: async (req: Request, res: Response) => {
+  async createPostForBlog(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -69,9 +69,9 @@ export const blogsController = {
 
     const newPost = await postsService.createPost(title, shortDescription, content, blogId);
     res.status(HTTP_STATUS.CREATED_201).json(newPost);
-  },
+  }
 
-  updateBlog: async (req: Request, res: Response) => {
+  async updateBlog(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -87,9 +87,9 @@ export const blogsController = {
     }
 
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
-  },
+  }
 
-  deleteBlog: async (req: Request, res: Response) => {
+  async deleteBlog(req: Request, res: Response) {
     const id = req.params.id;
     const isDeleted = await blogsService.deleteBlog(id);
     if (!isDeleted) {
@@ -97,5 +97,7 @@ export const blogsController = {
       return;
     }
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
-  },
-};
+  }
+}
+
+export const blogsController = new BlogsController();

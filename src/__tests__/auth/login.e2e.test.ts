@@ -7,9 +7,9 @@ import { CONFIRMATION_STATUS, UserDBType } from '../../features/users/users-type
 import { ObjectId } from 'mongodb';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { usersColl } from '../../features/users/users-repo.js';
-import { sessionsColl } from '../../features/sessions/sessions-repo.js';
 import { JwtPayloadType } from '../../auth/auth-types.js';
+import { usersRepo } from '../../features/users/users-repo.js';
+import { sessionsRepo } from '../../features/sessions/sessions-repo.js';
 
 beforeAll(async () => {
   await mongoClient.connect();
@@ -21,6 +21,9 @@ afterAll(async () => {
 });
 
 describe('LOGIN', () => {
+  const usersColl = usersRepo.getCollection();
+  const sessionsColl = sessionsRepo.getCollection();
+
   const password = 'somepassword';
   const hash = bcrypt.hashSync(password, 10);
 

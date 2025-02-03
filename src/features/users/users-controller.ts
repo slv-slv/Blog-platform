@@ -6,16 +6,16 @@ import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { usersQueryRepo } from './users-query-repo.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 
-export const usersController = {
-  getAllUsers: async (req: Request, res: Response) => {
+class UsersController {
+  async getAllUsers(req: Request, res: Response) {
     const searchLoginTerm = (req.query.searchLoginTerm as string) ?? null;
     const searchEmailTerm = (req.query.searchEmailTerm as string) ?? null;
     const pagingParams = getPagingParams(req);
     const users = await usersQueryRepo.getAllUsers(searchLoginTerm, searchEmailTerm, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(users);
-  },
+  }
 
-  createUser: async (req: Request, res: Response) => {
+  async createUser(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -40,9 +40,9 @@ export const usersController = {
 
     const newUser = await usersService.createUser(login, email, password);
     res.status(HTTP_STATUS.CREATED_201).json(newUser);
-  },
+  }
 
-  deleteUser: async (req: Request, res: Response) => {
+  async deleteUser(req: Request, res: Response) {
     const id = req.params.id;
     const isDeleted = await usersService.deleteUser(id);
     if (!isDeleted) {
@@ -50,5 +50,7 @@ export const usersController = {
       return;
     }
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
-  },
-};
+  }
+}
+
+export const usersController = new UsersController();

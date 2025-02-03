@@ -5,7 +5,7 @@ import { CONFIRMATION_STATUS, UserDBType } from '../../features/users/users-type
 import { ObjectId } from 'mongodb';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { usersColl } from '../../features/users/users-repo.js';
+import { usersRepo } from '../../features/users/users-repo.js';
 
 beforeAll(async () => {
   await mongoClient.connect();
@@ -17,6 +17,8 @@ afterAll(async () => {
 });
 
 describe('RESEND CONFIRMATION', () => {
+  const usersColl = usersRepo.getCollection();
+
   const newUser: UserDBType = {
     _id: new ObjectId(),
     login: 'NewUser',

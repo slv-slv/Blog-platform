@@ -3,9 +3,9 @@ import { ObjectId } from 'mongodb';
 import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { app } from '../../app.js';
-import { usersColl } from '../../features/users/users-repo.js';
 import { CONFIRMATION_STATUS, UserDBType } from '../../features/users/users-types.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
+import { usersRepo } from '../../features/users/users-repo.js';
 
 beforeAll(async () => {
   await mongoClient.connect();
@@ -17,6 +17,8 @@ afterAll(async () => {
 });
 
 describe('CONFIRM USER', () => {
+  const usersColl = usersRepo.getCollection();
+
   const pastDate = new Date();
   pastDate.setHours(pastDate.getHours() - 1);
 

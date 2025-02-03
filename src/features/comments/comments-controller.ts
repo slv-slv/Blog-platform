@@ -9,8 +9,8 @@ import { usersQueryRepo } from '../users/users-query-repo.js';
 import { postsQueryRepo } from '../posts/posts-query-repo.js';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
 
-export const commentsController = {
-  findComment: async (req: Request, res: Response) => {
+class CommentsController {
+  async findComment(req: Request, res: Response) {
     const id = req.params.id;
     const comment = await commentsQueryRepo.findComment(id);
     if (!comment) {
@@ -18,9 +18,9 @@ export const commentsController = {
       return;
     }
     res.status(HTTP_STATUS.OK_200).json(comment);
-  },
+  }
 
-  updateComment: async (req: Request, res: Response) => {
+  async updateComment(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -50,9 +50,9 @@ export const commentsController = {
     }
 
     res.status(httpCodeByResult(isUpdated.status)).end();
-  },
+  }
 
-  deleteComment: async (req: Request, res: Response) => {
+  async deleteComment(req: Request, res: Response) {
     const id = req.params.commentId;
     const comment = await commentsQueryRepo.findComment(id);
     if (!comment) {
@@ -74,5 +74,7 @@ export const commentsController = {
     }
 
     res.status(httpCodeByResult(isDeleted.status)).end();
-  },
-};
+  }
+}
+
+export const commentsController = new CommentsController();

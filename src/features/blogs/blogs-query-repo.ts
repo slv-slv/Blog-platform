@@ -1,20 +1,25 @@
 import { BlogsPaginatedViewModel, BlogType } from './blogs-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { blogsColl } from './blogs-repo.js';
+import { SETTINGS } from '../../settings.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
-export const blogsQueryRepo = {
-  getAllBlogs: async (
+class BlogsQueryRepo extends Repository<BlogType> {
+  constructor(collectionName: string) {
+    super(collectionName);
+  }
+
+  async getAllBlogs(
     searchNameTerm: string | null,
     pagingParams: PagingParams,
-  ): Promise<BlogsPaginatedViewModel> => {
+  ): Promise<BlogsPaginatedViewModel> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const filter = searchNameTerm ? { name: { $regex: searchNameTerm, $options: 'i' } } : {};
 
-    const totalCount = await blogsColl.countDocuments(filter);
+    const totalCount = await this.collection.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
-    const blogs = await blogsColl
+    const blogs = await this.collection
       .find(filter, { projection: { _id: 0 } })
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip((pageNumber - 1) * pageSize)
@@ -27,13 +32,15 @@ export const blogsQueryRepo = {
       totalCount,
       items: blogs,
     };
-  },
+  }
 
-  findBlog: async (id: string): Promise<BlogType | null> => {
-    const blog = await blogsColl.findOne({ id }, { projection: { _id: 0 } });
+  async findBlog(id: string): Promise<BlogType | null> {
+    const blog = await this.collection.findOne({ id }, { projection: { _id: 0 } });
     if (!blog) {
       return null;
     }
     return blog;
-  },
-};
+  }
+}
+
+export const blogsQueryRepo = new BlogsQueryRepo(SETTINGS.DB_COLLECTIONS.BLOGS);

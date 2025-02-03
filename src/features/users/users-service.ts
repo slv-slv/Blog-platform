@@ -8,14 +8,14 @@ import crypto from 'crypto';
 import { SETTINGS } from '../../settings.js';
 import { usersQueryRepo } from './users-query-repo.js';
 
-export const usersService = {
-  createUser: async (login: string, email: string, password: string): Promise<UserType> => {
+class UsersService {
+  async createUser(login: string, email: string, password: string): Promise<UserType> {
     const hash = await authService.hashPassword(password);
     const createdAt = new Date().toISOString();
     return await usersRepo.createUser(login, email, hash, createdAt);
-  },
+  }
 
-  registerUser: async (login: string, email: string, password: string): Promise<UserType> => {
+  async registerUser(login: string, email: string, password: string): Promise<UserType> {
     const hash = await authService.hashPassword(password);
     const createdAt = new Date().toISOString();
 
@@ -34,9 +34,9 @@ export const usersService = {
     // await emailService.sendConfirmation(email, code);
 
     return await usersRepo.createUser(login, email, hash, createdAt, confirmation);
-  },
+  }
 
-  updateConfirmationCode: async (email: string): Promise<string | null> => {
+  async updateConfirmationCode(email: string): Promise<string | null> {
     const code = crypto.randomUUID();
 
     const currentDate = new Date();
@@ -52,9 +52,9 @@ export const usersService = {
     // await emailService.sendConfirmation(email, code);
 
     return code;
-  },
+  }
 
-  confirmUser: async (code: string): Promise<Result<null>> => {
+  async confirmUser(code: string): Promise<Result<null>> {
     const confirmationInfo = await usersQueryRepo.getConfirmationInfo(code);
     if (!confirmationInfo) {
       return {
@@ -92,21 +92,23 @@ export const usersService = {
       status: RESULT_STATUS.NO_CONTENT,
       data: null,
     };
-  },
+  }
 
-  deleteUser: async (id: string): Promise<boolean> => {
+  async deleteUser(id: string): Promise<boolean> {
     return await usersRepo.deleteUser(id);
-  },
+  }
 
-  isLoginUnique: async (login: string): Promise<boolean> => {
+  async isLoginUnique(login: string): Promise<boolean> {
     return await usersQueryRepo.isLoginUnique(login);
-  },
+  }
 
-  isEmailUnique: async (email: string): Promise<boolean> => {
+  async isEmailUnique(email: string): Promise<boolean> {
     return await usersQueryRepo.isEmailUnique(email);
-  },
+  }
 
-  isConfirmed: async (email: string): Promise<boolean> => {
+  async isConfirmed(email: string): Promise<boolean> {
     return await usersQueryRepo.isConfirmed(email);
-  },
-};
+  }
+}
+
+export const usersService = new UsersService();

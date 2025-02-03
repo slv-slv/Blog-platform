@@ -1,15 +1,12 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
-import { CONFIRMATION_STATUS, UserDBType } from '../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { usersColl } from '../../features/users/users-repo.js';
-import { sessionsColl } from '../../features/sessions/sessions-repo.js';
 import { JwtPayloadType } from '../../auth/auth-types.js';
+import { sessionsRepo } from '../../features/sessions/sessions-repo.js';
 
 beforeAll(async () => {
   await mongoClient.connect();
@@ -21,6 +18,8 @@ afterAll(async () => {
 });
 
 describe('LOGOUT', () => {
+  const sessionsColl = sessionsRepo.getCollection();
+
   const userId = new ObjectId().toString();
 
   const payload = { userId };

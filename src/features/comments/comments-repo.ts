@@ -1,18 +1,20 @@
 import { ObjectId } from 'mongodb';
-import { db } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { CurrentUserType } from '../users/users-types.js';
 import { CommentType, CommentDBType } from './comments-types.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
-export const commentsColl = db.collection<CommentDBType>(SETTINGS.DB_COLLECTIONS.COMMENTS);
+class CommentsRepo extends Repository<CommentDBType> {
+  constructor(collectionName: string) {
+    super(collectionName);
+  }
 
-export const commentsRepo = {
-  createComment: async (
+  async createComment(
     postId: string,
     content: string,
     user: CurrentUserType,
     createdAt: string,
-  ): Promise<CommentType> => {
+  ): Promise<CommentType> {
     const _id = new ObjectId();
     const newComment = {
       _id,
@@ -21,33 +23,35 @@ export const commentsRepo = {
       commentatorInfo: { userId: user.userId, userLogin: user.login },
       createdAt,
     };
-    const createResult = await commentsColl.insertOne(newComment);
-    const insertedComment = await commentsColl.findOne(
+    const createResult = await this.collection.insertOne(newComment);
+    const insertedComment = await this.collection.findOne(
       { _id: createResult.insertedId },
       { projection: { _id: 0, postId: 0 } },
     );
     const id = createResult.insertedId.toString();
     return { id, ...insertedComment } as CommentType;
-  },
+  }
 
-  updateComment: async (id: string, content: string): Promise<boolean> => {
+  async updateComment(id: string, content: string): Promise<boolean> {
     if (!ObjectId.isValid(id)) {
       return false;
     }
     const _id = new ObjectId(id);
-    const updateResult = await commentsColl.updateOne({ _id }, { $set: { content } });
+    const updateResult = await this.collection.updateOne({ _id }, { $set: { content } });
     if (!updateResult.matchedCount) {
       return false;
     }
     return true;
-  },
+  }
 
-  deleteComment: async (id: string): Promise<boolean> => {
+  async deleteComment(id: string): Promise<boolean> {
     if (!ObjectId.isValid(id)) {
       return false;
     }
     const _id = new ObjectId(id);
-    const deleteResult = await commentsColl.deleteOne({ _id });
+    const deleteResult = await this.collection.deleteOne({ _id });
     return deleteResult.deletedCount > 0;
-  },
-};
+  }
+}
+
+export const commentsRepo = new CommentsRepo(SETTINGS.DB_COLLECTIONS.COMMENTS);

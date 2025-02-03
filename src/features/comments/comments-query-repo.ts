@@ -1,22 +1,21 @@
 import { ObjectId } from 'mongodb';
-import { db } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { CommentType, CommentDBType, CommentsPaginatedViewModel } from './comments-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
-export const commentsColl = db.collection<CommentDBType>(SETTINGS.DB_COLLECTIONS.COMMENTS);
+class CommentsQueryRepo extends Repository<CommentDBType> {
+  constructor(collectionName: string) {
+    super(collectionName);
+  }
 
-export const commentsQueryRepo = {
-  getCommentsForPost: async (
-    postId: string,
-    pagingParams: PagingParams,
-  ): Promise<CommentsPaginatedViewModel> => {
+  async getCommentsForPost(postId: string, pagingParams: PagingParams): Promise<CommentsPaginatedViewModel> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
-    const totalCount = await commentsColl.countDocuments({ postId });
+    const totalCount = await this.collection.countDocuments({ postId });
     const pagesCount = Math.ceil(totalCount / pageSize);
 
-    const commentsWithObjectId = await commentsColl
+    const commentsWithObjectId = await this.collection
       .find({ postId }, { projection: { postId: 0 } })
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip((pageNumber - 1) * pageSize)
@@ -39,17 +38,19 @@ export const commentsQueryRepo = {
       totalCount,
       items: comments,
     };
-  },
+  }
 
-  findComment: async (id: string): Promise<CommentType | null> => {
+  async findComment(id: string): Promise<CommentType | null> {
     if (!ObjectId.isValid(id)) {
       return null;
     }
     const _id = new ObjectId(id);
-    const comment = await commentsColl.findOne({ _id }, { projection: { _id: 0, postId: 0 } });
+    const comment = await this.collection.findOne({ _id }, { projection: { _id: 0, postId: 0 } });
     if (!comment) {
       return null;
     }
     return { id, ...comment };
-  },
-};
+  }
+}
+
+export const commentsQueryRepo = new CommentsQueryRepo(SETTINGS.DB_COLLECTIONS.COMMENTS);

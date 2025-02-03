@@ -10,14 +10,14 @@ import { usersQueryRepo } from '../users/users-query-repo.js';
 import { commentsService } from '../comments/comments-service.js';
 import { httpCodeByResult } from '../../common/types/result-status-codes.js';
 
-export const postsController = {
-  getAllPosts: async (req: Request, res: Response) => {
+class PostsController {
+  async getAllPosts(req: Request, res: Response) {
     const pagingParams = getPagingParams(req);
     const posts = await postsQueryRepo.getPosts(pagingParams);
     res.status(HTTP_STATUS.OK_200).json(posts);
-  },
+  }
 
-  findPost: async (req: Request, res: Response) => {
+  async findPost(req: Request, res: Response) {
     const id = req.params.id;
     const post = await postsQueryRepo.findPost(id);
     if (!post) {
@@ -25,9 +25,9 @@ export const postsController = {
       return;
     }
     res.status(HTTP_STATUS.OK_200).json(post);
-  },
+  }
 
-  createPost: async (req: Request, res: Response) => {
+  async createPost(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -37,9 +37,9 @@ export const postsController = {
     const { title, shortDescription, content, blogId } = req.body;
     const newPost = await postsService.createPost(title, shortDescription, content, blogId);
     res.status(HTTP_STATUS.CREATED_201).json(newPost);
-  },
+  }
 
-  updatePost: async (req: Request, res: Response) => {
+  async updatePost(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -55,9 +55,9 @@ export const postsController = {
     }
 
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
-  },
+  }
 
-  deletePost: async (req: Request, res: Response) => {
+  async deletePost(req: Request, res: Response) {
     const id = req.params.id;
     const isDeleted = await postsService.deletePost(id);
     if (!isDeleted) {
@@ -65,9 +65,9 @@ export const postsController = {
       return;
     }
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
-  },
+  }
 
-  getCommentsForPost: async (req: Request, res: Response) => {
+  async getCommentsForPost(req: Request, res: Response) {
     const postId = req.params.postId;
     const post = await postsQueryRepo.findPost(postId);
     if (!post) {
@@ -77,9 +77,9 @@ export const postsController = {
     const pagingParams = getPagingParams(req);
     const comments = await commentsQueryRepo.getCommentsForPost(postId, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(comments);
-  },
+  }
 
-  createComment: async (req: Request, res: Response) => {
+  async createComment(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -105,5 +105,7 @@ export const postsController = {
     }
     const result = await commentsService.createComment(postId, content, user);
     res.status(httpCodeByResult(result.status)).json(result.data);
-  },
-};
+  }
+}
+
+export const postsController = new PostsController();

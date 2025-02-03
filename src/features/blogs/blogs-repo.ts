@@ -1,40 +1,44 @@
 import { SETTINGS } from '../../settings.js';
-import { db } from '../../infrastructure/db/db.js';
 import { BlogType } from './blogs-types.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
-export const blogsColl = db.collection<BlogType>(SETTINGS.DB_COLLECTIONS.BLOGS);
+class BlogsRepo extends Repository<BlogType> {
+  constructor(collectionName: string) {
+    super(collectionName);
+  }
 
-export const blogsRepo = {
-  createBlog: async (
+  async createBlog(
     name: string,
     description: string,
     websiteUrl: string,
     createdAt: string,
     isMembership: boolean,
-  ): Promise<BlogType> => {
-    const id = ((await blogsColl.countDocuments()) + 1 || 1).toString();
+  ): Promise<BlogType> {
+    const id = ((await this.collection.countDocuments()) + 1 || 1).toString();
     const newBlog = { id, name, description, websiteUrl, createdAt, isMembership };
-    const createResult = await blogsColl.insertOne(newBlog);
-    const insertedBlog = await blogsColl.findOne(
+    const createResult = await this.collection.insertOne(newBlog);
+    const insertedBlog = await this.collection.findOne(
       { _id: createResult.insertedId },
       { projection: { _id: 0 } },
     );
     return insertedBlog as BlogType;
-  },
+  }
 
-  updateBlog: async (id: string, name: string, description: string, websiteUrl: string): Promise<boolean> => {
-    const updateResult = await blogsColl.updateOne({ id }, { $set: { name, description, websiteUrl } });
+  async updateBlog(id: string, name: string, description: string, websiteUrl: string): Promise<boolean> {
+    const updateResult = await this.collection.updateOne({ id }, { $set: { name, description, websiteUrl } });
     if (!updateResult.matchedCount) {
       return false;
     }
     return true;
-  },
+  }
 
-  deleteBlog: async (id: string): Promise<boolean> => {
-    const deleteResult = await blogsColl.deleteOne({ id });
+  async deleteBlog(id: string): Promise<boolean> {
+    const deleteResult = await this.collection.deleteOne({ id });
     if (!deleteResult.deletedCount) {
       return false;
     }
     return true;
-  },
-};
+  }
+}
+
+export const blogsRepo = new BlogsRepo(SETTINGS.DB_COLLECTIONS.BLOGS);

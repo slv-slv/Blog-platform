@@ -1,25 +1,28 @@
 import { ObjectId } from 'mongodb';
-import { db } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { SessionDbType } from './sessions-types.js';
-import { usersColl } from '../users/users-repo.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
-export const sessionsColl = db.collection<SessionDbType>(SETTINGS.DB_COLLECTIONS.SESSIONS);
+class SessionsRepo extends Repository<SessionDbType> {
+  constructor(collectionName: string) {
+    super(collectionName);
+  }
 
-export const sessionsRepo = {
-  createSession: async (userId: string, iat: number): Promise<void> => {
-    await sessionsColl.deleteMany({ userId });
+  async createSession(userId: string, iat: number): Promise<void> {
+    await this.collection.deleteMany({ userId });
 
     const _id = new ObjectId();
-    await sessionsColl.insertOne({ _id, userId, iat });
-  },
+    await this.collection.insertOne({ _id, userId, iat });
+  }
 
-  deleteSession: async (userId: string, iat: number): Promise<void> => {
-    await sessionsColl.deleteOne({ userId, iat });
-  },
+  async deleteSession(userId: string, iat: number): Promise<void> {
+    await this.collection.deleteOne({ userId, iat });
+  }
 
-  verifySession: async (userId: string, iat: number): Promise<boolean> => {
-    const session = await sessionsColl.findOne({ userId, iat });
+  async verifySession(userId: string, iat: number): Promise<boolean> {
+    const session = await this.collection.findOne({ userId, iat });
     return session !== null;
-  },
-};
+  }
+}
+
+export const sessionsRepo = new SessionsRepo(SETTINGS.DB_COLLECTIONS.SESSIONS);

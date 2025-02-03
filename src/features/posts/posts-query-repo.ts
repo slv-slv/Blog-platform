@@ -1,17 +1,21 @@
 import { PostsPaginatedViewModel, PostType } from './posts-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { postsColl } from './posts-repo.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
-export const postsQueryRepo = {
-  getPosts: async (pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedViewModel> => {
+class PostsQueryRepo extends Repository<PostType> {
+  constructor(collectionName: string) {
+    super(collectionName);
+  }
+
+  async getPosts(pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedViewModel> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const filter = blogId ? { blogId } : {};
 
-    const totalCount = await postsColl.countDocuments(filter);
+    const totalCount = await this.collection.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
-    const posts = await postsColl
+    const posts = await this.collection
       .find(filter, { projection: { _id: 0 } })
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip((pageNumber - 1) * pageSize)
@@ -24,13 +28,15 @@ export const postsQueryRepo = {
       totalCount,
       items: posts,
     };
-  },
+  }
 
-  findPost: async (id: string): Promise<PostType | null> => {
-    const post = await postsColl.findOne({ id }, { projection: { _id: 0 } });
+  async findPost(id: string): Promise<PostType | null> {
+    const post = await this.collection.findOne({ id }, { projection: { _id: 0 } });
     if (!post) {
       return null;
     }
     return post;
-  },
-};
+  }
+}
+
+export const postsQueryRepo = new PostsQueryRepo('posts');

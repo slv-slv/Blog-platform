@@ -1,7 +1,7 @@
 import { emailTransport } from './nodemailer-transport.js';
 
-export const emailService = {
-  sendConfirmation: async (to: string, code: string): Promise<void> => {
+class EmailService {
+  async sendConfirmation(to: string, code: string): Promise<void> {
     try {
       const url = new URL('/registration/confirmation', 'https://nightingale.com/');
       url.searchParams.set('code', code);
@@ -18,5 +18,7 @@ export const emailService = {
     } catch (e) {
       console.error(e);
     }
-  },
-};
+  }
+}
+
+export const emailService = new EmailService();

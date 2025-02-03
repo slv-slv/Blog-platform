@@ -9,8 +9,8 @@ import { usersService } from '../features/users/users-service.js';
 import { httpCodeByResult, RESULT_STATUS } from '../common/types/result-status-codes.js';
 import { sessionsService } from '../features/sessions/sessions-service.js';
 
-export const authController = {
-  sendConfirmation: async (req: Request, res: Response) => {
+export class AuthController {
+  async sendConfirmation(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -41,9 +41,9 @@ export const authController = {
 
     await usersService.registerUser(login, email, password);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
-  },
+  }
 
-  resendConfirmation: async (req: Request, res: Response) => {
+  async resendConfirmation(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -67,9 +67,9 @@ export const authController = {
 
     await usersService.updateConfirmationCode(email);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
-  },
+  }
 
-  confirmRegistration: async (req: Request, res: Response) => {
+  async confirmRegistration(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -87,9 +87,9 @@ export const authController = {
     }
 
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
-  },
+  }
 
-  verifyPassword: async (req: Request, res: Response, next: NextFunction) => {
+  async verifyPassword(req: Request, res: Response, next: NextFunction) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -105,9 +105,9 @@ export const authController = {
     }
 
     next();
-  },
+  }
 
-  issueJwtPair: async (req: Request, res: Response) => {
+  async issueJwtPair(req: Request, res: Response) {
     // этот middleware следует либо за проверкой пароля из тела запроса либо за валидацией refresh-токена из cookie
     let userId: string;
     if (!req.body.loginOrEmail) {
@@ -131,9 +131,9 @@ export const authController = {
         // sameSite: 'strict',
       })
       .json({ accessToken });
-  },
+  }
 
-  verifyAccessJwt: async (req: Request, res: Response, next: NextFunction) => {
+  async verifyAccessJwt(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -158,9 +158,9 @@ export const authController = {
     res.locals.userId = userId;
 
     next();
-  },
+  }
 
-  verifyRefreshJwt: async (req: Request, res: Response, next: NextFunction) => {
+  async verifyRefreshJwt(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
@@ -186,18 +186,18 @@ export const authController = {
     res.locals.iat = iat;
 
     next();
-  },
+  }
 
-  logout: async (req: Request, res: Response) => {
+  async logout(req: Request, res: Response) {
     const userId = res.locals.userId;
     const iat = res.locals.iat;
 
     await sessionsService.deleteSession(userId, iat);
 
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
-  },
+  }
 
-  getCurrentUser: async (req: Request, res: Response) => {
+  async getCurrentUser(req: Request, res: Response) {
     const userId = res.locals.userId;
     const user = await usersQueryRepo.getCurrentUser(userId);
     if (!user) {
@@ -205,9 +205,9 @@ export const authController = {
       return;
     }
     res.status(HTTP_STATUS.OK_200).json(user);
-  },
+  }
 
-  verifyBasicAuth: async (req: Request, res: Response, next: NextFunction) => {
+  async verifyBasicAuth(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -229,5 +229,7 @@ export const authController = {
     }
 
     next();
-  },
-};
+  }
+}
+
+export const authController = new AuthController();

@@ -4,17 +4,23 @@ import {
   CONFIRMATION_STATUS,
   ConfirmationInfo,
   CurrentUserType,
+  UserDBType,
   UsersPaginatedViewModel,
   UserType,
 } from './users-types.js';
-import { usersColl } from './users-repo.js';
+import { SETTINGS } from '../../settings.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
-export const usersQueryRepo = {
-  getAllUsers: async (
+class UsersQueryRepo extends Repository<UserDBType> {
+  constructor(collectionName: string) {
+    super(collectionName);
+  }
+
+  async getAllUsers(
     searchLoginTerm: string,
     searchEmailTerm: string,
     pagingParams: PagingParams,
-  ): Promise<UsersPaginatedViewModel> => {
+  ): Promise<UsersPaginatedViewModel> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     let filter = {};
@@ -29,10 +35,10 @@ export const usersQueryRepo = {
       filter = loginFilter;
     }
 
-    const totalCount = await usersColl.countDocuments(filter);
+    const totalCount = await this.collection.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
-    const usersWithObjectId = await usersColl
+    const usersWithObjectId = await this.collection
       .find(filter, { projection: { hash: 0 } })
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip((pageNumber - 1) * pageSize)
@@ -56,61 +62,69 @@ export const usersQueryRepo = {
       totalCount,
       items: users,
     };
-  },
+  }
 
-  findUser: async (loginOrEmail: string): Promise<UserType | null> => {
+  async findUser(loginOrEmail: string): Promise<UserType | null> {
     const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
-    const user = await usersColl.findOne(filter, { projection: { hash: 0 } });
+    const user = await this.collection.findOne(filter, { projection: { hash: 0 } });
     if (!user) {
       return null;
     }
     const { _id, login, email, createdAt } = user;
     const id = _id.toString();
     return { id, login, email, createdAt };
-  },
+  }
 
-  getCurrentUser: async (userId: string): Promise<CurrentUserType | null> => {
+  async getCurrentUser(userId: string): Promise<CurrentUserType | null> {
     const _id = new ObjectId(userId);
-    const user = await usersColl.findOne({ _id }, { projection: { email: 1, login: 1 } });
+    const user = await this.collection.findOne({ _id }, { projection: { email: 1, login: 1 } });
     if (!user) {
       return null;
     }
     const { email, login } = user;
     return { email, login, userId };
-  },
+  }
 
-  isConfirmed: async (email: string): Promise<boolean> => {
-    const user = await usersColl.findOne({ email }, { projection: { _id: 0, 'confirmation.status': 1 } });
+  async isConfirmed(email: string): Promise<boolean> {
+    const user = await this.collection.findOne(
+      { email },
+      { projection: { _id: 0, 'confirmation.status': 1 } },
+    );
     if (!user) {
       return false;
     }
     return user.confirmation.status === CONFIRMATION_STATUS.CONFIRMED;
-  },
+  }
 
-  getConfirmationInfo: async (code: string): Promise<ConfirmationInfo | null> => {
-    const user = await usersColl.findOne({ 'confirmation.code': code }, { projection: { confirmation: 1 } });
+  async getConfirmationInfo(code: string): Promise<ConfirmationInfo | null> {
+    const user = await this.collection.findOne(
+      { 'confirmation.code': code },
+      { projection: { confirmation: 1 } },
+    );
     if (!user) {
       return null;
     }
     return user.confirmation;
-  },
+  }
 
-  isLoginUnique: async (login: string): Promise<boolean> => {
-    const loginCount = await usersColl.countDocuments({ login });
+  async isLoginUnique(login: string): Promise<boolean> {
+    const loginCount = await this.collection.countDocuments({ login });
     return loginCount === 0;
-  },
+  }
 
-  isEmailUnique: async (email: string): Promise<boolean> => {
-    const emailCount = await usersColl.countDocuments({ email });
+  async isEmailUnique(email: string): Promise<boolean> {
+    const emailCount = await this.collection.countDocuments({ email });
     return emailCount === 0;
-  },
+  }
 
-  getPasswordHash: async (loginOrEmail: string): Promise<string | null> => {
+  async getPasswordHash(loginOrEmail: string): Promise<string | null> {
     const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
-    const user = await usersColl.findOne(filter, { projection: { _id: 0, hash: 1 } });
+    const user = await this.collection.findOne(filter, { projection: { _id: 0, hash: 1 } });
     if (!user) {
       return null;
     }
     return user.hash;
-  },
-};
+  }
+}
+
+export const usersQueryRepo = new UsersQueryRepo(SETTINGS.DB_COLLECTIONS.USERS);

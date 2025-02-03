@@ -1,48 +1,50 @@
 import { blogsQueryRepo } from '../blogs/blogs-query-repo.js';
-import { db } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { PostType } from './posts-types.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
-export const postsColl = db.collection<PostType>(SETTINGS.DB_COLLECTIONS.POSTS);
+class PostsRepo extends Repository<PostType> {
+  constructor(collectionName: string) {
+    super(collectionName);
+  }
 
-export const postsRepo = {
-  createPost: async (
+  async createPost(
     title: string,
     shortDescription: string,
     content: string,
     blogId: string,
     createdAt: string,
-  ): Promise<PostType> => {
-    const id = ((await postsColl.countDocuments()) + 1 || 1).toString();
+  ): Promise<PostType> {
+    const id = ((await this.collection.countDocuments()) + 1 || 1).toString();
     const blog = await blogsQueryRepo.findBlog(blogId);
     const blogName = blog!.name as string;
     const newPost = { id, title, shortDescription, content, blogId, blogName, createdAt };
-    const createResult = await postsColl.insertOne(newPost);
-    const insertedPost = await postsColl.findOne(
+    const createResult = await this.collection.insertOne(newPost);
+    const insertedPost = await this.collection.findOne(
       { _id: createResult.insertedId },
       { projection: { _id: 0 } },
     );
     return insertedPost as PostType;
-  },
+  }
 
-  updatePost: async (
-    id: string,
-    title: string,
-    shortDescription: string,
-    content: string,
-  ): Promise<boolean> => {
-    const updateResult = await postsColl.updateOne({ id }, { $set: { title, shortDescription, content } });
+  async updatePost(id: string, title: string, shortDescription: string, content: string): Promise<boolean> {
+    const updateResult = await this.collection.updateOne(
+      { id },
+      { $set: { title, shortDescription, content } },
+    );
     if (!updateResult.matchedCount) {
       return false;
     }
     return true;
-  },
+  }
 
-  deletePost: async (id: string): Promise<boolean> => {
-    const deleteResult = await postsColl.deleteOne({ id });
+  async deletePost(id: string): Promise<boolean> {
+    const deleteResult = await this.collection.deleteOne({ id });
     if (!deleteResult.deletedCount) {
       return false;
     }
     return true;
-  },
-};
+  }
+}
+
+export const postsRepo = new PostsRepo(SETTINGS.DB_COLLECTIONS.POSTS);
