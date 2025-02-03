@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { usersQueryRepo } from '../features/users/users-query-repo.js';
 import { SETTINGS } from '../settings.js';
 import { JwtPairType, JwtPayloadType } from './auth-types.js';
+import { sessionsService } from '../features/sessions/sessions-service.js';
 
 export const authService = {
   hashPassword: async (password: string): Promise<string> => {
@@ -10,7 +11,7 @@ export const authService = {
     return await bcrypt.hash(password, saltRounds);
   },
 
-  checkPassword: async (loginOrEmail: string, password: string): Promise<boolean> => {
+  verifyPassword: async (loginOrEmail: string, password: string): Promise<boolean> => {
     const hash = await usersQueryRepo.getPasswordHash(loginOrEmail);
     if (!hash) {
       return false;
@@ -18,13 +19,18 @@ export const authService = {
     return await bcrypt.compare(password, hash);
   },
 
-  issueJwtPair: async (loginOrEmail: string): Promise<JwtPairType> => {
-    const user = await usersQueryRepo.findUser(loginOrEmail);
-    const userId = user!.id;
+  issueJwtPair: async (userId: string): Promise<JwtPairType> => {
+    // const user = await usersQueryRepo.findUser(loginOrEmail);
+    // const userId = user!.id;
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     const accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '10 s' });
     const refreshToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '20 s' });
+
+    const issuedJwtPayload = jwt.decode(refreshToken) as jwt.JwtPayload;
+    const iat = issuedJwtPayload.iat!;
+    await sessionsService.createSession(userId, iat);
+
     return { accessToken, refreshToken };
   },
 

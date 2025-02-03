@@ -7,6 +7,7 @@ import { authService } from './auth-service.js';
 import { usersQueryRepo } from '../features/users/users-query-repo.js';
 import { usersService } from '../features/users/users-service.js';
 import { httpCodeByResult, RESULT_STATUS } from '../common/types/result-status-codes.js';
+import { sessionsService } from '../features/sessions/sessions-service.js';
 
 export const authController = {
   sendConfirmation: async (req: Request, res: Response) => {
@@ -88,7 +89,7 @@ export const authController = {
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   },
 
-  checkPassword: async (req: Request, res: Response, next: NextFunction) => {
+  verifyPassword: async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
@@ -97,7 +98,7 @@ export const authController = {
 
     const { loginOrEmail, password } = req.body;
 
-    const isPasswordCorrect = await authService.checkPassword(loginOrEmail, password);
+    const isPasswordCorrect = await authService.verifyPassword(loginOrEmail, password);
     if (!isPasswordCorrect) {
       res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Incorrect login/password' });
       return;
@@ -107,7 +108,16 @@ export const authController = {
   },
 
   issueJwtPair: async (req: Request, res: Response) => {
-    const { accessToken, refreshToken } = await authService.issueJwtPair(req.body.loginOrEmail);
+    // этот middleware следует либо за проверкой пароля из тела запроса либо за валидацией refresh-токена из cookie
+    let userId: string;
+    if (!req.body.loginOrEmail) {
+      userId = res.locals.userId;
+    } else {
+      const user = await usersQueryRepo.findUser(req.body.loginOrEmail);
+      userId = user!.id;
+    }
+
+    const { accessToken, refreshToken } = await authService.issueJwtPair(userId);
 
     const cookieExpiration = new Date();
     cookieExpiration.setFullYear(new Date().getFullYear() + 1);
@@ -123,7 +133,7 @@ export const authController = {
       .json({ accessToken });
   },
 
-  verifyJwt: async (req: Request, res: Response, next: NextFunction) => {
+  verifyAccessJwt: async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -138,24 +148,58 @@ export const authController = {
       return;
     }
 
-    try {
-      const jwtPayload = authService.verifyJwt(token);
-
-      if (!jwtPayload) {
-        res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid access token' });
-        return;
-      }
-
-      res.locals.jwtPayload = jwtPayload;
-      next();
-    } catch {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Access token verification failed' });
+    const jwtPayload = authService.verifyJwt(token);
+    if (!jwtPayload) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid access token' });
+      return;
     }
+
+    const { userId } = jwtPayload;
+    res.locals.userId = userId;
+
+    next();
+  },
+
+  verifyRefreshJwt: async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.token;
+
+    if (!refreshToken) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid authorization method' });
+      return;
+    }
+
+    const jwtPayload = authService.verifyJwt(refreshToken);
+    if (!jwtPayload) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid access token' });
+      return;
+    }
+
+    const { userId, iat } = jwtPayload;
+    const isSessionActive = await sessionsService.verifySession(userId, iat);
+
+    if (isSessionActive.status !== RESULT_STATUS.SUCCESS) {
+      res.status(httpCodeByResult(isSessionActive.status)).json({ error: 'Invalid access token' });
+      return;
+    }
+
+    res.locals.userId = userId;
+    res.locals.iat = iat;
+
+    next();
+  },
+
+  logout: async (req: Request, res: Response) => {
+    const userId = res.locals.userId;
+    const iat = res.locals.iat;
+
+    await sessionsService.deleteSession(userId, iat);
+
+    res.status(HTTP_STATUS.NO_CONTENT_204).end();
   },
 
   getCurrentUser: async (req: Request, res: Response) => {
-    const jwtPayload = res.locals.jwtPayload;
-    const user = await usersQueryRepo.getCurrentUser(jwtPayload.userId);
+    const userId = res.locals.userId;
+    const user = await usersQueryRepo.getCurrentUser(userId);
     if (!user) {
       res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'User not found' });
       return;
@@ -163,7 +207,7 @@ export const authController = {
     res.status(HTTP_STATUS.OK_200).json(user);
   },
 
-  basicAuth: async (req: Request, res: Response, next: NextFunction) => {
+  verifyBasicAuth: async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {

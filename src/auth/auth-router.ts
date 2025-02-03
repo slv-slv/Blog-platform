@@ -9,11 +9,15 @@ authRouter.post(
   '/login',
   authValidator.loginOrEmail,
   authValidator.authPassword,
-  authController.checkPassword,
+  authController.verifyPassword,
   authController.issueJwtPair,
 );
 
-authRouter.get('/me', authController.verifyJwt, authController.getCurrentUser);
+authRouter.post('/refresh-token', authController.verifyRefreshJwt, authController.issueJwtPair);
+
+authRouter.post('/logout', authController.verifyRefreshJwt, authController.logout);
+
+authRouter.get('/me', authController.verifyAccessJwt, authController.getCurrentUser);
 
 authRouter.post(
   '/registration',
