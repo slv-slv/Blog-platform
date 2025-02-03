@@ -9,6 +9,7 @@ import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { usersColl } from '../../features/users/users-repo.js';
 import { sessionsColl } from '../../features/sessions/sessions-repo.js';
+import { JwtPayloadType } from '../../auth/auth-types.js';
 
 beforeAll(async () => {
   await mongoClient.connect();
@@ -93,7 +94,7 @@ describe('LOGIN', () => {
     const { accessToken } = response.body;
     expect(jwt.verify(accessToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
     const payload = jwt.verify(accessToken, SETTINGS.JWT_PRIVATE_KEY!);
-    const { userId } = payload as jwt.JwtPayload;
+    const { userId } = payload as JwtPayloadType;
     expect(userId).toEqual(newUser._id.toString());
   });
 
@@ -112,7 +113,7 @@ describe('LOGIN', () => {
     const refreshToken = tokenCookie.split('; ')[0].split('=')[1];
     expect(jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
     const payload = jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!);
-    const { userId, iat } = payload as jwt.JwtPayload;
+    const { userId, iat } = payload as JwtPayloadType;
     expect(userId).toEqual(newUser._id.toString());
 
     const session = await sessionsColl.findOne({ userId });
