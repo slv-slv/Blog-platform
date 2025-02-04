@@ -1,11 +1,7 @@
 import { MongoClient } from 'mongodb';
 
-export class MongoCluster {
-  private client: MongoClient;
-
-  constructor(url: string) {
-    this.client = new MongoClient(url);
-  }
+export class MongoService {
+  private client: MongoClient = new MongoClient('mongodb://0.0.0.0:27017');
 
   getDb(dbName: string) {
     return this.client.db(dbName);
@@ -15,8 +11,9 @@ export class MongoCluster {
   //   return this.client.db(dbName).collection(collectionName);
   // }
 
-  async run() {
+  async run(url: string) {
     try {
+      this.client = new MongoClient(url);
       await this.client.connect();
       await this.client.db('admin').command({ ping: 1 });
     } catch {

@@ -4,6 +4,7 @@ import { mongoCluster } from './infrastructure/db/db.js';
 
 try {
   await mongoCluster.run();
+  // await mongoService.run(SETTINGS.MONGO_URL);
   app.listen(SETTINGS.PORT, () => {
     console.log('Server started in port ' + SETTINGS.PORT);
   });
