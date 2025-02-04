@@ -30,9 +30,9 @@ describe('LOGIN', () => {
     hash: hash,
     createdAt: new Date().toISOString(),
     confirmation: {
-      status: CONFIRMATION_STATUS.CONFIRMED,
+      status: CONFIRMATION_STATUS.NOT_CONFIRMED,
       code: crypto.randomUUID(),
-      expiration: null,
+      expiration: new Date().toISOString(),
     },
   };
 
@@ -72,19 +72,19 @@ describe('LOGIN', () => {
       .expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
-  it('should return 200 status code if credentials are correct', async () => {
+  it('should return 401 status code if user is not confirmed', async () => {
     await request(app)
       .post('/auth/login')
       .send({ loginOrEmail: newUser.login, password })
-      .expect(HTTP_STATUS.OK_200);
-
-    await request(app)
-      .post('/auth/login')
-      .send({ loginOrEmail: newUser.email, password })
-      .expect(HTTP_STATUS.OK_200);
+      .expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
-  it('should return valid access token in response body', async () => {
+  it('should return valid access token for confirmed user', async () => {
+    await usersColl.updateOne(
+      { _id: newUser._id },
+      { $set: { 'confirmation.status': CONFIRMATION_STATUS.CONFIRMED, 'confirmation.expiration': null } },
+    );
+
     const response = await request(app)
       .post('/auth/login')
       .send({ loginOrEmail: newUser.login, password })

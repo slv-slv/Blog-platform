@@ -33,12 +33,6 @@ export class AuthController {
       return;
     }
 
-    if (await usersService.isConfirmed(email)) {
-      res
-        .status(HTTP_STATUS.BAD_REQUEST_400)
-        .json({ errorsMessages: [{ message: 'Email already confirmed', field: 'email' }] });
-    }
-
     await usersService.registerUser(login, email, password);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
@@ -54,7 +48,6 @@ export class AuthController {
 
     if (!(await usersQueryRepo.findUser(email))) {
       res
-        // 404 отсутствует в ТЗ из Swagger
         .status(HTTP_STATUS.BAD_REQUEST_400)
         .json({ errorsMessages: [{ message: 'Incorrect email', field: 'email' }] });
     }
@@ -101,6 +94,16 @@ export class AuthController {
     const isPasswordCorrect = await authService.verifyPassword(loginOrEmail, password);
     if (!isPasswordCorrect) {
       res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Incorrect login/password' });
+      return;
+    }
+
+    next();
+  }
+
+  async checkConfirmation(req: Request, res: Response, next: NextFunction) {
+    const { loginOrEmail } = req.body;
+    if (!(await usersQueryRepo.isConfirmed(loginOrEmail))) {
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Email not confirmed' });
       return;
     }
 

@@ -80,11 +80,9 @@ export class UsersQueryRepo extends Repository<UserDbType> {
     return { email, login, userId };
   }
 
-  async isConfirmed(email: string): Promise<boolean> {
-    const user = await this.collection.findOne(
-      { email },
-      { projection: { _id: 0, 'confirmation.status': 1 } },
-    );
+  async isConfirmed(loginOrEmail: string): Promise<boolean> {
+    const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
+    const user = await this.collection.findOne(filter, { projection: { _id: 0, 'confirmation.status': 1 } });
     if (!user) {
       return false;
     }

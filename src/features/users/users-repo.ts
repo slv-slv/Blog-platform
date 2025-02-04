@@ -21,20 +21,19 @@ export class UsersRepo extends Repository<UserDbType> {
     return { id, login, email, createdAt };
   }
 
-  async updateConfirmationCode(email: string, code: string, expiration: string): Promise<boolean> {
-    const updateResult = await this.collection.updateOne(
+  async updateConfirmationCode(email: string, code: string, expiration: string): Promise<void> {
+    await this.collection.updateOne(
       { email },
       { $set: { 'confirmation.code': code, 'confirmation.expiration': expiration } },
     );
-    return updateResult.matchedCount > 0;
   }
 
-  async confirmUser(code: string): Promise<boolean> {
-    const updateResult = await this.collection.updateOne(
+  async confirmUser(code: string): Promise<void> {
+    await this.collection.updateOne(
       { 'confirmation.code': code },
       { $set: { 'confirmation.status': CONFIRMATION_STATUS.CONFIRMED, 'confirmation.expiration': null } },
     );
-    return updateResult.modifiedCount > 0; // Будет false если пользователь не найден или уже подтвержден
+    // return updateResult.modifiedCount > 0; // Будет false если пользователь не найден или уже подтвержден
   }
 
   async deleteUser(id: string): Promise<boolean> {

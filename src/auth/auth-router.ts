@@ -10,6 +10,7 @@ authRouter.post(
   authValidator.loginOrEmail,
   authValidator.authPassword,
   authController.verifyPassword,
+  authController.checkConfirmation,
   authController.issueJwtPair,
 );
 

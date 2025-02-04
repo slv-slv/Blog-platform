@@ -42,11 +42,13 @@ class UsersService {
     const hours = currentDate.getHours();
     const expiration = new Date(currentDate.setHours(hours + SETTINGS.CODE_LIFETIME_HOURS)).toISOString();
 
-    const isUpdated = await usersRepo.updateConfirmationCode(email, code, expiration);
+    await usersRepo.updateConfirmationCode(email, code, expiration);
 
-    if (!isUpdated) {
-      return null;
-    }
+    // const isUpdated = await usersRepo.updateConfirmationCode(email, code, expiration);
+
+    // if (!isUpdated) {
+    //   return null;
+    // }
 
     // await emailService.sendConfirmation(email, code);
 
@@ -64,11 +66,11 @@ class UsersService {
       };
     }
 
-    if (confirmationInfo.status === CONFIRMATION_STATUS.CONFIRMED && confirmationInfo.expiration === null) {
+    if (confirmationInfo.status === CONFIRMATION_STATUS.CONFIRMED) {
       return {
         status: RESULT_STATUS.BAD_REQUEST,
         errorMessage: 'Bad Request',
-        extensions: [{ message: 'Invalid confirmation code', field: 'code' }],
+        extensions: [{ message: 'Email already confirmed', field: 'code' }],
         data: null,
       };
     }
