@@ -1,6 +1,5 @@
 import request from 'supertest';
-import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
-import { SETTINGS } from '../../settings.js';
+import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
 import { CONFIRMATION_STATUS, UserDbType } from '../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../app.js';
@@ -8,12 +7,12 @@ import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { usersColl } from '../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
-  await mongoClient.connect();
-  await mongoCluster.dropDb(SETTINGS.DB_NAME);
+  await mongoCluster.run();
+  await mongoCluster.dropDb(dbName);
 });
 
 afterAll(async () => {
-  await mongoClient.close();
+  await mongoCluster.stop();
 });
 
 describe('RESEND CONFIRMATION', () => {

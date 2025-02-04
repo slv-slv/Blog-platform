@@ -1,7 +1,7 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
+import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { CONFIRMATION_STATUS, UserDbType } from '../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
@@ -11,12 +11,12 @@ import { JwtPayloadType } from '../../auth/auth-types.js';
 import { sessionsColl, usersColl } from '../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
-  await mongoClient.connect();
-  await mongoCluster.dropDb(SETTINGS.DB_NAME);
+  await mongoCluster.run();
+  await mongoCluster.dropDb(dbName);
 });
 
 afterAll(async () => {
-  await mongoClient.close();
+  await mongoCluster.stop();
 });
 
 describe('LOGIN', () => {
@@ -30,9 +30,9 @@ describe('LOGIN', () => {
     hash: hash,
     createdAt: new Date().toISOString(),
     confirmation: {
-      status: CONFIRMATION_STATUS.NOT_CONFIRMED,
+      status: CONFIRMATION_STATUS.CONFIRMED,
       code: crypto.randomUUID(),
-      expiration: new Date().toISOString(),
+      expiration: null,
     },
   };
 
@@ -73,6 +73,16 @@ describe('LOGIN', () => {
   });
 
   it('should return 401 status code if user is not confirmed', async () => {
+    await usersColl.updateOne(
+      { _id: newUser._id },
+      {
+        $set: {
+          'confirmation.status': CONFIRMATION_STATUS.NOT_CONFIRMED,
+          'confirmation.expiration': new Date().toISOString(),
+        },
+      },
+    );
+
     await request(app)
       .post('/auth/login')
       .send({ loginOrEmail: newUser.login, password })
@@ -107,10 +117,13 @@ describe('LOGIN', () => {
     expect(cookies).toBeDefined;
 
     const cookiesArray = Array.isArray(cookies) ? cookies : [cookies];
+
     const tokenCookie = cookiesArray.find((cookie: string) => cookie.startsWith('refreshToken='));
     expect(tokenCookie).toBeDefined;
+
     const refreshToken = tokenCookie.split('; ')[0].split('=')[1];
     expect(jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
+
     const payload = jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!);
     const { userId, iat } = payload as JwtPayloadType;
     expect(userId).toEqual(newUser._id.toString());

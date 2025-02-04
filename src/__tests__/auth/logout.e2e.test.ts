@@ -1,6 +1,6 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
+import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../app.js';
@@ -9,12 +9,12 @@ import { JwtPayloadType } from '../../auth/auth-types.js';
 import { sessionsColl } from '../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
-  await mongoClient.connect();
-  await mongoCluster.dropDb(SETTINGS.DB_NAME);
+  await mongoCluster.run();
+  await mongoCluster.dropDb(dbName);
 });
 
 afterAll(async () => {
-  await mongoClient.close();
+  await mongoCluster.stop();
 });
 
 describe('LOGOUT', () => {

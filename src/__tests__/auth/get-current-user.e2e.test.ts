@@ -1,6 +1,6 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import { mongoClient, mongoCluster } from '../../infrastructure/db/db.js';
+import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { CONFIRMATION_STATUS, UserDbType } from '../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
@@ -9,12 +9,12 @@ import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { usersColl } from '../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
-  await mongoClient.connect();
-  await mongoCluster.dropDb(SETTINGS.DB_NAME);
+  await mongoCluster.run();
+  await mongoCluster.dropDb(dbName);
 });
 
 afterAll(async () => {
-  await mongoClient.close();
+  await mongoCluster.stop();
 });
 
 describe('GET CURRENT USER', () => {
@@ -35,15 +35,15 @@ describe('GET CURRENT USER', () => {
   const secret = SETTINGS.JWT_PRIVATE_KEY!;
   const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
 
-  it('should return unauthorized 401 if no token sent', async () => {
+  it('should return 401 status code if no token sent', async () => {
     await request(app).get('/auth/me').expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
-  it('should return unauthorized 401 for not existing user', async () => {
+  it('should return 401 status code for not existing user', async () => {
     await request(app).get('/auth/me').auth(token, { type: 'bearer' }).expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
-  it('should return unauthorized 401 if invalid token sent', async () => {
+  it('should return 401 status code if invalid token sent', async () => {
     await usersColl.insertOne(newUser);
     const fakeToken = jwt.sign(payload, 'somefakesecretkey', { algorithm: 'HS256', expiresIn: '15 m' });
 
