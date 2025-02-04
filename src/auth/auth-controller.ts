@@ -173,15 +173,15 @@ export class AuthController {
 
     const jwtPayload = authService.verifyJwt(refreshToken);
     if (!jwtPayload) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid access token' });
+      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid refresh token' });
       return;
     }
 
     const { userId, iat } = jwtPayload;
-    const isSessionActive = await sessionsService.verifySession(userId, iat);
+    const result = await sessionsService.verifySession(userId, iat);
 
-    if (isSessionActive.status !== RESULT_STATUS.SUCCESS) {
-      res.status(httpCodeByResult(isSessionActive.status)).json({ error: 'Invalid access token' });
+    if (result.status !== RESULT_STATUS.SUCCESS) {
+      res.status(httpCodeByResult(result.status)).json({ error: 'Invalid refresh token' });
       return;
     }
 

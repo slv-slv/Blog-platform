@@ -12,9 +12,9 @@ class SessionsService {
   }
 
   async verifySession(userId: string, iat: number): Promise<Result<null>> {
-    const result = await sessionsRepo.verifySession(userId, iat);
+    const isSessionActive = await sessionsRepo.verifySession(userId, iat);
 
-    if (!result) {
+    if (!isSessionActive) {
       return {
         status: RESULT_STATUS.UNAUTHORIZED,
         errorMessage: 'Unauthorized',
