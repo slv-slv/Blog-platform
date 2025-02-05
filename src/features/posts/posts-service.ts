@@ -1,7 +1,7 @@
-import { postsRepo } from '../../infrastructure/db/repositories.js';
+import { postsRepo } from '../../instances/repositories.js';
 import { PostType } from './posts-types.js';
 
-class PostsService {
+export class PostsService {
   async createPost(
     title: string,
     shortDescription: string,
@@ -20,5 +20,3 @@ class PostsService {
     return await postsRepo.deletePost(id);
   }
 }
-
-export const postsService = new PostsService();

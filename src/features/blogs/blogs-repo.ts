@@ -1,5 +1,5 @@
 import { BlogType } from './blogs-types.js';
-import { Repository } from '../../infrastructure/db/repository-class.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
 export class BlogsRepo extends Repository<BlogType> {
   async createBlog(

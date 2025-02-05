@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { CurrentUserType } from '../users/users-types.js';
 import { CommentType, CommentDbType } from './comments-types.js';
-import { Repository } from '../../infrastructure/db/repository-class.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
 export class CommentsRepo extends Repository<CommentDbType> {
   async createComment(

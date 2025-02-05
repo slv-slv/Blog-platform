@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { ConfirmationInfo, CONFIRMATION_STATUS, UserDbType, UserType } from './users-types.js';
-import { Repository } from '../../infrastructure/db/repository-class.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
 export class UsersRepo extends Repository<UserDbType> {
   async createUser(

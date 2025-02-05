@@ -1,6 +1,6 @@
 import { PostsPaginatedViewModel, PostType } from './posts-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { Repository } from '../../infrastructure/db/repository-class.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
 export class PostsQueryRepo extends Repository<PostType> {
   async getPosts(pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedViewModel> {

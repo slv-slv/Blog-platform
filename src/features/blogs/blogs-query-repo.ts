@@ -1,6 +1,6 @@
 import { BlogsPaginatedViewModel, BlogType } from './blogs-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { Repository } from '../../infrastructure/db/repository-class.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
 export class BlogsQueryRepo extends Repository<BlogType> {
   async getAllBlogs(

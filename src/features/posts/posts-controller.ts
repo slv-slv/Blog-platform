@@ -1,12 +1,11 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { formatErrors } from '../../common/utils/format-errors.js';
-import { postsService } from './posts-service.js';
 import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { commentsService } from '../comments/comments-service.js';
 import { httpCodeByResult } from '../../common/types/result-status-codes.js';
-import { commentsQueryRepo, postsQueryRepo, usersQueryRepo } from '../../infrastructure/db/repositories.js';
+import { commentsQueryRepo, postsQueryRepo, usersQueryRepo } from '../../instances/repositories.js';
+import { commentsService, postsService } from '../../instances/services.js';
 
 class PostsController {
   async getAllPosts(req: Request, res: Response) {

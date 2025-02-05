@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { blogsService } from './blogs-service.js';
 import { formatErrors } from '../../common/utils/format-errors.js';
 import { getPagingParams } from '../../common/utils/get-paging-params.js';
-import { postsService } from '../posts/posts-service.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { blogsQueryRepo, postsQueryRepo } from '../../infrastructure/db/repositories.js';
+import { blogsQueryRepo, postsQueryRepo } from '../../instances/repositories.js';
+import { blogsService, postsService } from '../../instances/services.js';
 
 class BlogsController {
   async getAllBlogs(req: Request, res: Response) {

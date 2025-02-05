@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { CommentType, CommentDbType, CommentsPaginatedViewModel } from './comments-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { Repository } from '../../infrastructure/db/repository-class.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
 export class CommentsQueryRepo extends Repository<CommentDbType> {
   async getCommentsForPost(postId: string, pagingParams: PagingParams): Promise<CommentsPaginatedViewModel> {

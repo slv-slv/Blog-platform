@@ -1,10 +1,10 @@
 import { Result } from '../../common/types/result-object.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
-import { commentsRepo } from '../../infrastructure/db/repositories.js';
+import { commentsRepo } from '../../instances/repositories.js';
 import { CurrentUserType } from '../users/users-types.js';
 import { CommentType } from './comments-types.js';
 
-class CommentsService {
+export class CommentsService {
   async createComment(postId: string, content: string, user: CurrentUserType): Promise<Result<CommentType>> {
     const createdAt = new Date().toISOString();
     const newComment = await commentsRepo.createComment(postId, content, user, createdAt);
@@ -49,5 +49,3 @@ class CommentsService {
     };
   }
 }
-
-export const commentsService = new CommentsService();

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { SETTINGS } from '../settings.js';
 import { JwtPairType, JwtPayloadType } from './auth-types.js';
 import { sessionsService } from '../features/sessions/sessions-service.js';
-import { usersQueryRepo } from '../infrastructure/db/repositories.js';
+import { usersQueryRepo } from '../instances/repositories.js';
 
 export class AuthService {
   async hashPassword(password: string): Promise<string> {
@@ -40,5 +40,3 @@ export class AuthService {
     }
   }
 }
-
-export const authService = new AuthService();

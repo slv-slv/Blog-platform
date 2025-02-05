@@ -3,11 +3,10 @@ import { validationResult } from 'express-validator';
 import { formatErrors } from '../common/utils/format-errors.js';
 import { SETTINGS } from '../settings.js';
 import { HTTP_STATUS } from '../common/types/http-status-codes.js';
-import { authService } from './auth-service.js';
-import { usersService } from '../features/users/users-service.js';
+import { authService, usersService } from '../instances/services.js';
 import { httpCodeByResult, RESULT_STATUS } from '../common/types/result-status-codes.js';
 import { sessionsService } from '../features/sessions/sessions-service.js';
-import { usersQueryRepo } from '../infrastructure/db/repositories.js';
+import { usersQueryRepo } from '../instances/repositories.js';
 
 export class AuthController {
   async sendConfirmation(req: Request, res: Response) {

@@ -1,7 +1,7 @@
-import { blogsRepo } from '../../infrastructure/db/repositories.js';
+import { blogsRepo } from '../../instances/repositories.js';
 import { BlogType } from './blogs-types.js';
 
-class BlogsService {
+export class BlogsService {
   async createBlog(name: string, description: string, websiteUrl: string): Promise<BlogType> {
     const createdAt = new Date().toISOString();
     const isMembership = false;
@@ -16,5 +16,3 @@ class BlogsService {
     return await blogsRepo.deleteBlog(id);
   }
 }
-
-export const blogsService = new BlogsService();

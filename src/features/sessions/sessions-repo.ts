@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { SessionDbType } from './sessions-types.js';
-import { Repository } from '../../infrastructure/db/repository-class.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
 export class SessionsRepo extends Repository<SessionDbType> {
   async createSession(userId: string, iat: number): Promise<void> {

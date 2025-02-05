@@ -8,7 +8,7 @@ import {
   UsersPaginatedViewModel,
   UserType,
 } from './users-types.js';
-import { Repository } from '../../infrastructure/db/repository-class.js';
+import { Repository } from '../../infrastructure/db/repository.js';
 
 export class UsersQueryRepo extends Repository<UserDbType> {
   async getAllUsers(

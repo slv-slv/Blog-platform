@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { formatErrors } from '../../common/utils/format-errors.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { commentsService } from './comments-service.js';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
-import { commentsQueryRepo } from '../../infrastructure/db/repositories.js';
+import { commentsQueryRepo } from '../../instances/repositories.js';
+import { commentsService } from '../../instances/services.js';
 
 class CommentsController {
   async findComment(req: Request, res: Response) {

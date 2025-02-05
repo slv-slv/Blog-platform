@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { blogsQueryRepo } from '../../infrastructure/db/repositories.js';
+import { blogsQueryRepo } from '../../instances/repositories.js';
 
 export const postsValidator = {
   blogExists: body('blogId')

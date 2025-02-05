@@ -1,13 +1,13 @@
 import { CONFIRMATION_STATUS, UserType } from './users-types.js';
-import { authService } from '../../auth/auth-service.js';
+import { authService } from '../../instances/services.js';
 import { emailService } from '../../infrastructure/email/email-service.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { Result } from '../../common/types/result-object.js';
 import crypto from 'crypto';
 import { SETTINGS } from '../../settings.js';
-import { usersQueryRepo, usersRepo } from '../../infrastructure/db/repositories.js';
+import { usersQueryRepo, usersRepo } from '../../instances/repositories.js';
 
-class UsersService {
+export class UsersService {
   async createUser(login: string, email: string, password: string): Promise<UserType> {
     const hash = await authService.hashPassword(password);
     const createdAt = new Date().toISOString();
@@ -111,5 +111,3 @@ class UsersService {
     return await usersQueryRepo.isConfirmed(email);
   }
 }
-
-export const usersService = new UsersService();

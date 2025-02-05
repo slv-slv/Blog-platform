@@ -1,6 +1,6 @@
 import { PostType } from './posts-types.js';
-import { Repository } from '../../infrastructure/db/repository-class.js';
-import { blogsQueryRepo } from '../../infrastructure/db/repositories.js';
+import { Repository } from '../../infrastructure/db/repository.js';
+import { blogsQueryRepo } from '../../instances/repositories.js';
 
 export class PostsRepo extends Repository<PostType> {
   async createPost(
