@@ -1,34 +1,20 @@
 import request from 'supertest';
 import { ObjectId } from 'mongodb';
-import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
-import { SETTINGS } from '../../settings.js';
+import { dbName, initDbUrl, mongoCluster, mongoMemoryServer } from '../../infrastructure/db/db.js';
 import { app } from '../../app.js';
 import { CONFIRMATION_STATUS, UserDbType } from '../../features/users/users-types.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { usersColl } from '../../infrastructure/db/collections.js';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-
-// let mongoServer: MongoMemoryServer;
-
-// beforeAll(async () => {
-//   mongoServer = await MongoMemoryServer.create();
-//   const uri = mongoServer.getUri();
-//   await mongoService.run(uri);
-//   await mongoService.dropDb(SETTINGS.DB_NAME);
-// });
-
-// afterAll(async () => {
-//   await mongoService.stop();
-//   await mongoServer.stop();
-// });
 
 beforeAll(async () => {
+  await initDbUrl();
   await mongoCluster.run();
   await mongoCluster.dropDb(dbName);
 });
 
 afterAll(async () => {
   await mongoCluster.stop();
+  await mongoMemoryServer.stop();
 });
 
 describe('CONFIRM USER', () => {

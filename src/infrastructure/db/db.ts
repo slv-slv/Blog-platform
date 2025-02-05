@@ -1,23 +1,20 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { SETTINGS } from '../../settings.js';
 import { MongoCluster } from './mongo-cluster.js';
-import { MongoService } from './mongo-service.js';
 
-let uri = SETTINGS.MONGO_URL;
-export let dbName = SETTINGS.DB_NAME;
+export const dbName = SETTINGS.DB_NAME;
 
-// if (process.env.NODE_ENV === 'test') {
-//   const mongoMemoryServer = await MongoMemoryServer.create();
-//   uri = mongoMemoryServer.getUri();
-// }
+export let mongoMemoryServer: MongoMemoryServer;
+export let mongoUrl = SETTINGS.MONGO_URL;
 
-export const mongoCluster = new MongoCluster(uri);
+console.log('NODE_ENV: ' + process.env.NODE_ENV);
 
-if (process.env.NODE_ENV === 'test') {
-  dbName = 'test';
-}
+export const initDbUrl = async () => {
+  if (process.env.NODE_ENV === 'test') {
+    mongoMemoryServer = await MongoMemoryServer.create();
+    mongoUrl = mongoMemoryServer.getUri();
+  }
+};
 
+export const mongoCluster = new MongoCluster(mongoUrl);
 export const db = mongoCluster.getDb(dbName);
-
-// export const mongoService = new MongoService();
-// export const db = mongoService.getDb(SETTINGS.DB_NAME);

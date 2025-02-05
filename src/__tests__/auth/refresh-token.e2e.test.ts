@@ -1,6 +1,6 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
+import { dbName, initDbUrl, mongoCluster, mongoMemoryServer } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../app.js';
@@ -9,12 +9,14 @@ import { JwtPayloadType } from '../../auth/auth-types.js';
 import { sessionsColl } from '../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
+  await initDbUrl();
   await mongoCluster.run();
   await mongoCluster.dropDb(dbName);
 });
 
 afterAll(async () => {
   await mongoCluster.stop();
+  await mongoMemoryServer.stop();
 });
 
 describe('REFRESH-TOKEN', () => {

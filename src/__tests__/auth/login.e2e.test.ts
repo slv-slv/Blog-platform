@@ -1,7 +1,7 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
+import { dbName, initDbUrl, mongoCluster, mongoMemoryServer } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { CONFIRMATION_STATUS, UserDbType } from '../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
@@ -11,12 +11,14 @@ import { JwtPayloadType } from '../../auth/auth-types.js';
 import { sessionsColl, usersColl } from '../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
+  await initDbUrl();
   await mongoCluster.run();
   await mongoCluster.dropDb(dbName);
 });
 
 afterAll(async () => {
   await mongoCluster.stop();
+  await mongoMemoryServer.stop();
 });
 
 describe('LOGIN', () => {
