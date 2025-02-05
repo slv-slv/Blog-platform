@@ -97,6 +97,9 @@ export class AuthController {
       return;
     }
 
+    const user = await usersQueryRepo.findUser(req.body.loginOrEmail);
+    res.locals.userId = user!.id; // для выпуска пары токенов дальше по цепочке middleware
+
     next();
   }
 
@@ -111,15 +114,7 @@ export class AuthController {
   }
 
   async issueJwtPair(req: Request, res: Response) {
-    // этот middleware следует либо за проверкой пароля из тела запроса либо за валидацией refresh-токена из cookie
-    let userId: string;
-    if (!req.body.loginOrEmail) {
-      userId = res.locals.userId;
-    } else {
-      const user = await usersQueryRepo.findUser(req.body.loginOrEmail);
-      userId = user!.id;
-    }
-
+    const userId = res.locals.userId;
     const { accessToken, refreshToken } = await authService.issueJwtPair(userId);
 
     const cookieExpiration = new Date();
@@ -131,7 +126,7 @@ export class AuthController {
         expires: cookieExpiration,
         httpOnly: true,
         secure: true,
-        // sameSite: 'strict',
+        sameSite: 'strict',
       })
       .json({ accessToken });
   }
@@ -197,7 +192,15 @@ export class AuthController {
 
     await sessionsService.deleteSession(userId, iat);
 
-    res.status(HTTP_STATUS.NO_CONTENT_204).end();
+    res
+      .cookie('refreshToken', '', {
+        expires: new Date(0),
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      })
+      .status(HTTP_STATUS.NO_CONTENT_204)
+      .end();
   }
 
   async getCurrentUser(req: Request, res: Response) {
