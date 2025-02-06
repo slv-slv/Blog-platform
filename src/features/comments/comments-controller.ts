@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
-import { formatErrors } from '../../common/utils/format-errors.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { commentsQueryRepo } from '../../instances/repositories.js';
@@ -18,12 +16,6 @@ export class CommentsController {
   }
 
   async updateComment(req: Request, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
-      return;
-    }
-
     const id = req.params.commentId;
     const comment = await commentsQueryRepo.findComment(id);
     if (!comment) {
@@ -57,8 +49,7 @@ export class CommentsController {
       return;
     }
 
-    const jwtPayload = res.locals.jwtPayload;
-    const tokenOwnerId = jwtPayload.userId;
+    const tokenOwnerId = res.locals.userId;
     if (tokenOwnerId !== comment.commentatorInfo.userId) {
       res.status(HTTP_STATUS.FORBIDDEN_403).json({ error: 'Access denied' });
       return;

@@ -2,7 +2,9 @@ import { Router } from 'express';
 import { pagingValidator } from '../../common/validation/paging-params-validation.js';
 import { blogsValidator } from './blogs-validation.js';
 import { postsValidator } from '../posts/posts-validation.js';
-import { authController, blogsController } from '../../instances/controllers.js';
+import { blogsController } from '../../instances/controllers.js';
+import { getValidationResult } from '../../common/middleware/get-validation-result.js';
+import { basicAuth } from '../../security/middleware/basic-auth.js';
 
 export const blogsRouter = Router();
 
@@ -18,10 +20,11 @@ blogsRouter.get(
 
 blogsRouter.post(
   '/',
-  authController.verifyBasicAuth,
+  basicAuth,
   blogsValidator.blogName,
   blogsValidator.blogDescription,
   blogsValidator.blogUrl,
+  getValidationResult,
   blogsController.createBlog,
 );
 
@@ -29,14 +32,15 @@ blogsRouter.get('/:id', blogsController.findBlog);
 
 blogsRouter.put(
   '/:id',
-  authController.verifyBasicAuth,
+  basicAuth,
   blogsValidator.blogName,
   blogsValidator.blogDescription,
   blogsValidator.blogUrl,
+  getValidationResult,
   blogsController.updateBlog,
 );
 
-blogsRouter.delete('/:id', authController.verifyBasicAuth, blogsController.deleteBlog);
+blogsRouter.delete('/:id', basicAuth, blogsController.deleteBlog);
 
 blogsRouter.get(
   '/:blogId/posts',
@@ -49,9 +53,10 @@ blogsRouter.get(
 
 blogsRouter.post(
   '/:blogId/posts',
-  authController.verifyBasicAuth,
+  basicAuth,
   postsValidator.postTitle,
   postsValidator.postDescription,
   postsValidator.postContent,
+  getValidationResult,
   blogsController.createPostForBlog,
 );

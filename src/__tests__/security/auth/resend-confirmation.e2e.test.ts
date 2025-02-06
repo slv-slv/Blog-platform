@@ -1,3 +1,4 @@
+import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
 import { CONFIRMATION_STATUS, UserDbType } from '../../../features/users/users-types.js';
@@ -7,7 +8,6 @@ import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
 import { usersColl } from '../../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
-  // await initDb();
   await mongoCluster.run();
   await mongoCluster.dropDb(dbName);
 });

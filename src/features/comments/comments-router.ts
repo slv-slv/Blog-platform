@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { commentsValidator } from './comments-validation.js';
-import { authController, commentsController } from '../../instances/controllers.js';
+import { commentsController } from '../../instances/controllers.js';
+import { getValidationResult } from '../../common/middleware/get-validation-result.js';
+import { checkAccessToken } from '../../security/middleware/check-access-token.js';
 
 export const commentsRouter = Router();
 
@@ -8,9 +10,10 @@ commentsRouter.get('/:id', commentsController.findComment);
 
 commentsRouter.put(
   '/:commentId',
-  authController.verifyAccessJwt,
+  checkAccessToken,
   commentsValidator.content,
+  getValidationResult,
   commentsController.updateComment,
 );
 
-commentsRouter.delete('/:commentId', authController.verifyAccessJwt, commentsController.deleteComment);
+commentsRouter.delete('/:commentId', checkAccessToken, commentsController.deleteComment);

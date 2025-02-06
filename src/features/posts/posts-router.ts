@@ -3,6 +3,9 @@ import { postsValidator } from './posts-validation.js';
 import { pagingValidator } from '../../common/validation/paging-params-validation.js';
 import { commentsValidator } from '../comments/comments-validation.js';
 import { authController, postsController } from '../../instances/controllers.js';
+import { getValidationResult } from '../../common/middleware/get-validation-result.js';
+import { basicAuth } from '../../security/middleware/basic-auth.js';
+import { checkAccessToken } from '../../security/middleware/check-access-token.js';
 
 export const postsRouter = Router();
 
@@ -19,25 +22,27 @@ postsRouter.get('/:id', postsController.findPost);
 
 postsRouter.post(
   '/',
-  authController.verifyBasicAuth,
+  basicAuth,
   postsValidator.blogExists,
   postsValidator.postTitle,
   postsValidator.postDescription,
   postsValidator.postContent,
+  getValidationResult,
   postsController.createPost,
 );
 
 postsRouter.put(
   '/:id',
-  authController.verifyBasicAuth,
+  basicAuth,
   postsValidator.blogExists,
   postsValidator.postTitle,
   postsValidator.postDescription,
   postsValidator.postContent,
+  getValidationResult,
   postsController.updatePost,
 );
 
-postsRouter.delete('/:id', authController.verifyBasicAuth, postsController.deletePost);
+postsRouter.delete('/:id', basicAuth, postsController.deletePost);
 
 postsRouter.get(
   '/:postId/comments',
@@ -50,7 +55,8 @@ postsRouter.get(
 
 postsRouter.post(
   '/:postId/comments',
-  authController.verifyAccessJwt,
+  checkAccessToken,
   commentsValidator.content,
+  getValidationResult,
   postsController.createComment,
 );

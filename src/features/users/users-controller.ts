@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
-import { formatErrors } from '../../common/utils/format-errors.js';
 import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { usersQueryRepo } from '../../instances/repositories.js';
@@ -16,12 +14,6 @@ export class UsersController {
   }
 
   async createUser(req: Request, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
-      return;
-    }
-
     const { login, password, email } = req.body;
 
     if (!(await usersService.isLoginUnique(login))) {

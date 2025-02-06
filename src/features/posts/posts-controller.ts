@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
-import { formatErrors } from '../../common/utils/format-errors.js';
 import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { httpCodeByResult } from '../../common/types/result-status-codes.js';
@@ -25,24 +23,12 @@ export class PostsController {
   }
 
   async createPost(req: Request, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
-      return;
-    }
-
     const { title, shortDescription, content, blogId } = req.body;
     const newPost = await postsService.createPost(title, shortDescription, content, blogId);
     res.status(HTTP_STATUS.CREATED_201).json(newPost);
   }
 
   async updatePost(req: Request, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
-      return;
-    }
-
     const id = req.params.id;
     const { title, shortDescription, content } = req.body;
     const isUpdated = await postsService.updatePost(id, title, shortDescription, content);
@@ -77,12 +63,6 @@ export class PostsController {
   }
 
   async createComment(req: Request, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
-      return;
-    }
-
     const postId = req.params.postId;
     const post = await postsQueryRepo.findPost(postId);
     if (!post) {
@@ -93,8 +73,7 @@ export class PostsController {
     const content = req.body.content;
 
     // Как-то по другому извлекать userId из access-токена?
-    const jwtPayload = res.locals.jwtPayload;
-    const userId = jwtPayload.userId;
+    const userId = res.locals.userId;
     const user = await usersQueryRepo.getCurrentUser(userId);
     if (!user) {
       res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'User not found' });

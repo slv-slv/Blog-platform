@@ -1,3 +1,4 @@
+import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -12,7 +13,6 @@ import { JwtAcessPayload, JwtRefreshPayload } from '../../../security/auth/auth-
 import { sessionsQueryRepo } from '../../../instances/repositories.js';
 
 beforeAll(async () => {
-  // await initDb();
   await mongoCluster.run();
   await mongoCluster.dropDb(dbName);
 });

@@ -1,21 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
-import { formatErrors } from '../../common/utils/format-errors.js';
-import { SETTINGS } from '../../settings.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { authService, sessionsService, usersService } from '../../instances/services.js';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { usersQueryRepo } from '../../instances/repositories.js';
-import { JwtRefreshPayload } from './auth-types.js';
 
 export class AuthController {
-  async sendConfirmation(req: Request, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
-      return;
-    }
-
+  async registration(req: Request, res: Response) {
     const { login, email, password } = req.body;
 
     if (!(await usersService.isLoginUnique(login))) {
@@ -36,13 +26,7 @@ export class AuthController {
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
-  async resendConfirmation(req: Request, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
-      return;
-    }
-
+  async registrationEmailResending(req: Request, res: Response) {
     const { email } = req.body;
 
     if (!(await usersQueryRepo.findUser(email))) {
@@ -61,13 +45,7 @@ export class AuthController {
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
-  async confirmRegistration(req: Request, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
-      return;
-    }
-
+  async registrationConfirmation(req: Request, res: Response) {
     const code = req.body.code;
     const confirmationResult = await usersService.confirmUser(code);
 
@@ -81,38 +59,7 @@ export class AuthController {
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
-  async verifyPassword(req: Request, res: Response, next: NextFunction) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(HTTP_STATUS.BAD_REQUEST_400).json({ errorsMessages: formatErrors(errors) });
-      return;
-    }
-
-    const { loginOrEmail, password } = req.body;
-
-    const isPasswordCorrect = await authService.verifyPassword(loginOrEmail, password);
-    if (!isPasswordCorrect) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Incorrect login/password' });
-      return;
-    }
-
-    const user = await usersQueryRepo.findUser(req.body.loginOrEmail);
-    res.locals.userId = user!.id; // для выпуска пары токенов дальше по цепочке middleware
-
-    next();
-  }
-
-  async checkConfirmation(req: Request, res: Response, next: NextFunction) {
-    const { loginOrEmail } = req.body;
-    if (!(await usersQueryRepo.isConfirmed(loginOrEmail))) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Email not confirmed' });
-      return;
-    }
-
-    next();
-  }
-
-  async issueJwtPair(req: Request, res: Response) {
+  async login(req: Request, res: Response) {
     const userId = res.locals.userId;
     const deviceId = res.locals.deviceId ?? crypto.randomUUID();
     const deviceName = req.get('User-Agent') ?? 'unknown';
@@ -134,34 +81,7 @@ export class AuthController {
       .json({ accessToken });
   }
 
-  async verifyAccessJwt(req: Request, res: Response, next: NextFunction) {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Authorization header missing' });
-      return;
-    }
-
-    const [authMethod, token] = authHeader.split(' ');
-
-    if (authMethod !== 'Bearer' || !token) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid authorization method' });
-      return;
-    }
-
-    const payload = authService.verifyJwt(token);
-    if (!payload) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid access token' });
-      return;
-    }
-
-    const { userId } = payload;
-    res.locals.userId = userId;
-
-    next();
-  }
-
-  async verifyRefreshJwt(req: Request, res: Response, next: NextFunction) {
+  async refreshToken(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
@@ -208,28 +128,7 @@ export class AuthController {
       .end();
   }
 
-  async checkNoSession(req: Request, res: Response, next: NextFunction) {
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
-      return next();
-    }
-    const payload = authService.verifyJwt(refreshToken);
-    if (!payload) {
-      return next();
-    }
-
-    const { userId, deviceId, iat } = payload;
-
-    const result = await sessionsService.verifySession(userId, deviceId, iat);
-
-    if (result.status !== RESULT_STATUS.SUCCESS) {
-      return next();
-    }
-
-    res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'The user is already logged in' });
-  }
-
-  async getCurrentUser(req: Request, res: Response) {
+  async me(req: Request, res: Response) {
     const userId = res.locals.userId;
     const user = await usersQueryRepo.getCurrentUser(userId);
     if (!user) {
@@ -237,29 +136,5 @@ export class AuthController {
       return;
     }
     res.status(HTTP_STATUS.OK_200).json(user);
-  }
-
-  async verifyBasicAuth(req: Request, res: Response, next: NextFunction) {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Authorization header missing' });
-      return;
-    }
-
-    const [authMethod, credsBase64] = authHeader.split(' ');
-    const credentials = SETTINGS.CREDENTIALS;
-
-    if (authMethod !== 'Basic' || !credsBase64) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid authorization method' });
-      return;
-    }
-
-    if (!credentials.map((user) => user.base64).includes(credsBase64)) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Incorrect credentials' });
-      return;
-    }
-
-    next();
   }
 }

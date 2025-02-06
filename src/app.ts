@@ -1,15 +1,14 @@
 import express from 'express';
 import { Request, Response } from 'express';
+import cookieParser from 'cookie-parser';
 import { blogsRouter } from './features/blogs/blogs-router.js';
 import { postsRouter } from './features/posts/posts-router.js';
 import { usersRouter } from './features/users/users-router.js';
 import { commentsRouter } from './features/comments/comments-router.js';
 import { authRouter } from './security/auth/auth-router.js';
-import { securityRouter } from './security/security-router.js';
 import { mongoCluster } from './infrastructure/db/db.js';
 import { SETTINGS } from './settings.js';
-import cookieParser from 'cookie-parser';
-import { securityController } from './instances/controllers.js';
+import { securityRouter } from './security/sessions/sessions-router.js';
 
 export const app = express();
 
