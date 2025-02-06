@@ -24,6 +24,16 @@ export class SessionsQueryRepo extends Repository<SessionDbType> {
     };
   }
 
+  async getDeviceOwner(deviceId: string): Promise<string | null> {
+    const session = await this.collection.findOne({ 'devices.id': deviceId }, { projection: { userId: 1 } });
+
+    if (!session) {
+      return null;
+    }
+
+    return session.userId;
+  }
+
   async getActiveDevices(userId: string): Promise<DeviceViewModel[]> {
     const userSessions = await this.collection.findOne({ userId }, { projection: { devices: 1 } });
 

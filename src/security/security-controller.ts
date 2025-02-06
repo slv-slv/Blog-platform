@@ -19,6 +19,7 @@ export class SecurityController {
   }
 
   async deleteDevice(req: Request, res: Response) {
+    const userId = res.locals.userId;
     const deviceId = req.params.deviceId;
 
     if (!(await sessionsQueryRepo.findDevice(deviceId))) {
@@ -26,7 +27,9 @@ export class SecurityController {
       return;
     }
 
-    if (deviceId !== res.locals.deviceId) {
+    const deviceOwner = await sessionsQueryRepo.getDeviceOwner(deviceId);
+
+    if (deviceOwner !== userId) {
       res.status(HTTP_STATUS.FORBIDDEN_403).end();
       return;
     }
