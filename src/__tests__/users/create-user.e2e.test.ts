@@ -1,18 +1,18 @@
 import request from 'supertest';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { dbName, initDbUrl, mongoCluster, mongoMemoryServer } from '../../infrastructure/db/db.js';
+import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
 
 describe('CREATE USER', () => {
   beforeAll(async () => {
-    await initDbUrl();
+    // await initDb();
     await mongoCluster.run();
     await mongoCluster.dropDb(dbName);
   });
 
   afterAll(async () => {
     await mongoCluster.stop();
-    await mongoMemoryServer.stop();
+    // await mongoMemoryServer.stop();
   });
 
   const newUser = {

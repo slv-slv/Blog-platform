@@ -1,24 +1,25 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { dbName, initDbUrl, mongoCluster, mongoMemoryServer } from '../../infrastructure/db/db.js';
-import { SETTINGS } from '../../settings.js';
-import { CONFIRMATION_STATUS, UserDbType } from '../../features/users/users-types.js';
+import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
+import { SETTINGS } from '../../../settings.js';
+import { CONFIRMATION_STATUS, UserDbType } from '../../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
-import { app } from '../../app.js';
-import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { JwtPayloadType } from '../../auth/auth-types.js';
-import { sessionsColl, usersColl } from '../../infrastructure/db/collections.js';
+import { app } from '../../../app.js';
+import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
+import { sessionsColl, usersColl } from '../../../infrastructure/db/collections.js';
+import { JwtAcessPayload, JwtRefreshPayload } from '../../../security/auth/auth-types.js';
+import { sessionsQueryRepo } from '../../../instances/repositories.js';
 
 beforeAll(async () => {
-  await initDbUrl();
+  // await initDb();
   await mongoCluster.run();
   await mongoCluster.dropDb(dbName);
 });
 
 afterAll(async () => {
   await mongoCluster.stop();
-  await mongoMemoryServer.stop();
+  // await mongoMemoryServer.stop();
 });
 
 describe('LOGIN', () => {
@@ -105,7 +106,7 @@ describe('LOGIN', () => {
     const { accessToken } = response.body;
     expect(jwt.verify(accessToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
     const payload = jwt.verify(accessToken, SETTINGS.JWT_PRIVATE_KEY!);
-    const { userId } = payload as JwtPayloadType;
+    const { userId } = payload as JwtAcessPayload;
     expect(userId).toEqual(newUser._id.toString());
   });
 
@@ -127,11 +128,13 @@ describe('LOGIN', () => {
     expect(jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
 
     const payload = jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!);
-    const { userId, iat } = payload as JwtPayloadType;
+    // console.log(payload);
+    const { userId, deviceId, iat } = payload as JwtRefreshPayload;
     expect(userId).toEqual(newUser._id.toString());
 
-    const session = await sessionsColl.findOne({ userId });
+    await sessionsColl.findOne({ userId, devices: { $elemMatch: { id: deviceId, iat } } });
+    const session = await sessionsQueryRepo.verifySession(userId, deviceId, iat);
     expect(session).not.toBeNull;
-    expect(session!.iat).toEqual(iat);
+    // console.log(session);
   });
 });

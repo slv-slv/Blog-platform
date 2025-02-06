@@ -6,7 +6,7 @@ import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-statu
 import { commentsQueryRepo } from '../../instances/repositories.js';
 import { commentsService } from '../../instances/services.js';
 
-class CommentsController {
+export class CommentsController {
   async findComment(req: Request, res: Response) {
     const id = req.params.id;
     const comment = await commentsQueryRepo.findComment(id);
@@ -73,5 +73,3 @@ class CommentsController {
     res.status(httpCodeByResult(isDeleted.status)).end();
   }
 }
-
-export const commentsController = new CommentsController();

@@ -6,7 +6,7 @@ import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { usersQueryRepo } from '../../instances/repositories.js';
 import { usersService } from '../../instances/services.js';
 
-class UsersController {
+export class UsersController {
   async getAllUsers(req: Request, res: Response) {
     const searchLoginTerm = (req.query.searchLoginTerm as string) ?? null;
     const searchEmailTerm = (req.query.searchEmailTerm as string) ?? null;
@@ -52,5 +52,3 @@ class UsersController {
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 }
-
-export const usersController = new UsersController();

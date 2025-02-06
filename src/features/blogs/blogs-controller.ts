@@ -6,7 +6,7 @@ import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { blogsQueryRepo, postsQueryRepo } from '../../instances/repositories.js';
 import { blogsService, postsService } from '../../instances/services.js';
 
-class BlogsController {
+export class BlogsController {
   async getAllBlogs(req: Request, res: Response) {
     const searchNameTerm = (req.query.searchNameTerm as string) ?? null;
     const pagingParams = getPagingParams(req);
@@ -97,5 +97,3 @@ class BlogsController {
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 }
-
-export const blogsController = new BlogsController();

@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { formatErrors } from '../common/utils/format-errors.js';
-import { SETTINGS } from '../settings.js';
-import { HTTP_STATUS } from '../common/types/http-status-codes.js';
-import { authService, usersService } from '../instances/services.js';
-import { httpCodeByResult, RESULT_STATUS } from '../common/types/result-status-codes.js';
-import { sessionsService } from '../features/sessions/sessions-service.js';
-import { usersQueryRepo } from '../instances/repositories.js';
+import { formatErrors } from '../../common/utils/format-errors.js';
+import { SETTINGS } from '../../settings.js';
+import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
+import { authService, sessionsService, usersService } from '../../instances/services.js';
+import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
+import { usersQueryRepo } from '../../instances/repositories.js';
+import { JwtRefreshPayload } from './auth-types.js';
 
 export class AuthController {
   async sendConfirmation(req: Request, res: Response) {
@@ -114,7 +114,11 @@ export class AuthController {
 
   async issueJwtPair(req: Request, res: Response) {
     const userId = res.locals.userId;
-    const { accessToken, refreshToken } = await authService.issueJwtPair(userId);
+    const deviceId = res.locals.deviceId ?? crypto.randomUUID();
+    const deviceName = req.get('User-Agent') ?? 'unknown';
+    const ip = req.ip!;
+
+    const { accessToken, refreshToken } = await authService.issueJwtPair(userId, deviceId, deviceName, ip);
 
     const cookieExpiration = new Date();
     cookieExpiration.setFullYear(new Date().getFullYear() + 1);
@@ -145,13 +149,13 @@ export class AuthController {
       return;
     }
 
-    const jwtPayload = authService.verifyJwt(token);
-    if (!jwtPayload) {
+    const payload = authService.verifyJwt(token);
+    if (!payload) {
       res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid access token' });
       return;
     }
 
-    const { userId } = jwtPayload;
+    const { userId } = payload;
     res.locals.userId = userId;
 
     next();
@@ -165,14 +169,14 @@ export class AuthController {
       return;
     }
 
-    const jwtPayload = authService.verifyJwt(refreshToken);
-    if (!jwtPayload) {
+    const payload = authService.verifyJwt(refreshToken);
+    if (!payload) {
       res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid refresh token' });
       return;
     }
 
-    const { userId, iat } = jwtPayload;
-    const result = await sessionsService.verifySession(userId, iat);
+    const { userId, deviceId, iat } = payload;
+    const result = await sessionsService.verifySession(userId, deviceId, iat);
 
     if (result.status !== RESULT_STATUS.SUCCESS) {
       res.status(httpCodeByResult(result.status)).json({ error: 'Invalid refresh token' });
@@ -180,16 +184,18 @@ export class AuthController {
     }
 
     res.locals.userId = userId;
-    res.locals.iat = iat;
+    res.locals.deviceId = deviceId;
+    // res.locals.iat = iat;
 
     next();
   }
 
   async logout(req: Request, res: Response) {
-    const userId = res.locals.userId;
-    const iat = res.locals.iat;
+    // const userId = res.locals.userId;
+    const deviceId = res.locals.deviceId;
+    // const iat = res.locals.iat;
 
-    await sessionsService.deleteSession(userId, iat);
+    await sessionsService.deleteDevice(deviceId);
 
     res
       .cookie('refreshToken', '', {
@@ -200,6 +206,27 @@ export class AuthController {
       })
       .status(HTTP_STATUS.NO_CONTENT_204)
       .end();
+  }
+
+  async checkNoSession(req: Request, res: Response, next: NextFunction) {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      return next();
+    }
+    const payload = authService.verifyJwt(refreshToken);
+    if (!payload) {
+      return next();
+    }
+
+    const { userId, deviceId, iat } = payload;
+
+    const result = await sessionsService.verifySession(userId, deviceId, iat);
+
+    if (result.status !== RESULT_STATUS.SUCCESS) {
+      return next();
+    }
+
+    res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'The user is already logged in' });
   }
 
   async getCurrentUser(req: Request, res: Response) {
@@ -236,5 +263,3 @@ export class AuthController {
     next();
   }
 }
-
-export const authController = new AuthController();

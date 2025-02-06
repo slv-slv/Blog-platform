@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import { blogsController } from './blogs-controller.js';
-import { authController } from '../../auth/auth-controller.js';
 import { pagingValidator } from '../../common/validation/paging-params-validation.js';
 import { blogsValidator } from './blogs-validation.js';
 import { postsValidator } from '../posts/posts-validation.js';
+import { authController, blogsController } from '../../instances/controllers.js';
 
 export const blogsRouter = Router();
 

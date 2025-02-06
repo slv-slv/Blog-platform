@@ -7,7 +7,7 @@ import { httpCodeByResult } from '../../common/types/result-status-codes.js';
 import { commentsQueryRepo, postsQueryRepo, usersQueryRepo } from '../../instances/repositories.js';
 import { commentsService, postsService } from '../../instances/services.js';
 
-class PostsController {
+export class PostsController {
   async getAllPosts(req: Request, res: Response) {
     const pagingParams = getPagingParams(req);
     const posts = await postsQueryRepo.getPosts(pagingParams);
@@ -104,5 +104,3 @@ class PostsController {
     res.status(httpCodeByResult(result.status)).json(result.data);
   }
 }
-
-export const postsController = new PostsController();

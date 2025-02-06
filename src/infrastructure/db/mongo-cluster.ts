@@ -20,7 +20,7 @@ export class MongoCluster {
     try {
       await this.client.connect();
       await this.client.db('admin').command({ ping: 1 });
-      console.log(`Connected to MongoDB: ${mongoUrl}`);
+      // console.log(`Connected to MongoDB: ${mongoUrl}`);
     } catch {
       await this.client.close();
     }

@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import { authController } from './auth-controller.js';
 import { authValidator } from './auth-validation.js';
-import { usersValidator } from '../features/users/users-validation.js';
+import { usersValidator } from '../../features/users/users-validation.js';
+import { authController } from '../../instances/controllers.js';
 
 export const authRouter = Router();
 
 authRouter.post(
   '/login',
+  authController.checkNoSession,
   authValidator.loginOrEmail,
   authValidator.authPassword,
   authController.verifyPassword,
