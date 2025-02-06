@@ -7,14 +7,14 @@ export class RequestLogsService {
   }
 
   async shouldBlockRequest(ip: string, url: string): Promise<boolean> {
-    const countIntervalSeconds = 10;
-    const maxRequestsPerInterval = 5;
+    const interval = 10;
+    const maxRequests = 5;
 
     const date = new Date();
-    date.setSeconds(date.getSeconds() - countIntervalSeconds);
+    date.setSeconds(date.getSeconds() - interval);
     const fromTime = date.getTime();
 
     const count = await requestLogsRepo.countRequests(ip, url, fromTime);
-    return count > maxRequestsPerInterval;
+    return count >= maxRequests;
   }
 }
