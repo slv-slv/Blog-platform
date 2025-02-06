@@ -15,7 +15,6 @@ export const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(securityController.ipThrottler);
 
 app.use('/blogs', blogsRouter);
 app.use('/posts', postsRouter);
