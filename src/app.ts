@@ -9,11 +9,13 @@ import { securityRouter } from './security/security-router.js';
 import { mongoCluster } from './infrastructure/db/db.js';
 import { SETTINGS } from './settings.js';
 import cookieParser from 'cookie-parser';
+import { securityController } from './instances/controllers.js';
 
 export const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(securityController.ipThrottler);
 
 app.use('/blogs', blogsRouter);
 app.use('/posts', postsRouter);
