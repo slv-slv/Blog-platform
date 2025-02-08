@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "watch": "tsc -w",
-    "dev": "node --watch --inspect dist/index.js",
+    "go": "node --watch --inspect dist/index.js",
     "jest": "NODE_OPTIONS=--experimental-vm-modules jest -i",
     "test": "vitest run"
   },
