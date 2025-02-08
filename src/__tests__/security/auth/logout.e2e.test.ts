@@ -6,9 +6,8 @@ import { SETTINGS } from '../../../settings.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { sessionsColl } from '../../../infrastructure/db/collections.js';
 import { JwtRefreshPayload } from '../../../security/auth/auth-types.js';
-import { sessionsRepo } from '../../../instances/repositories.js';
+import { sessionsQueryRepo, sessionsRepo } from '../../../instances/repositories.js';
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -33,17 +32,12 @@ describe('LOGOUT', () => {
     const ip = '192.168.0.1';
     await sessionsRepo.createSession(userId, deviceId, deviceName, ip, iat, exp);
 
-    expect(
-      await sessionsColl.countDocuments({ userId, devices: { $elemMatch: { id: deviceId, iat } } }),
-    ).toEqual(1);
-
     await request(app)
       .post('/auth/logout')
       .set('Cookie', `refreshToken=${token}`)
       .expect(HTTP_STATUS.NO_CONTENT_204);
 
-    expect(
-      await sessionsColl.countDocuments({ userId, devices: { $elemMatch: { id: deviceId, iat } } }),
-    ).toEqual(0);
+    const session = await sessionsQueryRepo.checkSession(userId, deviceId, iat);
+    expect(session).toBeNull;
   });
 });

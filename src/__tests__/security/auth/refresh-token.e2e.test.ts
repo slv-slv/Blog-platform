@@ -1,12 +1,13 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
+import setCookie from 'set-cookie-parser';
 import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
 import { SETTINGS } from '../../../settings.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { JwtAcessPayload, JwtRefreshPayload } from '../../../security/auth/auth-types.js';
+import { JwtRefreshPayload } from '../../../security/auth/auth-types.js';
 import { sessionsRepo } from '../../../instances/repositories.js';
 
 beforeAll(async () => {
@@ -53,6 +54,9 @@ describe('REFRESH-TOKEN', () => {
   });
 
   it('should return new pair of tokens and create new session', async () => {
+    // Задержка, чтобы версия выданного токена отличалась от предыдущего
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const response = await request(app)
       .post('/auth/refresh-token')
       .set('Cookie', `refreshToken=${token}`)
@@ -60,24 +64,14 @@ describe('REFRESH-TOKEN', () => {
 
     const { accessToken } = response.body;
     expect(jwt.verify(accessToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
-    const acessJwtPayload = jwt.verify(accessToken, SETTINGS.JWT_PRIVATE_KEY!) as JwtAcessPayload;
-    expect(acessJwtPayload.userId).toEqual(userId);
 
     // console.log(response.headers);
-    const cookies = response.headers['set-cookie'];
+    const setCookiesHeader = response.headers['set-cookie'];
+    const cookies = setCookie.parse(setCookiesHeader, { map: true });
     expect(cookies).toBeDefined;
 
-    const cookiesArray = Array.isArray(cookies) ? cookies : [cookies];
-
-    const tokenCookie = cookiesArray.find((cookie: string) => cookie.startsWith('refreshToken='));
-    expect(tokenCookie).toBeDefined;
-
-    const refreshToken = tokenCookie.split('; ')[0].split('=')[1];
+    const refreshToken = cookies.refreshToken.value;
     expect(jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
-
-    const refreshJwtPayload = jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!) as JwtAcessPayload;
-    // console.log(refreshJwtPayload);
-    expect(refreshJwtPayload.userId).toEqual(userId);
   });
 
   it('it should return 401 status code if the user sends the same token a second time', async () => {

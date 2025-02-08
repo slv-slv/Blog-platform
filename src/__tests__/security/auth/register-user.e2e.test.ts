@@ -35,7 +35,7 @@ describe('REGISTER USER', () => {
     expect(insertedUser).toHaveProperty('createdAt');
     expect(new Date(insertedUser!.createdAt)).toBeInstanceOf(Date);
     expect(insertedUser).toHaveProperty('confirmation');
-    expect(insertedUser!.confirmation.status).toEqual(CONFIRMATION_STATUS.NOT_CONFIRMED);
+    expect(insertedUser!.confirmation.status).toBe(CONFIRMATION_STATUS.NOT_CONFIRMED);
     expect(insertedUser!.confirmation.code).not.toBeNull;
     expect(insertedUser!.confirmation.expiration).not.toBeNull;
   });

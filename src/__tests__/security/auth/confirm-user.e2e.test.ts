@@ -6,6 +6,7 @@ import { app } from '../../../app.js';
 import { CONFIRMATION_STATUS, UserDbType } from '../../../features/users/users-types.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
 import { usersColl } from '../../../infrastructure/db/collections.js';
+import { usersRepo } from '../../../instances/repositories.js';
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -66,7 +67,7 @@ describe('CONFIRM USER', () => {
 
     const confirmedUser = await usersColl.findOne({ email: newUser.email });
 
-    expect(confirmedUser!.confirmation.status).toEqual(CONFIRMATION_STATUS.CONFIRMED);
+    expect(confirmedUser!.confirmation.status).toBe(CONFIRMATION_STATUS.CONFIRMED);
     expect(confirmedUser!.confirmation.expiration).toBeNull;
   });
 

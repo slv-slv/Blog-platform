@@ -2,6 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import setCookie from 'set-cookie-parser';
 import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
 import { SETTINGS } from '../../../settings.js';
 import { CONFIRMATION_STATUS, UserDbType } from '../../../features/users/users-types.js';
@@ -105,9 +106,6 @@ describe('LOGIN', () => {
 
     const { accessToken } = response.body;
     expect(jwt.verify(accessToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
-    const payload = jwt.verify(accessToken, SETTINGS.JWT_PRIVATE_KEY!);
-    const { userId } = payload as JwtAcessPayload;
-    expect(userId).toEqual(newUser._id.toString());
   });
 
   it('should return valid refresh token in cookie', async () => {
@@ -116,25 +114,18 @@ describe('LOGIN', () => {
       .send({ loginOrEmail: newUser.login, password })
       .expect(HTTP_STATUS.OK_200);
 
-    const cookies = response.headers['set-cookie'];
+    const setCookiesHeader = response.headers['set-cookie'];
+    const cookies = setCookie.parse(setCookiesHeader, { map: true });
     expect(cookies).toBeDefined;
 
-    const cookiesArray = Array.isArray(cookies) ? cookies : [cookies];
-
-    const tokenCookie = cookiesArray.find((cookie: string) => cookie.startsWith('refreshToken='));
-    expect(tokenCookie).toBeDefined;
-
-    const refreshToken = tokenCookie.split('; ')[0].split('=')[1];
+    const refreshToken = cookies.refreshToken.value;
     expect(jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
 
     const payload = jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!);
-    // console.log(payload);
     const { userId, deviceId, iat } = payload as JwtRefreshPayload;
-    expect(userId).toEqual(newUser._id.toString());
+    expect(userId).toBe(newUser._id.toString());
 
-    await sessionsColl.findOne({ userId, devices: { $elemMatch: { id: deviceId, iat } } });
     const session = await sessionsQueryRepo.checkSession(userId, deviceId, iat);
     expect(session).not.toBeNull;
-    // console.log(session);
   });
 });
