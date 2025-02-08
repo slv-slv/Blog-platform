@@ -5,6 +5,7 @@ import { authService, sessionsService } from '../../instances/services.js';
 
 export const checkRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
   const refreshToken = req.cookies.refreshToken;
+  // console.log('Сервер получил токен: ' + JSON.stringify(authService.verifyJwt(refreshToken)));
 
   if (!refreshToken) {
     res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid authorization method' });

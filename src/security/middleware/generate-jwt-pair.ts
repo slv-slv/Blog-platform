@@ -9,11 +9,6 @@ export const generateJwtPair = async (req: Request, res: Response, next: NextFun
 
   const { accessToken, refreshToken } = await authService.generateJwtPair(userId, deviceId, deviceName, ip);
 
-  // console.log('Сгенерировал: ' + accessToken);
-  console.log('payload: ' + authService.verifyJwt(accessToken));
-  // console.log('Сгенерировал: ' + refreshToken);
-  console.log('payload: ' + authService.verifyJwt(refreshToken));
-
   res.locals.accessToken = accessToken;
   res.locals.refreshToken = refreshToken;
 

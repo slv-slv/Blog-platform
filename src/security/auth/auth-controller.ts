@@ -62,6 +62,7 @@ export class AuthController {
   async sendJwtPair(req: Request, res: Response) {
     const accessToken = res.locals.accessToken;
     const refreshToken = res.locals.refreshToken;
+    // console.log('Сервер отправил токен: ' + JSON.stringify(authService.verifyJwt(refreshToken)));
 
     const cookieExpiration = new Date();
     cookieExpiration.setFullYear(new Date().getFullYear() + 1);
