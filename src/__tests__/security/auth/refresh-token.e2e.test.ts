@@ -54,7 +54,7 @@ describe('REFRESH-TOKEN', () => {
   });
 
   it('should return new pair of tokens and create new session', async () => {
-    // Задержка, чтобы версия выданного токена отличалась от предыдущего
+    // Задержка, чтобы версия выданного токена отличалась от предыдущего токена пользователя
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const response = await request(app)

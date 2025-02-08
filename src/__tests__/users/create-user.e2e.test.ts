@@ -28,6 +28,7 @@ describe('CREATE USER', () => {
       .send(newUser)
       .expect(HTTP_STATUS.CREATED_201);
 
+    expect(Object.keys(response.body)).toHaveLength(4);
     expect(response.body).toHaveProperty('id');
     expect(response.body).toHaveProperty('login', newUser.login);
     expect(response.body).toHaveProperty('email', newUser.email);
