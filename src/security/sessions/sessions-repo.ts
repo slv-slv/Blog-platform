@@ -1,8 +1,7 @@
-import { ObjectId } from 'mongodb';
-import { DeviceType, SessionDbType } from './sessions-types.js';
+import { DeviceType, SessionType } from './sessions-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
 
-export class SessionsRepo extends Repository<SessionDbType> {
+export class SessionsRepo extends Repository<SessionType> {
   async createSession(
     userId: string,
     deviceId: string,
@@ -21,8 +20,8 @@ export class SessionsRepo extends Repository<SessionDbType> {
 
     const session = await this.collection.findOne({ userId });
     if (!session) {
-      const _id = new ObjectId();
-      const insertResult = await this.collection.insertOne({ _id, userId, devices: [newDevice] });
+      // const _id = new ObjectId();
+      const insertResult = await this.collection.insertOne({ userId, devices: [newDevice] });
       // console.log(insertResult);
     } else {
       const updateResult = await this.collection.updateOne({ userId }, { $push: { devices: newDevice } });

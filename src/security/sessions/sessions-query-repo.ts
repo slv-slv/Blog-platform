@@ -1,7 +1,7 @@
-import { DeviceType, DeviceViewModel, SessionDbType } from './sessions-types.js';
+import { DeviceType, DeviceViewModel, SessionType } from './sessions-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
 
-export class SessionsQueryRepo extends Repository<SessionDbType> {
+export class SessionsQueryRepo extends Repository<SessionType> {
   async checkSession(userId: string, deviceId: string, iat: number): Promise<boolean> {
     const session = await this.collection.findOne({ userId, devices: { $elemMatch: { id: deviceId, iat } } });
     return session !== null;

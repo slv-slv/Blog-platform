@@ -5,12 +5,6 @@ export type SessionType = {
   devices: DeviceType[];
 };
 
-export type SessionDbType = {
-  _id: ObjectId;
-  userId: string;
-  devices: DeviceType[];
-};
-
 export type DeviceType = {
   id: string;
   name: string;
