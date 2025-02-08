@@ -8,6 +8,8 @@ import { checkNoSession } from '../middleware/check-no-session.js';
 import { checkCredentials } from '../middleware/check-credentials.js';
 import { checkConfirmation } from '../middleware/check-confirmation.js';
 import { checkAccessToken } from '../middleware/check-access-token.js';
+import { checkRefreshToken } from '../middleware/check-refresh-token.js';
+import { generateJwtPair } from '../middleware/generate-jwt-pair.js';
 
 export const authRouter = Router();
 
@@ -21,12 +23,13 @@ authRouter.post(
   getValidationResult,
   checkCredentials,
   checkConfirmation,
-  authController.login,
+  generateJwtPair,
+  authController.sendJwtPair,
 );
 
-authRouter.post('/refresh-token', authController.refreshToken, authController.login);
+authRouter.post('/refresh-token', checkRefreshToken, generateJwtPair, authController.sendJwtPair);
 
-authRouter.post('/logout', authController.refreshToken, authController.logout);
+authRouter.post('/logout', checkRefreshToken, authController.logout);
 
 authRouter.get('/me', checkAccessToken, authController.me);
 

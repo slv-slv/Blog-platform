@@ -133,7 +133,7 @@ describe('LOGIN', () => {
     expect(userId).toEqual(newUser._id.toString());
 
     await sessionsColl.findOne({ userId, devices: { $elemMatch: { id: deviceId, iat } } });
-    const session = await sessionsQueryRepo.verifySession(userId, deviceId, iat);
+    const session = await sessionsQueryRepo.checkSession(userId, deviceId, iat);
     expect(session).not.toBeNull;
     // console.log(session);
   });

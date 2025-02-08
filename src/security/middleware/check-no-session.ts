@@ -15,7 +15,7 @@ export const checkNoSession = async (req: Request, res: Response, next: NextFunc
 
   const { userId, deviceId, iat } = payload;
 
-  const result = await sessionsService.verifySession(userId, deviceId, iat);
+  const result = await sessionsService.checkSession(userId, deviceId, iat);
 
   if (result.status !== RESULT_STATUS.SUCCESS) {
     return next();

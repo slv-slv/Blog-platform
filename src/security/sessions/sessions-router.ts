@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { authController, sessionsController } from '../../instances/controllers.js';
+import { sessionsController } from '../../instances/controllers.js';
+import { checkRefreshToken } from '../middleware/check-refresh-token.js';
 
 export const securityRouter = Router();
 
-securityRouter.get('/devices', authController.refreshToken, sessionsController.getDevices);
+securityRouter.get('/devices', checkRefreshToken, sessionsController.getDevices);
 
-securityRouter.delete('/devices', authController.refreshToken, sessionsController.deleteOtherDevices);
+securityRouter.delete('/devices', checkRefreshToken, sessionsController.deleteOtherDevices);
 
-securityRouter.delete('/devices/:deviceId', authController.refreshToken, sessionsController.deleteDevice);
+securityRouter.delete('/devices/:deviceId', checkRefreshToken, sessionsController.deleteDevice);

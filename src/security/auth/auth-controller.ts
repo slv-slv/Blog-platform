@@ -59,13 +59,9 @@ export class AuthController {
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
-  async login(req: Request, res: Response) {
-    const userId = res.locals.userId;
-    const deviceId = res.locals.deviceId ?? crypto.randomUUID();
-    const deviceName = req.get('User-Agent') ?? 'unknown';
-    const ip = req.ip!;
-
-    const { accessToken, refreshToken } = await authService.issueJwtPair(userId, deviceId, deviceName, ip);
+  async sendJwtPair(req: Request, res: Response) {
+    const accessToken = res.locals.accessToken;
+    const refreshToken = res.locals.refreshToken;
 
     const cookieExpiration = new Date();
     cookieExpiration.setFullYear(new Date().getFullYear() + 1);
@@ -79,35 +75,6 @@ export class AuthController {
         sameSite: 'strict',
       })
       .json({ accessToken });
-  }
-
-  async refreshToken(req: Request, res: Response, next: NextFunction) {
-    const refreshToken = req.cookies.refreshToken;
-
-    if (!refreshToken) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid authorization method' });
-      return;
-    }
-
-    const payload = authService.verifyJwt(refreshToken);
-    if (!payload) {
-      res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Invalid refresh token' });
-      return;
-    }
-
-    const { userId, deviceId, iat } = payload;
-    const result = await sessionsService.verifySession(userId, deviceId, iat);
-
-    if (result.status !== RESULT_STATUS.SUCCESS) {
-      res.status(httpCodeByResult(result.status)).json({ error: 'Invalid refresh token' });
-      return;
-    }
-
-    res.locals.userId = userId;
-    res.locals.deviceId = deviceId;
-    // res.locals.iat = iat;
-
-    next();
   }
 
   async logout(req: Request, res: Response) {

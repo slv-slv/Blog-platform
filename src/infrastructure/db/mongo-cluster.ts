@@ -1,5 +1,4 @@
 import { MongoClient } from 'mongodb';
-import { mongoUrl } from './db.js';
 
 export class MongoCluster {
   private client: MongoClient;

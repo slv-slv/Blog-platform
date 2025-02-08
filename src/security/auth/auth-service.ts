@@ -19,7 +19,12 @@ export class AuthService {
     return await bcrypt.compare(password, hash);
   }
 
-  async issueJwtPair(userId: string, deviceId: string, deviceName: string, ip: string): Promise<JwtPairType> {
+  async generateJwtPair(
+    userId: string,
+    deviceId: string,
+    deviceName: string,
+    ip: string,
+  ): Promise<JwtPairType> {
     const jwtAccessPayload = { userId };
     const jwtRefreshPayload = { userId, deviceId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;

@@ -1,8 +1,8 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
-import { app } from '../../app.js';
-import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
+import { app } from '../../../app.js';
+import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
+import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
 
 beforeAll(async () => {
   await mongoCluster.run();
