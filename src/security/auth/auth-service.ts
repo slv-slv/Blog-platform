@@ -11,7 +11,7 @@ export class AuthService {
     return await bcrypt.hash(password, saltRounds);
   }
 
-  async verifyPassword(loginOrEmail: string, password: string): Promise<boolean> {
+  async checkCredentials(loginOrEmail: string, password: string): Promise<boolean> {
     const hash = await usersQueryRepo.getPasswordHash(loginOrEmail);
     if (!hash) {
       return false;

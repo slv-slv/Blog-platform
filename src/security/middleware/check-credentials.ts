@@ -6,8 +6,8 @@ import { usersQueryRepo } from '../../instances/repositories.js';
 export const checkCredentials = async (req: Request, res: Response, next: NextFunction) => {
   const { loginOrEmail, password } = req.body;
 
-  const isPasswordCorrect = await authService.verifyPassword(loginOrEmail, password);
-  if (!isPasswordCorrect) {
+  const isCorrect = await authService.checkCredentials(loginOrEmail, password);
+  if (!isCorrect) {
     res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Incorrect login/password' });
     return;
   }
