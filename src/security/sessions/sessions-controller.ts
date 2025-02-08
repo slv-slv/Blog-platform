@@ -1,8 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { sessionsQueryRepo, sessionsRepo } from '../../instances/repositories.js';
-import { requestLogsService, sessionsService } from '../../instances/services.js';
-import { request } from 'http';
+import { sessionsQueryRepo } from '../../instances/repositories.js';
+import { sessionsService } from '../../instances/services.js';
 
 export class SessionsController {
   async getDevices(req: Request, res: Response) {

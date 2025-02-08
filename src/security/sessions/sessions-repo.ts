@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { DeviceType, DeviceViewModel, SessionDbType } from './sessions-types.js';
+import { DeviceType, SessionDbType } from './sessions-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
 
 export class SessionsRepo extends Repository<SessionDbType> {
