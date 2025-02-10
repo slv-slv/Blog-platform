@@ -1,9 +1,7 @@
 import { Collection, Document } from 'mongodb';
 
-export class Repository<T extends Document> {
-  protected collection: Collection<T>;
-
-  constructor(collection: Collection<T>) {
+export abstract class Repository<T extends Document> {
+  constructor(protected collection: Collection<T>) {
     this.collection = collection;
   }
 }
