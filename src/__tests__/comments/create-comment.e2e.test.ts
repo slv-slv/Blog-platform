@@ -53,11 +53,15 @@ describe('CREATE COMMENT', () => {
 
     postId = post.id;
 
-    await request(app)
+    const response = await request(app)
       .post(`/posts/${postId}/comments`)
       .auth(accessToken, { type: 'bearer' })
       .send({ content: 'very long boring content' })
       .expect(HTTP_STATUS.CREATED_201);
+
+    expect(Object.keys(response.body)).toHaveLength(4);
+
+    expect(response.body.commentatorInfo.userId).toBe(userId);
   });
 
   it('should return 401 if no access token has been sent.', async () => {
