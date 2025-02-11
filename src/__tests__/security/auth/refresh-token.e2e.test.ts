@@ -27,18 +27,18 @@ describe('REFRESH-TOKEN', () => {
   const secret = SETTINGS.JWT_PRIVATE_KEY!;
   const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '20 s' });
 
-  it('should return 401 status code if no token sent', async () => {
+  it('should return 401 if no token sent', async () => {
     await request(app).post('/auth/refresh-token').expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
-  it('should return 401 status code for not existing session', async () => {
+  it('should return 401 for not existing session', async () => {
     await request(app)
       .post('/auth/refresh-token')
       .set('Cookie', `refreshToken=${token}`)
       .expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
-  it('should return 401 status code if an invalid token is sent', async () => {
+  it('should return 401 if an invalid token is sent', async () => {
     const { deviceId, iat, exp } = jwt.decode(token) as JwtRefreshPayload;
 
     const deviceName = 'Nokia 1100';
@@ -74,7 +74,7 @@ describe('REFRESH-TOKEN', () => {
     expect(jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!)).not.toThrow;
   });
 
-  it('it should return 401 status code if the user sends the same token a second time', async () => {
+  it('should return 401 if the user sends the same token a second time', async () => {
     await request(app)
       .post('/auth/refresh-token')
       .set('Cookie', `refreshToken=${token}`)
