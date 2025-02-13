@@ -110,6 +110,39 @@ export class UsersService {
     };
   }
 
+  async updatePassword(recoveryCode: string, newPassword: string): Promise<Result<null>> {
+    const passwordRecoveryInfo = await usersQueryRepo.getPasswordRecoveryInfo(recoveryCode);
+
+    if (!passwordRecoveryInfo) {
+      return {
+        status: RESULT_STATUS.BAD_REQUEST,
+        errorMessage: 'Bad Request',
+        extensions: [{ message: 'Invalid recovery code', field: 'recoveryCode' }],
+        data: null,
+      };
+    }
+
+    const expirationDate = new Date(passwordRecoveryInfo.expiration!);
+    const currentDate = new Date();
+
+    if (expirationDate < currentDate) {
+      return {
+        status: RESULT_STATUS.BAD_REQUEST,
+        errorMessage: 'Bad Request',
+        extensions: [{ message: 'The recovery code has expired', field: 'recoveryCode' }],
+        data: null,
+      };
+    }
+
+    const hash = await authService.hashPassword(newPassword);
+    await usersRepo.updatePassword(recoveryCode, hash);
+
+    return {
+      status: RESULT_STATUS.NO_CONTENT,
+      data: null,
+    };
+  }
+
   async deleteUser(id: string): Promise<boolean> {
     return await usersRepo.deleteUser(id);
   }

@@ -38,6 +38,13 @@ export class UsersRepo extends Repository<UserDbType> {
     );
   }
 
+  async updatePassword(recoveryCode: string, hash: string) {
+    await this.collection.updateOne(
+      { 'passwordRecovery.code': recoveryCode },
+      { $set: { hash, 'passwordRecovery.code': null, 'passwordRecovery.expiration': null } },
+    );
+  }
+
   async confirmUser(code: string): Promise<void> {
     await this.collection.updateOne(
       { 'confirmation.code': code },

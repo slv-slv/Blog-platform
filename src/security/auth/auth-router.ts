@@ -36,7 +36,7 @@ authRouter.get('/me', checkAccessToken, authController.me);
 authRouter.post(
   '/registration',
   usersValidator.login,
-  usersValidator.newPassword,
+  usersValidator.password,
   usersValidator.email,
   getValidationResult,
   authController.registration,
@@ -62,3 +62,5 @@ authRouter.post(
   getValidationResult,
   authController.passwordRecovery,
 );
+
+authRouter.post('/new-password', usersValidator.newPassword, getValidationResult, authController.newPassword);

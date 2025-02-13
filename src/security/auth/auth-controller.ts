@@ -110,10 +110,26 @@ export class AuthController {
     const { email } = req.body;
 
     if (!(await usersQueryRepo.findUser(email))) {
-      res.status(HTTP_STATUS.NO_CONTENT_204);
+      res.status(HTTP_STATUS.NO_CONTENT_204).end();
     }
 
     await usersService.sendRecoveryCode(email);
+    res.status(HTTP_STATUS.NO_CONTENT_204).end();
+  }
+
+  async newPassword(req: Request, res: Response) {
+    const newPassword = req.body.newPassword;
+    const recoveryCode = req.body.recoveryCode;
+
+    const passwordUpdateResult = await usersService.updatePassword(recoveryCode, newPassword);
+
+    if (passwordUpdateResult.status !== RESULT_STATUS.NO_CONTENT) {
+      res
+        .status(httpCodeByResult(passwordUpdateResult.status))
+        .json({ errorsMessages: passwordUpdateResult.extensions });
+      return;
+    }
+
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 }

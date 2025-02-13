@@ -24,7 +24,7 @@ export const usersValidator = {
     .matches('^[a-zA-Z0-9_-]*$')
     .withMessage('Invalid login'),
 
-  newPassword: body('password')
+  password: body('password')
     .exists()
     .withMessage('Password is required')
     .isString()
@@ -33,7 +33,18 @@ export const usersValidator = {
     .notEmpty()
     .withMessage('Password must not be empty')
     .isLength({ min: 6, max: 20 })
-    .withMessage('Email length must be between 6 and 20 characters'),
+    .withMessage('Password length must be between 6 and 20 characters'),
+
+  newPassword: body('newPassword')
+    .exists()
+    .withMessage('Password is required')
+    .isString()
+    .withMessage('Password must be a string')
+    .trim()
+    .notEmpty()
+    .withMessage('Password must not be empty')
+    .isLength({ min: 6, max: 20 })
+    .withMessage('Password length must be between 6 and 20 characters'),
 
   email: body('email')
     .exists()

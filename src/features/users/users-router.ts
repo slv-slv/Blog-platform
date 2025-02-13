@@ -23,7 +23,7 @@ usersRouter.post(
   '/',
   basicAuth,
   usersValidator.login,
-  usersValidator.newPassword,
+  usersValidator.password,
   usersValidator.email,
   getValidationResult,
   usersController.createUser,

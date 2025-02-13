@@ -4,6 +4,7 @@ import {
   CONFIRMATION_STATUS,
   ConfirmationInfo,
   CurrentUserType,
+  PasswordRecoveryInfo,
   UserDbType,
   UsersPaginatedViewModel,
   UserType,
@@ -98,6 +99,17 @@ export class UsersQueryRepo extends Repository<UserDbType> {
       return null;
     }
     return user.confirmation;
+  }
+
+  async getPasswordRecoveryInfo(code: string): Promise<PasswordRecoveryInfo | null> {
+    const user = await this.collection.findOne(
+      { 'passwordRecovery.code': code },
+      { projection: { passwordRecovery: 1 } },
+    );
+    if (!user) {
+      return null;
+    }
+    return user.passwordRecovery;
   }
 
   async isLoginUnique(login: string): Promise<boolean> {
