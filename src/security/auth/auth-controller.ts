@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { sessionsService, usersService } from '../../instances/services.js';
+import { authService, sessionsService, usersService } from '../../instances/services.js';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { usersQueryRepo } from '../../instances/repositories.js';
 
