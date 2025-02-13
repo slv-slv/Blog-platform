@@ -21,6 +21,7 @@ export type UserDbType = {
   hash: string;
   createdAt: string;
   confirmation: ConfirmationInfo;
+  passwordRecovery: PasswordRecoveryInfo;
 };
 
 export type CurrentUserType = {
@@ -47,3 +48,8 @@ export enum CONFIRMATION_STATUS {
   CONFIRMED = 'CONFIRMED',
   NOT_CONFIRMED = 'NOT_CONFIRMED',
 }
+
+export type PasswordRecoveryInfo = {
+  code: string | null;
+  expiration: string | null;
+};

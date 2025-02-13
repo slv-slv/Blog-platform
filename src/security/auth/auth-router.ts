@@ -55,3 +55,10 @@ authRouter.post(
   getValidationResult,
   authController.registrationConfirmation,
 );
+
+authRouter.post(
+  '/password-recovery',
+  usersValidator.email,
+  getValidationResult,
+  authController.passwordRecovery,
+);

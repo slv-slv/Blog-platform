@@ -41,7 +41,7 @@ export class AuthController {
         .json({ errorsMessages: [{ message: 'Email already confirmed', field: 'email' }] });
     }
 
-    await usersService.updateConfirmationCode(email);
+    await usersService.sendConfirmationCode(email);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
@@ -104,5 +104,16 @@ export class AuthController {
       return;
     }
     res.status(HTTP_STATUS.OK_200).json(user);
+  }
+
+  async passwordRecovery(req: Request, res: Response) {
+    const { email } = req.body;
+
+    if (!(await usersQueryRepo.findUser(email))) {
+      res.status(HTTP_STATUS.NO_CONTENT_204);
+    }
+
+    await usersService.sendRecoveryCode(email);
+    res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 }

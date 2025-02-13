@@ -1,4 +1,4 @@
-import { CONFIRMATION_STATUS, UserType } from './users-types.js';
+import { CONFIRMATION_STATUS, ConfirmationInfo, PasswordRecoveryInfo, UserType } from './users-types.js';
 import { authService } from '../../instances/services.js';
 import { emailService } from '../../infrastructure/email/email-service.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
@@ -11,7 +11,14 @@ export class UsersService {
   async createUser(login: string, email: string, password: string): Promise<UserType> {
     const hash = await authService.hashPassword(password);
     const createdAt = new Date().toISOString();
-    return await usersRepo.createUser(login, email, hash, createdAt);
+    const confirmation: ConfirmationInfo = {
+      status: CONFIRMATION_STATUS.CONFIRMED,
+      code: null,
+      expiration: null,
+    };
+    const passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null };
+
+    return await usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
   }
 
   async registerUser(login: string, email: string, password: string): Promise<UserType> {
@@ -29,13 +36,14 @@ export class UsersService {
       code,
       expiration,
     };
+    const passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null };
 
-    // await emailService.sendConfirmation(email, code);
+    // await emailService.sendConfirmationCode(email, code);
 
-    return await usersRepo.createUser(login, email, hash, createdAt, confirmation);
+    return await usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
   }
 
-  async updateConfirmationCode(email: string): Promise<string | null> {
+  async sendConfirmationCode(email: string): Promise<string | null> {
     const code = crypto.randomUUID();
 
     const currentDate = new Date();
@@ -44,13 +52,21 @@ export class UsersService {
 
     await usersRepo.updateConfirmationCode(email, code, expiration);
 
-    // const isUpdated = await usersRepo.updateConfirmationCode(email, code, expiration);
+    // await emailService.sendConfirmationCode(email, code);
 
-    // if (!isUpdated) {
-    //   return null;
-    // }
+    return code;
+  }
 
-    // await emailService.sendConfirmation(email, code);
+  async sendRecoveryCode(email: string): Promise<string | null> {
+    const code = crypto.randomUUID();
+
+    const currentDate = new Date();
+    const hours = currentDate.getHours();
+    const expiration = new Date(currentDate.setHours(hours + SETTINGS.CODE_LIFETIME_HOURS)).toISOString();
+
+    await usersRepo.updateRecoveryCode(email, code, expiration);
+
+    await emailService.sendRecoveryCode(email, code);
 
     return code;
   }

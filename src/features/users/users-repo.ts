@@ -1,5 +1,11 @@
 import { ObjectId } from 'mongodb';
-import { ConfirmationInfo, CONFIRMATION_STATUS, UserDbType, UserType } from './users-types.js';
+import {
+  ConfirmationInfo,
+  CONFIRMATION_STATUS,
+  UserDbType,
+  UserType,
+  PasswordRecoveryInfo,
+} from './users-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
 
 export class UsersRepo extends Repository<UserDbType> {
@@ -8,14 +14,11 @@ export class UsersRepo extends Repository<UserDbType> {
     email: string,
     hash: string,
     createdAt: string,
-    confirmation: ConfirmationInfo = {
-      status: CONFIRMATION_STATUS.CONFIRMED,
-      code: null,
-      expiration: null,
-    },
+    confirmation: ConfirmationInfo,
+    passwordRecovery: PasswordRecoveryInfo,
   ): Promise<UserType> {
     const _id = new ObjectId();
-    const newUser = { _id, login, email, hash, createdAt, confirmation };
+    const newUser = { _id, login, email, hash, createdAt, confirmation, passwordRecovery };
     const createResult = await this.collection.insertOne(newUser);
     const id = createResult.insertedId.toString();
     return { id, login, email, createdAt };
@@ -25,6 +28,13 @@ export class UsersRepo extends Repository<UserDbType> {
     await this.collection.updateOne(
       { email },
       { $set: { 'confirmation.code': code, 'confirmation.expiration': expiration } },
+    );
+  }
+
+  async updateRecoveryCode(email: string, code: string, expiration: string): Promise<void> {
+    await this.collection.updateOne(
+      { email },
+      { $set: { 'passwordRecovery.code': code, 'passwordRecovery.expiration': expiration } },
     );
   }
 
