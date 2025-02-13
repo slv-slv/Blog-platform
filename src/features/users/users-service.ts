@@ -27,10 +27,9 @@ export class UsersService {
 
     const code = crypto.randomUUID();
 
-    const daysToConfirm = 1;
     const currentDate = new Date();
-    const date = currentDate.getDate();
-    const expiration = new Date(currentDate.setDate(date + daysToConfirm)).toISOString();
+    const hours = currentDate.getHours();
+    const expiration = new Date(currentDate.setHours(hours + SETTINGS.CODE_LIFETIME_HOURS)).toISOString();
     const confirmation = {
       status: CONFIRMATION_STATUS.NOT_CONFIRMED,
       code,
