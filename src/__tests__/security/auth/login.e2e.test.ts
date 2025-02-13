@@ -12,6 +12,7 @@ import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
 import { sessionsColl, usersColl } from '../../../infrastructure/db/collections.js';
 import { JwtAcessPayload, JwtRefreshPayload } from '../../../security/auth/auth-types.js';
 import { sessionsQueryRepo } from '../../../instances/repositories.js';
+import { usersService } from '../../../instances/services.js';
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -24,33 +25,24 @@ afterAll(async () => {
 });
 
 describe('LOGIN', () => {
+  const login = 'NewUser';
+  const email = 'example@gmail.com';
   const password = 'somepassword';
-  const hash = bcrypt.hashSync(password, 10);
 
-  const newUser: UserDbType = {
-    _id: new ObjectId(),
-    login: 'NewUser',
-    email: 'example@gmail.com',
-    hash: hash,
-    createdAt: new Date().toISOString(),
-    confirmation: {
-      status: CONFIRMATION_STATUS.CONFIRMED,
-      code: crypto.randomUUID(),
-      expiration: null,
-    },
-  };
+  let userId: string;
 
   it('should return 400 status code if login or password has incorrect value', async () => {
-    await usersColl.insertOne(newUser);
+    const user = await usersService.createUser(login, email, password);
+    userId = user.id;
 
     await request(app)
       .post('/auth/login')
-      .send({ loginOrEmail: newUser.login, password: 12345 })
+      .send({ loginOrEmail: login, password: 12345 })
       .expect(HTTP_STATUS.BAD_REQUEST_400);
 
     await request(app)
       .post('/auth/login')
-      .send({ loginOrEmail: newUser.email, password: ' ' })
+      .send({ loginOrEmail: email, password: ' ' })
       .expect(HTTP_STATUS.BAD_REQUEST_400);
 
     await request(app)
@@ -67,7 +59,7 @@ describe('LOGIN', () => {
   it('should return 401 status code if credentials are wrong', async () => {
     await request(app)
       .post('/auth/login')
-      .send({ loginOrEmail: newUser.login, password: 'somepassword1' })
+      .send({ loginOrEmail: login, password: 'somepassword1' })
       .expect(HTTP_STATUS.UNAUTHORIZED_401);
 
     await request(app)
@@ -78,7 +70,7 @@ describe('LOGIN', () => {
 
   it('should return 401 status code if user is not confirmed', async () => {
     await usersColl.updateOne(
-      { _id: newUser._id },
+      { _id: new ObjectId(userId) },
       {
         $set: {
           'confirmation.status': CONFIRMATION_STATUS.NOT_CONFIRMED,
@@ -89,19 +81,19 @@ describe('LOGIN', () => {
 
     await request(app)
       .post('/auth/login')
-      .send({ loginOrEmail: newUser.login, password })
+      .send({ loginOrEmail: login, password })
       .expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
   it('should return valid access token for confirmed user', async () => {
     await usersColl.updateOne(
-      { _id: newUser._id },
+      { _id: new ObjectId(userId) },
       { $set: { 'confirmation.status': CONFIRMATION_STATUS.CONFIRMED, 'confirmation.expiration': null } },
     );
 
     const response = await request(app)
       .post('/auth/login')
-      .send({ loginOrEmail: newUser.login, password })
+      .send({ loginOrEmail: login, password })
       .expect(HTTP_STATUS.OK_200);
 
     const { accessToken } = response.body;
@@ -111,7 +103,7 @@ describe('LOGIN', () => {
   it('should return valid refresh token in cookie', async () => {
     const response = await request(app)
       .post('/auth/login')
-      .send({ loginOrEmail: newUser.login, password })
+      .send({ loginOrEmail: login, password })
       .expect(HTTP_STATUS.OK_200);
 
     const setCookiesHeader = response.headers['set-cookie'];

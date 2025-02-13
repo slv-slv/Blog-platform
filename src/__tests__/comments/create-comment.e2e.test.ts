@@ -3,10 +3,11 @@ import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
 import { ObjectId } from 'mongodb';
-import { blogsRepo, postsRepo, usersRepo } from '../../instances/repositories.js';
+import { blogsRepo, postsRepo } from '../../instances/repositories.js';
 import { SETTINGS } from '../../settings.js';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
+import { usersService } from '../../instances/services.js';
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -21,14 +22,13 @@ afterAll(async () => {
 describe('CREATE COMMENT', () => {
   const login = 'NewUser';
   const email = 'example@gmail.com';
-  const hash = 'etrdfghcvbn';
-  const createdAt = new Date().toISOString();
+  const password = 'somepassword';
 
   let postId: string;
   let accessToken: string;
 
   it('should return 201 and return created comment', async () => {
-    const insertedUser = await usersRepo.createUser(login, email, hash, createdAt);
+    const insertedUser = await usersService.createUser(login, email, password);
     const userId = insertedUser.id;
 
     const payload = { userId };
@@ -72,12 +72,11 @@ describe('CREATE COMMENT', () => {
   });
 
   it('should return 401 if an invalid access token is sent', async () => {
-    const login = 'NewUser';
+    const login = 'AnotherUser';
     const email = 'example@gmail.com';
-    const hash = 'etrdfghcvbn';
-    const createdAt = new Date().toISOString();
+    const password = 'somepassword';
 
-    const insertedUser = await usersRepo.createUser(login, email, hash, createdAt);
+    const insertedUser = await usersService.createUser(login, email, password);
     const anotherUserId = insertedUser.id;
 
     const payload = { anotherUserId };

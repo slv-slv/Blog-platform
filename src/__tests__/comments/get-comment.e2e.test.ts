@@ -3,10 +3,11 @@ import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
 import { ObjectId } from 'mongodb';
-import { blogsRepo, commentsRepo, postsRepo, usersRepo } from '../../instances/repositories.js';
+import { blogsRepo, commentsRepo, postsRepo } from '../../instances/repositories.js';
 import { SETTINGS } from '../../settings.js';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
+import { usersService } from '../../instances/services.js';
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -21,7 +22,7 @@ afterAll(async () => {
 describe('CREATE COMMENT', () => {
   const login = 'NewUser';
   const email = 'example@gmail.com';
-  const hash = 'etrdfghcvbn';
+  const password = 'somepassword';
   const createdAt = new Date().toISOString();
 
   let postId: string;
@@ -29,7 +30,7 @@ describe('CREATE COMMENT', () => {
   let commentId: string;
 
   it('should return 200 and return comment by id', async () => {
-    const insertedUser = await usersRepo.createUser(login, email, hash, createdAt);
+    const insertedUser = await usersService.createUser(login, email, password);
     const userId = insertedUser.id;
 
     const payload = { userId };

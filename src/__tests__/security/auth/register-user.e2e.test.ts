@@ -38,6 +38,9 @@ describe('REGISTER USER', () => {
     expect(insertedUser!.confirmation.status).toBe(CONFIRMATION_STATUS.NOT_CONFIRMED);
     expect(insertedUser!.confirmation.code).not.toBeNull;
     expect(insertedUser!.confirmation.expiration).not.toBeNull;
+    expect(insertedUser).toHaveProperty('passwordRecovery');
+    expect(insertedUser!.passwordRecovery.code).toBeNull;
+    expect(insertedUser!.passwordRecovery.expiration).toBeNull;
   });
 
   it('should not register already confirmed user', async () => {

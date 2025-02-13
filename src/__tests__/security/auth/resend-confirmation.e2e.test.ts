@@ -29,6 +29,7 @@ describe('RESEND CONFIRMATION', () => {
       code: 'somecode',
       expiration: null,
     },
+    passwordRecovery: { code: null, expiration: null },
   };
 
   it('should not resend code for not existing user', async () => {
