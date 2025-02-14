@@ -39,7 +39,7 @@ export class UsersService {
     };
     const passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null };
 
-    await emailService.sendConfirmationCode(email, code);
+    // await emailService.sendConfirmationCode(email, code);
 
     return await usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
   }
@@ -55,7 +55,7 @@ export class UsersService {
 
     await usersRepo.updateConfirmationCode(email, code, expiration);
 
-    emailService.sendConfirmationCode(email, code);
+    // emailService.sendConfirmationCode(email, code);
 
     return code;
   }
@@ -69,7 +69,7 @@ export class UsersService {
 
     await usersRepo.updateRecoveryCode(email, code, expiration);
 
-    emailService.sendRecoveryCode(email, code);
+    await emailService.sendRecoveryCode(email, code);
 
     return code;
   }
