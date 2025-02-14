@@ -3,7 +3,7 @@ import request from 'supertest';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
-import { usersRepo } from '../../instances/repositories.js';
+import { usersService } from '../../instances/services.js';
 
 describe('GET ALL USERS', () => {
   beforeAll(async () => {
@@ -19,11 +19,10 @@ describe('GET ALL USERS', () => {
   it('should return an array of users', async () => {
     for (let i = 0; i < 10; i += 1) {
       const login = `NewUser${i}`;
-      const hash = `somehash${i}`;
+      const password = `somepassword${i}`;
       const email = `example${i}@gmail.com`;
-      const createdAt = new Date().toISOString();
 
-      await usersRepo.createUser(login, email, hash, createdAt);
+      await usersService.createUser(login, email, password);
     }
 
     const response = await request(app)

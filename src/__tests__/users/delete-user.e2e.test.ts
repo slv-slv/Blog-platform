@@ -4,6 +4,7 @@ import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
 import { usersQueryRepo, usersRepo } from '../../instances/repositories.js';
+import { usersService } from '../../instances/services.js';
 
 describe('DELETE USER', () => {
   beforeAll(async () => {
@@ -18,24 +19,25 @@ describe('DELETE USER', () => {
 
   const user01 = {
     login: `NewUser01`,
-    hash: `somehash01`,
     email: `example01@gmail.com`,
-    createdAt: new Date().toISOString(),
+    password: 'somepassword',
   };
 
   const user02 = {
     login: `NewUser02`,
-    hash: `somehash02`,
     email: `example02@gmail.com`,
-    createdAt: new Date().toISOString(),
+    password: 'somepassword',
   };
 
   let id01: string;
   let id02: string;
 
   it('should return 204 and delete user by id', async () => {
-    id01 = (await usersRepo.createUser(user01.login, user01.email, user01.hash, user01.createdAt)).id;
-    id02 = (await usersRepo.createUser(user02.login, user02.email, user02.hash, user02.createdAt)).id;
+    const createdUser01 = await usersService.createUser(user01.login, user01.email, user01.password);
+    id01 = createdUser01.id;
+
+    const createdUser02 = await usersService.createUser(user02.login, user02.email, user02.password);
+    id02 = createdUser02.id;
 
     let response = await request(app)
       .get('/users')
