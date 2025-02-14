@@ -23,7 +23,7 @@ class EmailService {
   async sendRecoveryCode(to: string, code: string): Promise<void> {
     try {
       const url = new URL('/auth/password-recovery', 'https://nightingale.com/');
-      url.searchParams.set('code', code);
+      url.searchParams.set('recoveryCode', code);
 
       const info = await emailTransport.sendMail({
         from: '"Vyacheslav Solovev" <slvsl.spb@gmail.com>',
