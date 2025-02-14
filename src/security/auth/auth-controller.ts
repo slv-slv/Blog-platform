@@ -111,6 +111,7 @@ export class AuthController {
 
     if (!(await usersQueryRepo.findUser(email))) {
       res.status(HTTP_STATUS.NO_CONTENT_204).end();
+      return;
     }
 
     await usersService.sendRecoveryCode(email);
