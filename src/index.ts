@@ -9,7 +9,8 @@ const start = async () => {
     app.listen(SETTINGS.PORT, () => {
       console.log('Server started in port ' + SETTINGS.PORT);
     });
-  } catch {
+  } catch (error) {
+    console.error(error);
     process.exit(1);
   }
 };
