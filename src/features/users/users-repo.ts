@@ -9,6 +9,11 @@ import {
 import { Repository } from '../../infrastructure/db/repository.js';
 
 export class UsersRepo extends Repository<UserDbType> {
+  async findUser(loginOrEmail: string): Promise<UserDbType | null> {
+    const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
+    return await this.collection.findOne(filter);
+  }
+
   async createUser(
     login: string,
     email: string,
