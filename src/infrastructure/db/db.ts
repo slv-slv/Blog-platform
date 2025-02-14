@@ -2,14 +2,19 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { SETTINGS } from '../../settings.js';
 import { MongoCluster } from './mongo-cluster.js';
 
-export const mongoMemoryServer = await MongoMemoryServer.create();
-export const url = mongoMemoryServer.getUri();
+export let mongoMemoryServer: MongoMemoryServer;
+let url: string;
 
-// export const url = SETTINGS.MONGO_URL;
+if (process.env.NODE_ENV === 'test') {
+  mongoMemoryServer = await MongoMemoryServer.create();
+  url = mongoMemoryServer.getUri();
+} else {
+  url = SETTINGS.MONGO_URL;
+}
+
+// console.log('Mongo URL: ', url);
 
 export const mongoCluster = new MongoCluster(url);
 
-// export const dbName = process.env.NODE_ENV === 'test' ? 'test' : SETTINGS.DB_NAME;
 export const dbName = SETTINGS.DB_NAME;
-
 export const db = mongoCluster.getDb(dbName);
