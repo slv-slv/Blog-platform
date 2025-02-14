@@ -1,7 +1,7 @@
 {
   "name": "blog-platform",
   "type": "module",
-  "packageManager": "yarn@4.5.3",
+  "packageManager": "yarn@4.6.0",
   "main": "dist/index.js",
   "scripts": {
     "watch": "tsc -w",
