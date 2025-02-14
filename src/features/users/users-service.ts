@@ -51,7 +51,7 @@ export class UsersService {
 
     await usersRepo.updateConfirmationCode(email, code, expiration);
 
-    // await emailService.sendConfirmationCode(email, code);
+    // emailService.sendConfirmationCode(email, code);
 
     return code;
   }
@@ -65,7 +65,7 @@ export class UsersService {
 
     await usersRepo.updateRecoveryCode(email, code, expiration);
 
-    await emailService.sendRecoveryCode(email, code);
+    // emailService.sendRecoveryCode(email, code);
 
     return code;
   }
