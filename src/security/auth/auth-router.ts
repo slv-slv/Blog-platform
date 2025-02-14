@@ -15,7 +15,7 @@ import { rateLimiter } from '../middleware/rate-limiter.js';
 
 export const authRouter = Router();
 
-// authRouter.use(rateLimiter);
+authRouter.use(rateLimiter);
 
 authRouter.post(
   '/login',
