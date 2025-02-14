@@ -29,5 +29,6 @@ export const SETTINGS = {
   CREDENTIALS: [{ login: 'admin', base64: 'YWRtaW46cXdlcnR5' }],
   EMAIL_CREDENTIALS: { user: process.env.EMAIL_LOGIN, password: process.env.EMAIL_PASSWORD },
   JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY,
-  CODE_LIFETIME_HOURS: 24,
+  CONFIRMATION_CODE_LIFETIME: 24,
+  RECOVERY_CODE_LIFETIME: 24,
 };

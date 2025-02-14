@@ -29,7 +29,9 @@ export class UsersService {
 
     const currentDate = new Date();
     const hours = currentDate.getHours();
-    const expiration = new Date(currentDate.setHours(hours + SETTINGS.CODE_LIFETIME_HOURS)).toISOString();
+    const expiration = new Date(
+      currentDate.setHours(hours + SETTINGS.CONFIRMATION_CODE_LIFETIME),
+    ).toISOString();
     const confirmation = {
       status: CONFIRMATION_STATUS.NOT_CONFIRMED,
       code,
@@ -37,7 +39,7 @@ export class UsersService {
     };
     const passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null };
 
-    // await emailService.sendConfirmationCode(email, code);
+    await emailService.sendConfirmationCode(email, code);
 
     return await usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
   }
@@ -47,11 +49,13 @@ export class UsersService {
 
     const currentDate = new Date();
     const hours = currentDate.getHours();
-    const expiration = new Date(currentDate.setHours(hours + SETTINGS.CODE_LIFETIME_HOURS)).toISOString();
+    const expiration = new Date(
+      currentDate.setHours(hours + SETTINGS.CONFIRMATION_CODE_LIFETIME),
+    ).toISOString();
 
     await usersRepo.updateConfirmationCode(email, code, expiration);
 
-    // emailService.sendConfirmationCode(email, code);
+    emailService.sendConfirmationCode(email, code);
 
     return code;
   }
@@ -61,11 +65,11 @@ export class UsersService {
 
     const currentDate = new Date();
     const hours = currentDate.getHours();
-    const expiration = new Date(currentDate.setHours(hours + SETTINGS.CODE_LIFETIME_HOURS)).toISOString();
+    const expiration = new Date(currentDate.setHours(hours + SETTINGS.RECOVERY_CODE_LIFETIME)).toISOString();
 
     await usersRepo.updateRecoveryCode(email, code, expiration);
 
-    // emailService.sendRecoveryCode(email, code);
+    emailService.sendRecoveryCode(email, code);
 
     return code;
   }
