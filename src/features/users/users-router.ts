@@ -18,7 +18,7 @@ usersRouter.get(
   pagingValidator.pageSize,
   usersValidator.searchLoginTerm,
   usersValidator.searchEmailTerm,
-  usersController.getAllUsers,
+  usersController.getAllUsers.bind(usersController),
 );
 
 usersRouter.post(
@@ -28,7 +28,7 @@ usersRouter.post(
   usersValidator.password,
   usersValidator.email,
   getValidationResult,
-  usersController.createUser,
+  usersController.createUser.bind(usersController),
 );
 
-usersRouter.delete('/:id', basicAuth, usersController.deleteUser);
+usersRouter.delete('/:id', basicAuth, usersController.deleteUser.bind(usersController));

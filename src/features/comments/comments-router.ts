@@ -8,14 +8,18 @@ import { CommentsController } from './comments-controller.js';
 export const commentsRouter = Router();
 const commentsController = container.get(CommentsController);
 
-commentsRouter.get('/:id', commentsController.findComment);
+commentsRouter.get('/:id', commentsController.findComment.bind(commentsController));
 
 commentsRouter.put(
   '/:commentId',
   checkAccessToken,
   commentsValidator.content,
   getValidationResult,
-  commentsController.updateComment,
+  commentsController.updateComment.bind(commentsController),
 );
 
-commentsRouter.delete('/:commentId', checkAccessToken, commentsController.deleteComment);
+commentsRouter.delete(
+  '/:commentId',
+  checkAccessToken,
+  commentsController.deleteComment.bind(commentsController),
+);

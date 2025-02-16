@@ -17,7 +17,7 @@ blogsRouter.get(
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
-  blogsController.getAllBlogs,
+  blogsController.getAllBlogs.bind(blogsController),
 );
 
 blogsRouter.post(
@@ -27,10 +27,10 @@ blogsRouter.post(
   blogsValidator.blogDescription,
   blogsValidator.blogUrl,
   getValidationResult,
-  blogsController.createBlog,
+  blogsController.createBlog.bind(blogsController),
 );
 
-blogsRouter.get('/:id', blogsController.findBlog);
+blogsRouter.get('/:id', blogsController.findBlog.bind(blogsController));
 
 blogsRouter.put(
   '/:id',
@@ -39,10 +39,10 @@ blogsRouter.put(
   blogsValidator.blogDescription,
   blogsValidator.blogUrl,
   getValidationResult,
-  blogsController.updateBlog,
+  blogsController.updateBlog.bind(blogsController),
 );
 
-blogsRouter.delete('/:id', basicAuth, blogsController.deleteBlog);
+blogsRouter.delete('/:id', basicAuth, blogsController.deleteBlog.bind(blogsController));
 
 blogsRouter.get(
   '/:blogId/posts',
@@ -50,7 +50,7 @@ blogsRouter.get(
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
-  blogsController.getPostsByBlogId,
+  blogsController.getPostsByBlogId.bind(blogsController),
 );
 
 blogsRouter.post(
@@ -60,5 +60,5 @@ blogsRouter.post(
   postsValidator.postDescription,
   postsValidator.postContent,
   getValidationResult,
-  blogsController.createPostForBlog,
+  blogsController.createPostForBlog.bind(blogsController),
 );

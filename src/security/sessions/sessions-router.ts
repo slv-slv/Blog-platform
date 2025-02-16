@@ -7,8 +7,23 @@ import { SessionsController } from './sessions-controller.js';
 export const securityRouter = Router();
 const sessionsController = container.get(SessionsController);
 
-securityRouter.get('/devices', checkRefreshToken, checkSession, sessionsController.getDevices);
+securityRouter.get(
+  '/devices',
+  checkRefreshToken,
+  checkSession,
+  sessionsController.getDevices.bind(sessionsController),
+);
 
-securityRouter.delete('/devices', checkRefreshToken, checkSession, sessionsController.deleteOtherDevices);
+securityRouter.delete(
+  '/devices',
+  checkRefreshToken,
+  checkSession,
+  sessionsController.deleteOtherDevices.bind(sessionsController),
+);
 
-securityRouter.delete('/devices/:deviceId', checkRefreshToken, checkSession, sessionsController.deleteDevice);
+securityRouter.delete(
+  '/devices/:deviceId',
+  checkRefreshToken,
+  checkSession,
+  sessionsController.deleteDevice.bind(sessionsController),
+);

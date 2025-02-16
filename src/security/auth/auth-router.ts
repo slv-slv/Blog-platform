@@ -29,7 +29,7 @@ authRouter.post(
   checkConfirmation,
   generateJwtPair,
   createSession,
-  authController.sendJwtPair,
+  authController.sendJwtPair.bind(authController),
 );
 
 authRouter.post(
@@ -38,12 +38,12 @@ authRouter.post(
   checkSession,
   generateJwtPair,
   createSession,
-  authController.sendJwtPair,
+  authController.sendJwtPair.bind(authController),
 );
 
-authRouter.post('/logout', checkRefreshToken, authController.logout);
+authRouter.post('/logout', checkRefreshToken, authController.logout.bind(authController));
 
-authRouter.get('/me', checkAccessToken, authController.me);
+authRouter.get('/me', checkAccessToken, authController.me.bind(authController));
 
 authRouter.post(
   '/registration',
@@ -51,28 +51,33 @@ authRouter.post(
   usersValidator.password,
   usersValidator.email,
   getValidationResult,
-  authController.registration,
+  authController.registration.bind(authController),
 );
 
 authRouter.post(
   '/registration-email-resending',
   usersValidator.email,
   getValidationResult,
-  authController.registrationEmailResending,
+  authController.registrationEmailResending.bind(authController),
 );
 
 authRouter.post(
   '/registration-confirmation',
   authValidator.confirmationCode,
   getValidationResult,
-  authController.registrationConfirmation,
+  authController.registrationConfirmation.bind(authController),
 );
 
 authRouter.post(
   '/password-recovery',
   usersValidator.email,
   getValidationResult,
-  authController.passwordRecovery,
+  authController.passwordRecovery.bind(authController),
 );
 
-authRouter.post('/new-password', usersValidator.newPassword, getValidationResult, authController.newPassword);
+authRouter.post(
+  '/new-password',
+  usersValidator.newPassword,
+  getValidationResult,
+  authController.newPassword.bind(authController),
+);

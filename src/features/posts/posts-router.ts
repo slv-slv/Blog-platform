@@ -17,7 +17,7 @@ postsRouter.get(
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
-  postsController.getAllPosts,
+  postsController.getAllPosts.bind(postsController),
 );
 
 postsRouter.get('/:id', postsController.findPost);
@@ -30,7 +30,7 @@ postsRouter.post(
   postsValidator.postDescription,
   postsValidator.postContent,
   getValidationResult,
-  postsController.createPost,
+  postsController.createPost.bind(postsController),
 );
 
 postsRouter.put(
@@ -41,10 +41,10 @@ postsRouter.put(
   postsValidator.postDescription,
   postsValidator.postContent,
   getValidationResult,
-  postsController.updatePost,
+  postsController.updatePost.bind(postsController),
 );
 
-postsRouter.delete('/:id', basicAuth, postsController.deletePost);
+postsRouter.delete('/:id', basicAuth, postsController.deletePost.bind(postsController));
 
 postsRouter.get(
   '/:postId/comments',
@@ -52,7 +52,7 @@ postsRouter.get(
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
-  postsController.getCommentsForPost,
+  postsController.getCommentsForPost.bind(postsController),
 );
 
 postsRouter.post(
@@ -60,5 +60,5 @@ postsRouter.post(
   checkAccessToken,
   commentsValidator.content,
   getValidationResult,
-  postsController.createComment,
+  postsController.createComment.bind(postsController),
 );
