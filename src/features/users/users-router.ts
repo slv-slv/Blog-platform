@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import { pagingValidator } from '../../common/validation/paging-params-validation.js';
 import { usersValidator } from './users-validation.js';
-import { usersController } from '../../instances/controllers.js';
 import { getValidationResult } from '../../common/middleware/get-validation-result.js';
 import { basicAuth } from '../../security/middleware/basic-auth.js';
+import { container } from '../../ioc/container.js';
+import { UsersController } from './users-controller.js';
 
 export const usersRouter = Router();
+const usersController = container.get(UsersController);
 
 usersRouter.get(
   '/',

@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { authValidator } from './auth-validation.js';
 import { usersValidator } from '../../features/users/users-validation.js';
-import { authController } from '../../instances/controllers.js';
 import { getValidationResult } from '../../common/middleware/get-validation-result.js';
 import { checkNoSession } from '../middleware/check-no-session.js';
 import { checkCredentials } from '../middleware/check-credentials.js';
@@ -12,10 +11,13 @@ import { generateJwtPair } from '../middleware/generate-jwt-pair.js';
 import { createSession } from '../middleware/create-session.js';
 import { checkSession } from '../middleware/check-session.js';
 import { rateLimiter } from '../middleware/rate-limiter.js';
+import { container } from '../../ioc/container.js';
+import { AuthController } from './auth-controller.js';
 
 export const authRouter = Router();
+const authController = container.get(AuthController);
 
-authRouter.use(rateLimiter);
+// authRouter.use(rateLimiter);
 
 authRouter.post(
   '/login',

@@ -2,11 +2,13 @@ import { Router } from 'express';
 import { pagingValidator } from '../../common/validation/paging-params-validation.js';
 import { blogsValidator } from './blogs-validation.js';
 import { postsValidator } from '../posts/posts-validation.js';
-import { blogsController } from '../../instances/controllers.js';
 import { getValidationResult } from '../../common/middleware/get-validation-result.js';
 import { basicAuth } from '../../security/middleware/basic-auth.js';
+import { container } from '../../ioc/container.js';
+import { BlogsController } from './blogs-controller.js';
 
 export const blogsRouter = Router();
+const blogsController = container.get(BlogsController);
 
 blogsRouter.get(
   '/',

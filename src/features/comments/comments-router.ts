@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import { commentsValidator } from './comments-validation.js';
-import { commentsController } from '../../instances/controllers.js';
 import { getValidationResult } from '../../common/middleware/get-validation-result.js';
 import { checkAccessToken } from '../../security/middleware/check-access-token.js';
+import { container } from '../../ioc/container.js';
+import { CommentsController } from './comments-controller.js';
 
 export const commentsRouter = Router();
+const commentsController = container.get(CommentsController);
 
 commentsRouter.get('/:id', commentsController.findComment);
 
