@@ -1,12 +1,15 @@
 import { PostType } from './posts-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
-import { blogsQueryRepo } from '../../instances/repositories.js';
 import { inject, injectable } from 'inversify';
 import { IPostsCollection } from '../../infrastructure/db/collections.js';
+import { BlogsQueryRepo } from '../blogs/blogs-query-repo.js';
 
 @injectable()
 export class PostsRepo {
-  constructor(@inject('PostsCollection') private collection: IPostsCollection) {}
+  constructor(
+    @inject('PostsCollection') private collection: IPostsCollection,
+    @inject(BlogsQueryRepo) private blogsQueryRepo: BlogsQueryRepo,
+  ) {}
 
   async createPost(
     title: string,
@@ -16,7 +19,7 @@ export class PostsRepo {
     createdAt: string,
   ): Promise<PostType> {
     const id = ((await this.collection.countDocuments()) + 1 || 1).toString();
-    const blog = await blogsQueryRepo.findBlog(blogId);
+    const blog = await this.blogsQueryRepo.findBlog(blogId);
     const blogName = blog!.name as string;
     const newPost = { id, title, shortDescription, content, blogId, blogName, createdAt };
     const createResult = await this.collection.insertOne(newPost);
