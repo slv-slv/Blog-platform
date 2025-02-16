@@ -5,7 +5,7 @@ import { CONFIRMATION_STATUS, UserDbType } from '../../../features/users/users-t
 import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { usersColl } from '../../../infrastructure/db/collections.js';
+import { usersCollection } from '../../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -40,7 +40,7 @@ describe('RESEND CONFIRMATION', () => {
   });
 
   it('should not resend code for confirmed user', async () => {
-    await usersColl.insertOne(newUser);
+    await usersCollection.insertOne(newUser);
 
     await request(app)
       .post('/auth/registration-email-resending')
@@ -49,7 +49,7 @@ describe('RESEND CONFIRMATION', () => {
   });
 
   it('should resend code for not confirmed user', async () => {
-    await usersColl.updateOne(
+    await usersCollection.updateOne(
       { email: newUser.email },
       { $set: { 'confirmation.status': CONFIRMATION_STATUS.NOT_CONFIRMED } },
     );

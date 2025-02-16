@@ -4,8 +4,11 @@ import { dbName, mongoCluster, mongoMemoryServer } from '../../../infrastructure
 import { app } from '../../../app.js';
 import { CONFIRMATION_STATUS } from '../../../features/users/users-types.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { usersColl } from '../../../infrastructure/db/collections.js';
-import { usersRepo } from '../../../instances/repositories.js';
+import { usersCollection } from '../../../infrastructure/db/collections.js';
+import { container } from '../../../ioc/container.js';
+import { UsersRepo } from '../../../features/users/users-repo.js';
+
+const usersRepo = container.get(UsersRepo);
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -55,14 +58,17 @@ describe('CONFIRM USER', () => {
   });
 
   it('should confirm user with valid code', async () => {
-    await usersColl.updateOne({ login }, { $set: { 'confirmation.expiration': futureDate.toISOString() } });
+    await usersCollection.updateOne(
+      { login },
+      { $set: { 'confirmation.expiration': futureDate.toISOString() } },
+    );
 
     await request(app)
       .post('/auth/registration-confirmation')
       .send({ code: confirmation.code })
       .expect(HTTP_STATUS.NO_CONTENT_204);
 
-    const confirmedUser = await usersColl.findOne({ email });
+    const confirmedUser = await usersCollection.findOne({ email });
 
     expect(confirmedUser!.confirmation.status).toBe(CONFIRMATION_STATUS.CONFIRMED);
     expect(confirmedUser!.confirmation.expiration).toBeNull;

@@ -1,18 +1,21 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 import setCookie from 'set-cookie-parser';
 import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
 import { SETTINGS } from '../../../settings.js';
-import { CONFIRMATION_STATUS, UserDbType } from '../../../features/users/users-types.js';
+import { CONFIRMATION_STATUS } from '../../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { sessionsColl, usersColl } from '../../../infrastructure/db/collections.js';
-import { JwtAcessPayload, JwtRefreshPayload } from '../../../security/auth/auth-types.js';
-import { sessionsQueryRepo } from '../../../instances/repositories.js';
-import { usersService } from '../../../instances/services.js';
+import { usersCollection } from '../../../infrastructure/db/collections.js';
+import { JwtRefreshPayload } from '../../../security/auth/auth-types.js';
+import { container } from '../../../ioc/container.js';
+import { UsersService } from '../../../features/users/users-service.js';
+import { SessionsQueryRepo } from '../../../security/sessions/sessions-query-repo.js';
+
+const usersService = container.get(UsersService);
+const sessionsQueryRepo = container.get(SessionsQueryRepo);
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -69,7 +72,7 @@ describe('LOGIN', () => {
   });
 
   it('should return 401 status code if user is not confirmed', async () => {
-    await usersColl.updateOne(
+    await usersCollection.updateOne(
       { _id: new ObjectId(userId) },
       {
         $set: {
@@ -86,7 +89,7 @@ describe('LOGIN', () => {
   });
 
   it('should return valid access token for confirmed user', async () => {
-    await usersColl.updateOne(
+    await usersCollection.updateOne(
       { _id: new ObjectId(userId) },
       { $set: { 'confirmation.status': CONFIRMATION_STATUS.CONFIRMED, 'confirmation.expiration': null } },
     );

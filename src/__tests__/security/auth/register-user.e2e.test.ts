@@ -4,7 +4,7 @@ import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
 import { CONFIRMATION_STATUS } from '../../../features/users/users-types.js';
-import { usersColl } from '../../../infrastructure/db/collections.js';
+import { usersCollection } from '../../../infrastructure/db/collections.js';
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -26,7 +26,7 @@ describe('REGISTER USER', () => {
   it('should register new user', async () => {
     await request(app).post('/auth/registration').send(newUser).expect(HTTP_STATUS.NO_CONTENT_204);
 
-    const insertedUser = await usersColl.findOne({ login: newUser.login });
+    const insertedUser = await usersCollection.findOne({ login: newUser.login });
 
     expect(insertedUser).toHaveProperty('_id');
     expect(insertedUser).toHaveProperty('login', newUser.login);
@@ -44,7 +44,7 @@ describe('REGISTER USER', () => {
   });
 
   it('should not register already confirmed user', async () => {
-    await usersColl.updateOne(
+    await usersCollection.updateOne(
       { login: newUser.login },
       { $set: { 'confirmation.status': CONFIRMATION_STATUS.CONFIRMED } },
     );

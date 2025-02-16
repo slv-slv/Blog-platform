@@ -3,7 +3,10 @@ import request from 'supertest';
 import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { usersService } from '../../../instances/services.js';
+import { container } from '../../../ioc/container.js';
+import { UsersService } from '../../../features/users/users-service.js';
+
+const usersService = container.get(UsersService);
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -17,7 +20,7 @@ afterAll(async () => {
 
 describe('PASSWORD RECOVERY', () => {
   const login = 'NewUser';
-  const email = 'example@gmail.com';
+  const email = 'slvsl@vk.com';
   const password = 'somepassword';
 
   it('should return 400 if invalid email is sent', async () => {

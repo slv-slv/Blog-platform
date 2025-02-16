@@ -3,11 +3,17 @@ import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
 import { ObjectId } from 'mongodb';
-import { blogsRepo, postsRepo } from '../../instances/repositories.js';
 import { SETTINGS } from '../../settings.js';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { usersService } from '../../instances/services.js';
+import { container } from '../../ioc/container.js';
+import { BlogsRepo } from '../../features/blogs/blogs-repo.js';
+import { PostsRepo } from '../../features/posts/posts-repo.js';
+import { UsersService } from '../../features/users/users-service.js';
+
+const blogsRepo = container.get(BlogsRepo);
+const postsRepo = container.get(PostsRepo);
+const usersService = container.get(UsersService);
 
 beforeAll(async () => {
   await mongoCluster.run();

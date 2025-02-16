@@ -3,10 +3,12 @@ import request from 'supertest';
 import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { usersService } from '../../../instances/services.js';
 import { CONFIRMATION_STATUS } from '../../../features/users/users-types.js';
-import { usersRepo } from '../../../instances/repositories.js';
-import { usersColl } from '../../../infrastructure/db/collections.js';
+import { usersCollection } from '../../../infrastructure/db/collections.js';
+import { UsersRepo } from '../../../features/users/users-repo.js';
+import { container } from '../../../ioc/container.js';
+
+const usersRepo = container.get(UsersRepo);
 
 beforeAll(async () => {
   await mongoCluster.run();
@@ -73,7 +75,10 @@ describe('PASSWORD RECOVERY', () => {
   });
 
   it('should return 400 if recovery code is expired', async () => {
-    await usersColl.updateOne({ login }, { $set: { 'passwordRecovery.expiration': pastDate.toISOString() } });
+    await usersCollection.updateOne(
+      { login },
+      { $set: { 'passwordRecovery.expiration': pastDate.toISOString() } },
+    );
 
     const body = {
       newPassword: 'newpassword',
