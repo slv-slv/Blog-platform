@@ -7,8 +7,13 @@ import {
   PasswordRecoveryInfo,
 } from './users-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
+import { inject, injectable } from 'inversify';
+import { IUsersCollection } from '../../infrastructure/db/collections.js';
 
-export class UsersRepo extends Repository<UserDbType> {
+@injectable()
+export class UsersRepo {
+  constructor(@inject('UsersCollection') private collection: IUsersCollection) {}
+
   async findUser(loginOrEmail: string): Promise<UserDbType | null> {
     const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
     return await this.collection.findOne(filter);

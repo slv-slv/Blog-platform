@@ -1,7 +1,11 @@
+import { inject, injectable } from 'inversify';
 import { Repository } from '../../infrastructure/db/repository.js';
-import { RequestLogType } from './request-logs-types.js';
+import { IRequestLogsCollection } from '../../infrastructure/db/collections.js';
 
-export class RequestLogsRepo extends Repository<RequestLogType> {
+@injectable()
+export class RequestLogsRepo {
+  constructor(@inject('RequestLogsCollection') private collection: IRequestLogsCollection) {}
+
   async addRequest(ip: string, url: string, timestamp: number): Promise<void> {
     const requestLog = { ip, url, timestamp };
     await this.collection.insertOne(requestLog);

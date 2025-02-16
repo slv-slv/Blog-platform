@@ -2,8 +2,13 @@ import { ObjectId } from 'mongodb';
 import { CurrentUserType } from '../users/users-types.js';
 import { CommentType, CommentDbType } from './comments-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
+import { inject, injectable } from 'inversify';
+import { ICommentsCollection } from '../../infrastructure/db/collections.js';
 
-export class CommentsRepo extends Repository<CommentDbType> {
+@injectable()
+export class CommentsRepo {
+  constructor(@inject('CommentsCollection') private collection: ICommentsCollection) {}
+
   async createComment(
     postId: string,
     content: string,

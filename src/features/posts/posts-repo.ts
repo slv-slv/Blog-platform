@@ -1,8 +1,13 @@
 import { PostType } from './posts-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
 import { blogsQueryRepo } from '../../instances/repositories.js';
+import { inject, injectable } from 'inversify';
+import { IPostsCollection } from '../../infrastructure/db/collections.js';
 
-export class PostsRepo extends Repository<PostType> {
+@injectable()
+export class PostsRepo {
+  constructor(@inject('PostsCollection') private collection: IPostsCollection) {}
+
   async createPost(
     title: string,
     shortDescription: string,

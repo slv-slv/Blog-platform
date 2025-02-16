@@ -1,7 +1,12 @@
 import { BlogType } from './blogs-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
+import { inject, injectable } from 'inversify';
+import { IBlogsCollection } from '../../infrastructure/db/collections.js';
 
-export class BlogsRepo extends Repository<BlogType> {
+@injectable()
+export class BlogsRepo {
+  constructor(@inject('BlogsCollection') private collection: IBlogsCollection) {}
+
   async createBlog(
     name: string,
     description: string,
