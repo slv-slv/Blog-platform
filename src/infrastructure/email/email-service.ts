@@ -1,6 +1,6 @@
 import { emailTransport } from './nodemailer-transport.js';
 
-class EmailService {
+export class EmailService {
   async sendConfirmationCode(to: string, code: string): Promise<void> {
     try {
       const url = new URL('/auth/registration-confirmation', 'https://nightingale.com/');
