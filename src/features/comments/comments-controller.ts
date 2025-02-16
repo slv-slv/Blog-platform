@@ -1,13 +1,20 @@
 import { Request, Response } from 'express';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
-import { commentsQueryRepo } from '../../instances/repositories.js';
-import { commentsService } from '../../instances/services.js';
+import { inject, injectable } from 'inversify';
+import { CommentsQueryRepo } from './comments-query-repo.js';
+import { CommentsService } from './comments-service.js';
 
+@injectable()
 export class CommentsController {
+  constructor(
+    @inject(CommentsQueryRepo) private commentsQueryRepo: CommentsQueryRepo,
+    @inject(CommentsService) private commentsService: CommentsService,
+  ) {}
+
   async findComment(req: Request, res: Response) {
     const id = req.params.id;
-    const comment = await commentsQueryRepo.findComment(id);
+    const comment = await this.commentsQueryRepo.findComment(id);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
       return;
@@ -17,7 +24,7 @@ export class CommentsController {
 
   async updateComment(req: Request, res: Response) {
     const id = req.params.commentId;
-    const comment = await commentsQueryRepo.findComment(id);
+    const comment = await this.commentsQueryRepo.findComment(id);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
       return;
@@ -32,7 +39,7 @@ export class CommentsController {
 
     const content = req.body.content;
 
-    const isUpdated = await commentsService.updateComment(id, content);
+    const isUpdated = await this.commentsService.updateComment(id, content);
     if (isUpdated.status !== RESULT_STATUS.NO_CONTENT) {
       res.status(httpCodeByResult(isUpdated.status)).json(isUpdated.extensions);
       return;
@@ -43,7 +50,7 @@ export class CommentsController {
 
   async deleteComment(req: Request, res: Response) {
     const id = req.params.commentId;
-    const comment = await commentsQueryRepo.findComment(id);
+    const comment = await this.commentsQueryRepo.findComment(id);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
       return;
@@ -55,7 +62,7 @@ export class CommentsController {
       return;
     }
 
-    const isDeleted = await commentsService.deleteComment(id);
+    const isDeleted = await this.commentsService.deleteComment(id);
     if (isDeleted.status !== RESULT_STATUS.NO_CONTENT) {
       res.status(httpCodeByResult(isDeleted.status)).json(isDeleted.extensions);
       return;

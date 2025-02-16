@@ -1,53 +1,64 @@
 import { Request, Response } from 'express';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { authService, sessionsService, usersService } from '../../instances/services.js';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
-import { usersQueryRepo } from '../../instances/repositories.js';
+import { inject, injectable } from 'inversify';
+import { AuthService } from './auth-service.js';
+import { UsersService } from '../../features/users/users-service.js';
+import { SessionsService } from '../sessions/sessions-service.js';
+import { UsersQueryRepo } from '../../features/users/users-query-repo.js';
 
+@injectable()
 export class AuthController {
+  constructor(
+    @inject(AuthService) private authService: AuthService,
+    @inject(SessionsService) private sessionsService: SessionsService,
+    @inject(UsersService) private usersService: UsersService,
+    @inject(UsersQueryRepo) private usersQueryRepo: UsersQueryRepo,
+  ) {}
+
   async registration(req: Request, res: Response) {
     const { login, email, password } = req.body;
 
-    if (!(await usersService.isLoginUnique(login))) {
+    if (!(await this.usersService.isLoginUnique(login))) {
       res
         .status(HTTP_STATUS.BAD_REQUEST_400)
         .json({ errorsMessages: [{ message: 'Login already exists', field: 'login' }] });
       return;
     }
 
-    if (!(await usersService.isEmailUnique(email))) {
+    if (!(await this.usersService.isEmailUnique(email))) {
       res
         .status(HTTP_STATUS.BAD_REQUEST_400)
         .json({ errorsMessages: [{ message: 'Email already exists', field: 'email' }] });
       return;
     }
 
-    await usersService.registerUser(login, email, password);
+    await this.usersService.registerUser(login, email, password);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
   async registrationEmailResending(req: Request, res: Response) {
     const { email } = req.body;
 
-    if (!(await usersQueryRepo.findUser(email))) {
+    if (!(await this.usersQueryRepo.findUser(email))) {
       res
         .status(HTTP_STATUS.BAD_REQUEST_400)
         .json({ errorsMessages: [{ message: 'Incorrect email', field: 'email' }] });
     }
 
-    if (await usersService.isConfirmed(email)) {
+    if (await this.usersService.isConfirmed(email)) {
       res
         .status(HTTP_STATUS.BAD_REQUEST_400)
         .json({ errorsMessages: [{ message: 'Email already confirmed', field: 'email' }] });
     }
 
-    await usersService.sendConfirmationCode(email);
+    await this.usersService.sendConfirmationCode(email);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
   async registrationConfirmation(req: Request, res: Response) {
     const code = req.body.code;
-    const confirmationResult = await usersService.confirmUser(code);
+    const confirmationResult = await this.usersService.confirmUser(code);
 
     if (confirmationResult.status !== RESULT_STATUS.NO_CONTENT) {
       res
@@ -83,7 +94,7 @@ export class AuthController {
     const deviceId = res.locals.deviceId;
     // const iat = res.locals.iat;
 
-    await sessionsService.deleteDevice(deviceId);
+    await this.sessionsService.deleteDevice(deviceId);
 
     res
       .cookie('refreshToken', '', {
@@ -98,7 +109,7 @@ export class AuthController {
 
   async me(req: Request, res: Response) {
     const userId = res.locals.userId;
-    const user = await usersQueryRepo.getCurrentUser(userId);
+    const user = await this.usersQueryRepo.getCurrentUser(userId);
     if (!user) {
       res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'User not found' });
       return;
@@ -109,12 +120,12 @@ export class AuthController {
   async passwordRecovery(req: Request, res: Response) {
     const { email } = req.body;
 
-    if (!(await usersQueryRepo.findUser(email))) {
+    if (!(await this.usersQueryRepo.findUser(email))) {
       res.status(HTTP_STATUS.NO_CONTENT_204).end();
       return;
     }
 
-    await usersService.sendRecoveryCode(email);
+    await this.usersService.sendRecoveryCode(email);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
@@ -122,7 +133,7 @@ export class AuthController {
     const newPassword = req.body.newPassword;
     const recoveryCode = req.body.recoveryCode;
 
-    const passwordUpdateResult = await usersService.updatePassword(recoveryCode, newPassword);
+    const passwordUpdateResult = await this.usersService.updatePassword(recoveryCode, newPassword);
 
     if (passwordUpdateResult.status !== RESULT_STATUS.NO_CONTENT) {
       res
