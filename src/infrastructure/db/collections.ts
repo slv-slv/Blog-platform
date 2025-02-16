@@ -6,7 +6,6 @@ import { UserDbType } from '../../features/users/users-types.js';
 import { SETTINGS } from '../../settings.js';
 import { db } from './db.js';
 import { RequestLogType } from '../../security/request-logs/request-logs-types.js';
-import { Collection } from 'mongodb';
 
 export const blogsCollection = db.collection<BlogType>(SETTINGS.DB_COLLECTIONS.BLOGS);
 export const postsCollection = db.collection<PostType>(SETTINGS.DB_COLLECTIONS.POSTS);
@@ -14,10 +13,3 @@ export const commentsCollection = db.collection<CommentDbType>(SETTINGS.DB_COLLE
 export const usersCollection = db.collection<UserDbType>(SETTINGS.DB_COLLECTIONS.USERS);
 export const sessionsCollection = db.collection<SessionType>(SETTINGS.DB_COLLECTIONS.SESSIONS);
 export const requestLogsCollection = db.collection<RequestLogType>(SETTINGS.DB_COLLECTIONS.REQUEST_LOGS);
-
-export interface IBlogsCollection extends Collection<BlogType> {}
-export interface IPostsCollection extends Collection<PostType> {}
-export interface ICommentsCollection extends Collection<CommentDbType> {}
-export interface IUsersCollection extends Collection<UserDbType> {}
-export interface ISessionsCollection extends Collection<SessionType> {}
-export interface IRequestLogsCollection extends Collection<RequestLogType> {}
