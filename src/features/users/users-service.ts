@@ -1,15 +1,25 @@
 import { CONFIRMATION_STATUS, ConfirmationInfo, PasswordRecoveryInfo, UserType } from './users-types.js';
-import { authService } from '../../instances/services.js';
-import { emailService } from '../../infrastructure/email/email-service.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { Result } from '../../common/types/result-object.js';
 import crypto from 'crypto';
 import { SETTINGS } from '../../settings.js';
-import { usersQueryRepo, usersRepo } from '../../instances/repositories.js';
+import { inject, injectable } from 'inversify';
+import { UsersRepo } from './users-repo.js';
+import { UsersQueryRepo } from './users-query-repo.js';
+import { AuthService } from '../../security/auth/auth-service.js';
+import { EmailService } from '../../infrastructure/email/email-service.js';
 
+@injectable()
 export class UsersService {
+  constructor(
+    @inject(UsersRepo) private usersRepo: UsersRepo,
+    @inject(UsersQueryRepo) private usersQueryRepo: UsersQueryRepo,
+    @inject(AuthService) private authService: AuthService,
+    @inject(EmailService) private emailService: EmailService,
+  ) {}
+
   async createUser(login: string, email: string, password: string): Promise<UserType> {
-    const hash = await authService.hashPassword(password);
+    const hash = await this.authService.hashPassword(password);
     const createdAt = new Date().toISOString();
     const confirmation: ConfirmationInfo = {
       status: CONFIRMATION_STATUS.CONFIRMED,
@@ -18,11 +28,11 @@ export class UsersService {
     };
     const passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null };
 
-    return await usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
+    return await this.usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
   }
 
   async registerUser(login: string, email: string, password: string): Promise<UserType> {
-    const hash = await authService.hashPassword(password);
+    const hash = await this.authService.hashPassword(password);
     const createdAt = new Date().toISOString();
 
     const code = crypto.randomUUID();
@@ -41,7 +51,7 @@ export class UsersService {
 
     // await emailService.sendConfirmationCode(email, code);
 
-    return await usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
+    return await this.usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
   }
 
   async sendConfirmationCode(email: string): Promise<string | null> {
@@ -53,7 +63,7 @@ export class UsersService {
       currentDate.setHours(hours + SETTINGS.CONFIRMATION_CODE_LIFETIME),
     ).toISOString();
 
-    await usersRepo.updateConfirmationCode(email, code, expiration);
+    await this.usersRepo.updateConfirmationCode(email, code, expiration);
 
     // emailService.sendConfirmationCode(email, code);
 
@@ -67,15 +77,15 @@ export class UsersService {
     const hours = currentDate.getHours();
     const expiration = new Date(currentDate.setHours(hours + SETTINGS.RECOVERY_CODE_LIFETIME)).toISOString();
 
-    await usersRepo.updateRecoveryCode(email, code, expiration);
+    await this.usersRepo.updateRecoveryCode(email, code, expiration);
 
-    await emailService.sendRecoveryCode(email, code);
+    // await emailService.sendRecoveryCode(email, code);
 
     return code;
   }
 
   async confirmUser(code: string): Promise<Result<null>> {
-    const confirmationInfo = await usersQueryRepo.getConfirmationInfo(code);
+    const confirmationInfo = await this.usersQueryRepo.getConfirmationInfo(code);
     if (!confirmationInfo) {
       return {
         status: RESULT_STATUS.BAD_REQUEST,
@@ -106,7 +116,7 @@ export class UsersService {
       };
     }
 
-    await usersRepo.confirmUser(code);
+    await this.usersRepo.confirmUser(code);
 
     return {
       status: RESULT_STATUS.NO_CONTENT,
@@ -115,7 +125,7 @@ export class UsersService {
   }
 
   async updatePassword(recoveryCode: string, newPassword: string): Promise<Result<null>> {
-    const passwordRecoveryInfo = await usersQueryRepo.getPasswordRecoveryInfo(recoveryCode);
+    const passwordRecoveryInfo = await this.usersQueryRepo.getPasswordRecoveryInfo(recoveryCode);
 
     if (!passwordRecoveryInfo) {
       return {
@@ -138,8 +148,8 @@ export class UsersService {
       };
     }
 
-    const hash = await authService.hashPassword(newPassword);
-    await usersRepo.updatePassword(recoveryCode, hash);
+    const hash = await this.authService.hashPassword(newPassword);
+    await this.usersRepo.updatePassword(recoveryCode, hash);
 
     return {
       status: RESULT_STATUS.NO_CONTENT,
@@ -148,18 +158,18 @@ export class UsersService {
   }
 
   async deleteUser(id: string): Promise<boolean> {
-    return await usersRepo.deleteUser(id);
+    return await this.usersRepo.deleteUser(id);
   }
 
   async isLoginUnique(login: string): Promise<boolean> {
-    return await usersQueryRepo.isLoginUnique(login);
+    return await this.usersQueryRepo.isLoginUnique(login);
   }
 
   async isEmailUnique(email: string): Promise<boolean> {
-    return await usersQueryRepo.isEmailUnique(email);
+    return await this.usersQueryRepo.isEmailUnique(email);
   }
 
   async isConfirmed(email: string): Promise<boolean> {
-    return await usersQueryRepo.isConfirmed(email);
+    return await this.usersQueryRepo.isConfirmed(email);
   }
 }

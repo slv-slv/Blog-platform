@@ -1,5 +1,7 @@
+import { injectable } from 'inversify';
 import { emailTransport } from './nodemailer-transport.js';
 
+@injectable()
 export class EmailService {
   async sendConfirmationCode(to: string, code: string): Promise<void> {
     try {

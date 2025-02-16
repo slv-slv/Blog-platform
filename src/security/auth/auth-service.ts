@@ -2,17 +2,20 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { SETTINGS } from '../../settings.js';
 import { JwtAcessPayload, JwtPairType, JwtRefreshPayload } from './auth-types.js';
-import { usersQueryRepo } from '../../instances/repositories.js';
-import { sessionsService } from '../../instances/services.js';
+import { inject, injectable } from 'inversify';
+import { UsersQueryRepo } from '../../features/users/users-query-repo.js';
 
+@injectable()
 export class AuthService {
+  constructor(@inject(UsersQueryRepo) private usersQueryRepo: UsersQueryRepo) {}
+
   async hashPassword(password: string): Promise<string> {
     const saltRounds = 10;
     return await bcrypt.hash(password, saltRounds);
   }
 
   async checkCredentials(loginOrEmail: string, password: string): Promise<boolean> {
-    const hash = await usersQueryRepo.getPasswordHash(loginOrEmail);
+    const hash = await this.usersQueryRepo.getPasswordHash(loginOrEmail);
     if (!hash) {
       return false;
     }
