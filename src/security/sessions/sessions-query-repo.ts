@@ -1,7 +1,12 @@
 import { DeviceType, DeviceViewModel, SessionType } from './sessions-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
+import { inject, injectable } from 'inversify';
+import { ISessionsCollection } from '../../infrastructure/db/collections.js';
 
-export class SessionsQueryRepo extends Repository<SessionType> {
+@injectable()
+export class SessionsQueryRepo {
+  constructor(@inject('SessionsCollection') private collection: ISessionsCollection) {}
+
   async checkSession(userId: string, deviceId: string, iat: number): Promise<boolean> {
     const session = await this.collection.findOne({ userId, devices: { $elemMatch: { id: deviceId, iat } } });
     return session !== null;

@@ -10,8 +10,13 @@ import {
   UserType,
 } from './users-types.js';
 import { Repository } from '../../infrastructure/db/repository.js';
+import { inject, injectable } from 'inversify';
+import { IUsersCollection } from '../../infrastructure/db/collections.js';
 
-export class UsersQueryRepo extends Repository<UserDbType> {
+@injectable()
+export class UsersQueryRepo {
+  constructor(@inject('UsersCollection') private collection: IUsersCollection) {}
+
   async getAllUsers(
     searchLoginTerm: string,
     searchEmailTerm: string,

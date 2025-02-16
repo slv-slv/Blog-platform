@@ -1,8 +1,13 @@
 import { PostsPaginatedViewModel, PostType } from './posts-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { Repository } from '../../infrastructure/db/repository.js';
+import { inject, injectable } from 'inversify';
+import { IPostsCollection } from '../../infrastructure/db/collections.js';
 
-export class PostsQueryRepo extends Repository<PostType> {
+@injectable()
+export class PostsQueryRepo {
+  constructor(@inject('PostsCollection') private collection: IPostsCollection) {}
+
   async getPosts(pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedViewModel> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
