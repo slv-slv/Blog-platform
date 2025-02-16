@@ -3,8 +3,10 @@ import request from 'supertest';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
-import { usersQueryRepo, usersRepo } from '../../instances/repositories.js';
-import { usersService } from '../../instances/services.js';
+import { container } from '../../ioc/container.js';
+import { UsersService } from '../../features/users/users-service.js';
+
+const usersService = container.get(UsersService);
 
 describe('DELETE USER', () => {
   beforeAll(async () => {

@@ -7,7 +7,10 @@ import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
 import { JwtRefreshPayload } from '../../../security/auth/auth-types.js';
-import { sessionsRepo } from '../../../instances/repositories.js';
+import { container } from '../../../ioc/container.js';
+import { SessionsRepo } from '../../../security/sessions/sessions-repo.js';
+
+const sessionsRepo = container.get(SessionsRepo);
 
 beforeAll(async () => {
   await mongoCluster.run();
