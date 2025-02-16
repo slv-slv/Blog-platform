@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { authService } from '../../instances/services.js';
 import { JwtRefreshPayload } from '../auth/auth-types.js';
+import { container } from '../../ioc/container.js';
+import { AuthService } from '../auth/auth-service.js';
+
+const authService = container.get(AuthService);
 
 export const generateJwtPair = async (req: Request, res: Response, next: NextFunction) => {
   const userId = res.locals.userId;

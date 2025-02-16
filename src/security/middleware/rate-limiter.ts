@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { requestLogsService } from '../../instances/services.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
+import { container } from '../../ioc/container.js';
+import { RequestLogsService } from '../request-logs/request-logs-service.js';
+
+const requestLogsService = container.get(RequestLogsService);
 
 export const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   const ip = req.ip!;

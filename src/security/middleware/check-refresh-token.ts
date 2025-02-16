@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { authService } from '../../instances/services.js';
+import { container } from '../../ioc/container.js';
+import { AuthService } from '../auth/auth-service.js';
+
+const authService = container.get(AuthService);
 
 export const checkRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
   const refreshToken = req.cookies.refreshToken;

@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { sessionsService } from '../../instances/services.js';
+import { container } from '../../ioc/container.js';
+import { SessionsService } from '../sessions/sessions-service.js';
+
+const sessionsService = container.get(SessionsService);
 
 export const createSession = async (req: Request, res: Response, next: NextFunction) => {
   const userId = res.locals.userId;

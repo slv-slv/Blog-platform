@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { authService } from '../../instances/services.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { usersQueryRepo } from '../../instances/repositories.js';
+import { container } from '../../ioc/container.js';
+import { AuthService } from '../auth/auth-service.js';
+import { UsersQueryRepo } from '../../features/users/users-query-repo.js';
+
+const authService = container.get(AuthService);
+const usersQueryRepo = container.get(UsersQueryRepo);
 
 export const checkCredentials = async (req: Request, res: Response, next: NextFunction) => {
   const { loginOrEmail, password } = req.body;

@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
-import { sessionsService } from '../../instances/services.js';
+import { container } from '../../ioc/container.js';
+import { SessionsService } from '../sessions/sessions-service.js';
+
+const sessionsService = container.get(SessionsService);
 
 export const checkSession = async (req: Request, res: Response, next: NextFunction) => {
   const userId = res.locals.userId;

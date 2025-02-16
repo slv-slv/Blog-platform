@@ -1,5 +1,8 @@
 import { body } from 'express-validator';
-import { blogsQueryRepo } from '../../instances/repositories.js';
+import { container } from '../../ioc/container.js';
+import { BlogsQueryRepo } from '../blogs/blogs-query-repo.js';
+
+const blogsQueryRepo = container.get(BlogsQueryRepo);
 
 export const postsValidator = {
   blogExists: body('blogId')
