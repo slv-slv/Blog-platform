@@ -34,7 +34,7 @@ import { UsersController } from '../features/users/users-controller.js';
 import { AuthController } from '../security/auth/auth-controller.js';
 import { SessionsController } from '../security/sessions/sessions-controller.js';
 
-export const container: Container = new Container();
+export const container: Container = new Container({ defaultScope: 'Singleton' });
 
 container.bind('BlogsCollection').toConstantValue(blogsCollection);
 container.bind('PostsCollection').toConstantValue(postsCollection);
@@ -43,31 +43,31 @@ container.bind('UsersCollection').toConstantValue(usersCollection);
 container.bind('SessionsCollection').toConstantValue(sessionsCollection);
 container.bind('RequestLogsCollection').toConstantValue(requestLogsCollection);
 
-container.bind(BlogsRepo).toSelf().inSingletonScope();
-container.bind(PostsRepo).toSelf().inSingletonScope();
-container.bind(CommentsRepo).toSelf().inSingletonScope();
-container.bind(UsersRepo).toSelf().inSingletonScope();
-container.bind(SessionsRepo).toSelf().inSingletonScope();
-container.bind(RequestLogsRepo).toSelf().inSingletonScope();
+container.bind(BlogsRepo).toSelf();
+container.bind(PostsRepo).toSelf();
+container.bind(CommentsRepo).toSelf();
+container.bind(UsersRepo).toSelf();
+container.bind(SessionsRepo).toSelf();
+container.bind(RequestLogsRepo).toSelf();
 
-container.bind(BlogsQueryRepo).toSelf().inSingletonScope();
-container.bind(PostsQueryRepo).toSelf().inSingletonScope();
-container.bind(CommentsQueryRepo).toSelf().inSingletonScope();
-container.bind(UsersQueryRepo).toSelf().inSingletonScope();
-container.bind(SessionsQueryRepo).toSelf().inSingletonScope();
+container.bind(BlogsQueryRepo).toSelf();
+container.bind(PostsQueryRepo).toSelf();
+container.bind(CommentsQueryRepo).toSelf();
+container.bind(UsersQueryRepo).toSelf();
+container.bind(SessionsQueryRepo).toSelf();
 
-container.bind(BlogsService).toSelf().inSingletonScope();
-container.bind(PostsService).toSelf().inSingletonScope();
-container.bind(CommentsService).toSelf().inSingletonScope();
-container.bind(UsersService).toSelf().inSingletonScope();
-container.bind(AuthService).toSelf().inSingletonScope();
-container.bind(EmailService).toSelf().inSingletonScope();
-container.bind(SessionsService).toSelf().inSingletonScope();
-container.bind(RequestLogsService).toSelf().inSingletonScope();
+container.bind(BlogsService).toSelf();
+container.bind(PostsService).toSelf();
+container.bind(CommentsService).toSelf();
+container.bind(UsersService).toSelf();
+container.bind(AuthService).toSelf();
+container.bind(EmailService).toSelf();
+container.bind(SessionsService).toSelf();
+container.bind(RequestLogsService).toSelf();
 
-container.bind(BlogsController).toSelf().inSingletonScope();
-container.bind(PostsController).toSelf().inSingletonScope();
-container.bind(CommentsController).toSelf().inSingletonScope();
-container.bind(UsersController).toSelf().inSingletonScope();
-container.bind(AuthController).toSelf().inSingletonScope();
-container.bind(SessionsController).toSelf().inSingletonScope();
+container.bind(BlogsController).toSelf();
+container.bind(PostsController).toSelf();
+container.bind(CommentsController).toSelf();
+container.bind(UsersController).toSelf();
+container.bind(AuthController).toSelf();
+container.bind(SessionsController).toSelf();
