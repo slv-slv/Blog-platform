@@ -1,11 +1,10 @@
 import { BlogType } from './blogs-types.js';
-import { Repository } from '../../infrastructure/db/repository.js';
 import { inject, injectable } from 'inversify';
-import { IBlogsCollection } from '../../infrastructure/db/collections.js';
+import { Collection } from 'mongodb';
 
 @injectable()
 export class BlogsRepo {
-  constructor(@inject('BlogsCollection') private collection: IBlogsCollection) {}
+  constructor(@inject('BlogsCollection') private collection: Collection<BlogType>) {}
 
   async createBlog(
     name: string,

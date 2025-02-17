@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import {
   ConfirmationInfo,
   CONFIRMATION_STATUS,
@@ -6,13 +6,11 @@ import {
   UserType,
   PasswordRecoveryInfo,
 } from './users-types.js';
-import { Repository } from '../../infrastructure/db/repository.js';
 import { inject, injectable } from 'inversify';
-import { IUsersCollection } from '../../infrastructure/db/collections.js';
 
 @injectable()
 export class UsersRepo {
-  constructor(@inject('UsersCollection') private collection: IUsersCollection) {}
+  constructor(@inject('UsersCollection') private collection: Collection<UserDbType>) {}
 
   async findUser(loginOrEmail: string): Promise<UserDbType | null> {
     const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };

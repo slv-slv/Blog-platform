@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import { PagingParams } from '../../common/types/paging-params.js';
 import {
   CONFIRMATION_STATUS,
@@ -9,13 +9,11 @@ import {
   UsersPaginatedViewModel,
   UserType,
 } from './users-types.js';
-import { Repository } from '../../infrastructure/db/repository.js';
 import { inject, injectable } from 'inversify';
-import { IUsersCollection } from '../../infrastructure/db/collections.js';
 
 @injectable()
 export class UsersQueryRepo {
-  constructor(@inject('UsersCollection') private collection: IUsersCollection) {}
+  constructor(@inject('UsersCollection') private collection: Collection<UserDbType>) {}
 
   async getAllUsers(
     searchLoginTerm: string,

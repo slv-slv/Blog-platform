@@ -1,13 +1,12 @@
 import { PostType } from './posts-types.js';
-import { Repository } from '../../infrastructure/db/repository.js';
 import { inject, injectable } from 'inversify';
-import { IPostsCollection } from '../../infrastructure/db/collections.js';
 import { BlogsQueryRepo } from '../blogs/blogs-query-repo.js';
+import { Collection } from 'mongodb';
 
 @injectable()
 export class PostsRepo {
   constructor(
-    @inject('PostsCollection') private collection: IPostsCollection,
+    @inject('PostsCollection') private collection: Collection<PostType>,
     @inject(BlogsQueryRepo) private blogsQueryRepo: BlogsQueryRepo,
   ) {}
 

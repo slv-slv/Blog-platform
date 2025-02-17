@@ -1,12 +1,11 @@
 import { BlogsPaginatedViewModel, BlogType } from './blogs-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { Repository } from '../../infrastructure/db/repository.js';
 import { inject, injectable } from 'inversify';
-import { IBlogsCollection } from '../../infrastructure/db/collections.js';
+import { Collection } from 'mongodb';
 
 @injectable()
 export class BlogsQueryRepo {
-  constructor(@inject('BlogsCollection') private collection: IBlogsCollection) {}
+  constructor(@inject('BlogsCollection') private collection: Collection<BlogType>) {}
 
   async getAllBlogs(
     searchNameTerm: string | null,

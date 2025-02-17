@@ -1,13 +1,11 @@
-import { ObjectId } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import { CommentType, CommentDbType, CommentsPaginatedViewModel } from './comments-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
-import { Repository } from '../../infrastructure/db/repository.js';
-import { ICommentsCollection } from '../../infrastructure/db/collections.js';
 import { inject, injectable } from 'inversify';
 
 @injectable()
 export class CommentsQueryRepo {
-  constructor(@inject('CommentsCollection') private collection: ICommentsCollection) {}
+  constructor(@inject('CommentsCollection') private collection: Collection<CommentDbType>) {}
 
   async getCommentsForPost(postId: string, pagingParams: PagingParams): Promise<CommentsPaginatedViewModel> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
