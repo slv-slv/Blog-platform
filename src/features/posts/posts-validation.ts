@@ -14,8 +14,8 @@ export const postsValidator = {
     .notEmpty()
     .withMessage('Blog ID must not be empty')
     .custom(async (blogId) => {
-      const blogFound = await blogsQueryRepo.findBlog(blogId);
-      if (!blogFound) {
+      const blog = await blogsQueryRepo.findBlog(blogId);
+      if (!blog) {
         throw new Error('Blog does not exist');
       }
       return true;
