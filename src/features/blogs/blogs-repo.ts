@@ -1,10 +1,10 @@
-import { BlogType } from './blogs-types.js';
+import { BlogDbType, BlogType } from './blogs-types.js';
 import { inject, injectable } from 'inversify';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 
 @injectable()
 export class BlogsRepo {
-  constructor(@inject('BlogsCollection') private collection: Collection<BlogType>) {}
+  constructor(@inject('BlogsCollection') private collection: Collection<BlogDbType>) {}
 
   async createBlog(
     name: string,
@@ -13,18 +13,22 @@ export class BlogsRepo {
     createdAt: string,
     isMembership: boolean,
   ): Promise<BlogType> {
-    const id = ((await this.collection.countDocuments()) + 1 || 1).toString();
-    const newBlog = { id, name, description, websiteUrl, createdAt, isMembership };
-    const createResult = await this.collection.insertOne(newBlog);
-    const insertedBlog = await this.collection.findOne(
-      { _id: createResult.insertedId },
-      { projection: { _id: 0 } },
-    );
-    return insertedBlog as BlogType;
+    const _id = new ObjectId();
+    const newBlog = { name, description, websiteUrl, createdAt, isMembership };
+    await this.collection.insertOne({ _id, ...newBlog });
+    const id = _id.toString();
+    return { id, ...newBlog };
   }
 
   async updateBlog(id: string, name: string, description: string, websiteUrl: string): Promise<boolean> {
-    const updateResult = await this.collection.updateOne({ id }, { $set: { name, description, websiteUrl } });
+    if (!ObjectId.isValid(id)) {
+      return false;
+    }
+    const _id = new ObjectId(id);
+    const updateResult = await this.collection.updateOne(
+      { _id },
+      { $set: { name, description, websiteUrl } },
+    );
     if (!updateResult.matchedCount) {
       return false;
     }
@@ -32,7 +36,11 @@ export class BlogsRepo {
   }
 
   async deleteBlog(id: string): Promise<boolean> {
-    const deleteResult = await this.collection.deleteOne({ id });
+    if (!ObjectId.isValid(id)) {
+      return false;
+    }
+    const _id = new ObjectId(id);
+    const deleteResult = await this.collection.deleteOne({ _id });
     if (!deleteResult.deletedCount) {
       return false;
     }

@@ -1,3 +1,5 @@
+import { WithId } from 'mongodb';
+
 export type BlogType = {
   id: string;
   name: string;
@@ -7,8 +9,16 @@ export type BlogType = {
   isMembership: boolean;
 };
 
+export type BlogDbType = WithId<{
+  name: string;
+  description: string;
+  websiteUrl: string;
+  createdAt: string;
+  isMembership: boolean;
+}>;
+
 export enum BlogTypeKeys {
-  id = 'id',
+  // id = 'id',
   name = 'name',
   description = 'description',
   websiteUrl = 'websiteUrl',

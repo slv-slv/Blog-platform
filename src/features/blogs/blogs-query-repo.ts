@@ -1,11 +1,11 @@
-import { BlogsPaginatedViewModel, BlogType } from './blogs-types.js';
+import { BlogDbType, BlogsPaginatedViewModel, BlogType } from './blogs-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { inject, injectable } from 'inversify';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 
 @injectable()
 export class BlogsQueryRepo {
-  constructor(@inject('BlogsCollection') private collection: Collection<BlogType>) {}
+  constructor(@inject('BlogsCollection') private collection: Collection<BlogDbType>) {}
 
   async getAllBlogs(
     searchNameTerm: string | null,
@@ -18,12 +18,24 @@ export class BlogsQueryRepo {
     const totalCount = await this.collection.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
-    const blogs = await this.collection
-      .find(filter, { projection: { _id: 0 } })
+    const blogsWithObjectId = await this.collection
+      .find(filter)
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .toArray();
+
+    const blogs = blogsWithObjectId.map((blog) => {
+      return {
+        id: blog._id.toString(),
+        name: blog.name,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl,
+        createdAt: blog.createdAt,
+        isMembership: blog.isMembership,
+      };
+    });
+
     return {
       pagesCount,
       page: pageNumber,
@@ -34,10 +46,14 @@ export class BlogsQueryRepo {
   }
 
   async findBlog(id: string): Promise<BlogType | null> {
-    const blog = await this.collection.findOne({ id }, { projection: { _id: 0 } });
+    if (!ObjectId.isValid(id)) {
+      return null;
+    }
+    const _id = new ObjectId(id);
+    const blog = await this.collection.findOne({ _id }, { projection: { _id: 0 } });
     if (!blog) {
       return null;
     }
-    return blog;
+    return { id, ...blog };
   }
 }
