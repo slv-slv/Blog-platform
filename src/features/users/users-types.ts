@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { WithId } from 'mongodb';
 
 export type UserType = {
   id: string;
@@ -8,21 +8,20 @@ export type UserType = {
 };
 
 export enum UserTypeKeys {
-  id = 'id',
+  // id = 'id',
   login = 'login',
   email = 'email',
   createdAt = 'createdAt',
 }
 
-export type UserDbType = {
-  _id: ObjectId;
+export type UserDbType = WithId<{
   login: string;
   email: string;
   hash: string;
   createdAt: string;
   confirmation: ConfirmationInfo;
   passwordRecovery: PasswordRecoveryInfo;
-};
+}>;
 
 export type CurrentUserType = {
   email: string;

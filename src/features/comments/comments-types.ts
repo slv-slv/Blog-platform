@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { WithId } from 'mongodb';
 
 export type CommentType = {
   id: string;
@@ -11,14 +11,13 @@ export type CommentType = {
 };
 
 export enum CommentTypeKeys {
-  id = 'id',
+  // id = 'id',
   content = 'content',
   commentatorInfo = 'commentatorInfo',
   createdAt = 'createdAt',
 }
 
-export type CommentDbType = {
-  _id: ObjectId;
+export type CommentDbType = WithId<{
   postId: string;
   content: string;
   commentatorInfo: {
@@ -26,7 +25,7 @@ export type CommentDbType = {
     userLogin: string;
   };
   createdAt: string;
-};
+}>;
 
 export type CommentsPaginatedViewModel = {
   pagesCount: number;
