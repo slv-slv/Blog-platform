@@ -20,7 +20,7 @@ postsRouter.get(
   postsController.getAllPosts.bind(postsController),
 );
 
-postsRouter.get('/:id', postsController.findPost);
+postsRouter.get('/:id', postsController.findPost.bind(postsController));
 
 postsRouter.post(
   '/',
