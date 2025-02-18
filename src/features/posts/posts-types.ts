@@ -1,3 +1,5 @@
+import { WithId } from 'mongodb';
+
 export type PostType = {
   id: string;
   title: string;
@@ -8,8 +10,17 @@ export type PostType = {
   createdAt: string;
 };
 
+export type PostDbType = WithId<{
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
+  blogName: string;
+  createdAt: string;
+}>;
+
 export enum PostTypeKeys {
-  id = 'id',
+  // id = 'id',
   title = 'title',
   shortDescription = 'shortDescription',
   content = 'content',

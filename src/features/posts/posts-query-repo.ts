@@ -1,11 +1,11 @@
-import { PostsPaginatedViewModel, PostType } from './posts-types.js';
+import { PostDbType, PostsPaginatedViewModel, PostType } from './posts-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { inject, injectable } from 'inversify';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 
 @injectable()
 export class PostsQueryRepo {
-  constructor(@inject('PostsCollection') private collection: Collection<PostType>) {}
+  constructor(@inject('PostsCollection') private collection: Collection<PostDbType>) {}
 
   async getPosts(pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedViewModel> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
@@ -15,12 +15,25 @@ export class PostsQueryRepo {
     const totalCount = await this.collection.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
-    const posts = await this.collection
-      .find(filter, { projection: { _id: 0 } })
+    const postsWithObjectId = await this.collection
+      .find(filter)
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .toArray();
+
+    const posts = postsWithObjectId.map((post) => {
+      return {
+        id: post._id.toString(),
+        title: post.title,
+        shortDescription: post.shortDescription,
+        content: post.content,
+        blogId: post.blogId,
+        blogName: post.blogName,
+        createdAt: post.createdAt,
+      };
+    });
+
     return {
       pagesCount,
       page: pageNumber,
@@ -31,10 +44,14 @@ export class PostsQueryRepo {
   }
 
   async findPost(id: string): Promise<PostType | null> {
-    const post = await this.collection.findOne({ id }, { projection: { _id: 0 } });
+    if (!ObjectId.isValid(id)) {
+      return null;
+    }
+    const _id = new ObjectId(id);
+    const post = await this.collection.findOne({ _id }, { projection: { _id: 0 } });
     if (!post) {
       return null;
     }
-    return post;
+    return { id, ...post };
   }
 }
