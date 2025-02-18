@@ -15,19 +15,14 @@ export class CommentsRepo {
   ): Promise<CommentType> {
     const _id = new ObjectId();
     const newComment = {
-      _id,
       postId,
       content,
       commentatorInfo: { userId: user.userId, userLogin: user.login },
       createdAt,
     };
-    const createResult = await this.collection.insertOne(newComment);
-    const insertedComment = await this.collection.findOne(
-      { _id: createResult.insertedId },
-      { projection: { _id: 0, postId: 0 } },
-    );
+    const createResult = await this.collection.insertOne({ _id, ...newComment });
     const id = createResult.insertedId.toString();
-    return { id, ...insertedComment } as CommentType;
+    return { id, ...newComment };
   }
 
   async updateComment(id: string, content: string): Promise<boolean> {
