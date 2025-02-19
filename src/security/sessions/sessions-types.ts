@@ -13,7 +13,7 @@ export type DeviceType = {
   exp: number;
 };
 
-export type DeviceViewModel = {
+export type DeviceViewType = {
   ip: string;
   title: string;
   lastActiveDate: string;

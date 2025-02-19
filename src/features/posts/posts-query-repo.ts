@@ -1,4 +1,4 @@
-import { PostDbType, PostsPaginatedViewModel, PostType } from './posts-types.js';
+import { PostDbType, PostsPaginatedType, PostType } from './posts-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { inject, injectable } from 'inversify';
 import { Collection, ObjectId } from 'mongodb';
@@ -7,7 +7,7 @@ import { Collection, ObjectId } from 'mongodb';
 export class PostsQueryRepo {
   constructor(@inject('PostsCollection') private collection: Collection<PostDbType>) {}
 
-  async getPosts(pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedViewModel> {
+  async getPosts(pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedType> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const filter = blogId ? { blogId } : {};

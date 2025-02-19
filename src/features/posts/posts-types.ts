@@ -29,7 +29,7 @@ export enum PostTypeKeys {
   createdAt = 'createdAt',
 }
 
-export type PostsPaginatedViewModel = {
+export type PostsPaginatedType = {
   pagesCount: number;
   page: number;
   pageSize: number;

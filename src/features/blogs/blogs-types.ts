@@ -26,7 +26,7 @@ export enum BlogTypeKeys {
   isMembership = 'isMembership',
 }
 
-export type BlogsPaginatedViewModel = {
+export type BlogsPaginatedType = {
   pagesCount: number;
   page: number;
   pageSize: number;

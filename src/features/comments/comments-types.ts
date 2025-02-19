@@ -27,7 +27,7 @@ export type CommentDbType = WithId<{
   createdAt: string;
 }>;
 
-export type CommentsPaginatedViewModel = {
+export type CommentsPaginatedType = {
   pagesCount: number;
   page: number;
   pageSize: number;

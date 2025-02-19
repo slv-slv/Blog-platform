@@ -6,7 +6,7 @@ import {
   CurrentUserType,
   PasswordRecoveryInfo,
   UserDbType,
-  UsersPaginatedViewModel,
+  UsersPaginatedType,
   UserType,
 } from './users-types.js';
 import { inject, injectable } from 'inversify';
@@ -19,7 +19,7 @@ export class UsersQueryRepo {
     searchLoginTerm: string,
     searchEmailTerm: string,
     pagingParams: PagingParams,
-  ): Promise<UsersPaginatedViewModel> {
+  ): Promise<UsersPaginatedType> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     let filter = {};

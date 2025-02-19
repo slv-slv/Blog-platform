@@ -1,4 +1,4 @@
-import { BlogDbType, BlogsPaginatedViewModel, BlogType } from './blogs-types.js';
+import { BlogDbType, BlogsPaginatedType, BlogType } from './blogs-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { inject, injectable } from 'inversify';
 import { Collection, ObjectId } from 'mongodb';
@@ -7,10 +7,7 @@ import { Collection, ObjectId } from 'mongodb';
 export class BlogsQueryRepo {
   constructor(@inject('BlogsCollection') private collection: Collection<BlogDbType>) {}
 
-  async getAllBlogs(
-    searchNameTerm: string | null,
-    pagingParams: PagingParams,
-  ): Promise<BlogsPaginatedViewModel> {
+  async getAllBlogs(searchNameTerm: string | null, pagingParams: PagingParams): Promise<BlogsPaginatedType> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const filter = searchNameTerm ? { name: { $regex: searchNameTerm, $options: 'i' } } : {};

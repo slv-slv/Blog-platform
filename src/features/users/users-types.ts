@@ -29,7 +29,7 @@ export type CurrentUserType = {
   userId: string;
 };
 
-export type UsersPaginatedViewModel = {
+export type UsersPaginatedType = {
   pagesCount: number;
   page: number;
   pageSize: number;

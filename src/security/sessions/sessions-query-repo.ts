@@ -1,5 +1,5 @@
 import { Collection } from 'mongodb';
-import { DeviceType, DeviceViewModel, SessionType } from './sessions-types.js';
+import { DeviceType, DeviceViewType, SessionType } from './sessions-types.js';
 import { inject, injectable } from 'inversify';
 
 @injectable()
@@ -11,7 +11,7 @@ export class SessionsQueryRepo {
     return session !== null;
   }
 
-  async findDevice(deviceId: string): Promise<DeviceViewModel | null> {
+  async findDevice(deviceId: string): Promise<DeviceViewType | null> {
     const session = await this.collection.findOne({ 'devices.id': deviceId }, { projection: { devices: 1 } });
 
     if (!session) {
@@ -38,7 +38,7 @@ export class SessionsQueryRepo {
     return session.userId;
   }
 
-  async getActiveDevices(userId: string): Promise<DeviceViewModel[]> {
+  async getActiveDevices(userId: string): Promise<DeviceViewType[]> {
     const userSessions = await this.collection.findOne({ userId }, { projection: { devices: 1 } });
 
     return userSessions!.devices.map((device: DeviceType) => ({

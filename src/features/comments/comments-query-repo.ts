@@ -1,5 +1,5 @@
 import { Collection, ObjectId } from 'mongodb';
-import { CommentType, CommentDbType, CommentsPaginatedViewModel } from './comments-types.js';
+import { CommentType, CommentDbType, CommentsPaginatedType } from './comments-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { inject, injectable } from 'inversify';
 
@@ -7,7 +7,7 @@ import { inject, injectable } from 'inversify';
 export class CommentsQueryRepo {
   constructor(@inject('CommentsCollection') private collection: Collection<CommentDbType>) {}
 
-  async getCommentsForPost(postId: string, pagingParams: PagingParams): Promise<CommentsPaginatedViewModel> {
+  async getCommentsForPost(postId: string, pagingParams: PagingParams): Promise<CommentsPaginatedType> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const totalCount = await this.collection.countDocuments({ postId });
