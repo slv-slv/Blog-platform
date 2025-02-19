@@ -13,6 +13,7 @@ export const generateJwtPair = async (req: Request, res: Response, next: NextFun
 
   const { iat, exp } = authService.verifyJwt(refreshToken) as JwtRefreshPayload;
 
+  res.locals.deviceId = deviceId;
   res.locals.iat = iat;
   res.locals.exp = exp;
 
