@@ -1,7 +1,7 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
+import { dbName, mongoUri } from '../../infrastructure/db/db.js';
 import { ObjectId } from 'mongodb';
 import { SETTINGS } from '../../settings.js';
 import { app } from '../../app.js';
@@ -10,19 +10,19 @@ import { container } from '../../ioc/container.js';
 import { BlogsRepo } from '../../features/blogs/blogs-repo.js';
 import { PostsRepo } from '../../features/posts/posts-repo.js';
 import { UsersService } from '../../features/users/users-service.js';
+import mongoose from 'mongoose';
 
 const blogsRepo = container.get(BlogsRepo);
 const postsRepo = container.get(PostsRepo);
 const usersService = container.get(UsersService);
 
 beforeAll(async () => {
-  await mongoCluster.run();
-  await mongoCluster.dropDb(dbName);
+  await mongoose.connect(mongoUri, { dbName });
+  await mongoose.connection.dropDatabase();
 });
 
 afterAll(async () => {
-  await mongoCluster.stop();
-  // await mongoMemoryServer.stop();
+  await mongoose.disconnect();
 });
 
 describe('CREATE COMMENT', () => {

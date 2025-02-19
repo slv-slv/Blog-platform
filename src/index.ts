@@ -1,11 +1,11 @@
 import { app } from './app.js';
 import { SETTINGS } from './settings.js';
-import { mongoCluster } from './infrastructure/db/db.js';
+import { dbName, mongoUri } from './infrastructure/db/db.js';
+import mongoose from 'mongoose';
 
 const start = async () => {
   try {
-    // await initDb();
-    await mongoCluster.run();
+    await mongoose.connect(mongoUri, { dbName });
     app.listen(SETTINGS.PORT, () => {
       console.log('Server started in port ' + SETTINGS.PORT);
     });

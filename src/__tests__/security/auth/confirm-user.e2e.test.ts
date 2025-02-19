@@ -1,23 +1,23 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
-import { dbName, mongoCluster, mongoMemoryServer } from '../../../infrastructure/db/db.js';
+import { dbName, mongoUri } from '../../../infrastructure/db/db.js';
 import { app } from '../../../app.js';
 import { CONFIRMATION_STATUS } from '../../../features/users/users-types.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { usersCollection } from '../../../infrastructure/db/collections.js';
 import { container } from '../../../ioc/container.js';
 import { UsersRepo } from '../../../features/users/users-repo.js';
+import mongoose from 'mongoose';
+import { UserModel } from '../../../features/users/users-model.js';
 
 const usersRepo = container.get(UsersRepo);
 
 beforeAll(async () => {
-  await mongoCluster.run();
-  await mongoCluster.dropDb(dbName);
+  await mongoose.connect(mongoUri, { dbName });
+  await mongoose.connection.dropDatabase();
 });
 
 afterAll(async () => {
-  await mongoCluster.stop();
-  // await mongoMemoryServer.stop();
+  await mongoose.disconnect();
 });
 
 describe('CONFIRM USER', () => {
@@ -58,17 +58,14 @@ describe('CONFIRM USER', () => {
   });
 
   it('should confirm user with valid code', async () => {
-    await usersCollection.updateOne(
-      { login },
-      { $set: { 'confirmation.expiration': futureDate.toISOString() } },
-    );
+    await UserModel.updateOne({ login }, { $set: { 'confirmation.expiration': futureDate.toISOString() } });
 
     await request(app)
       .post('/auth/registration-confirmation')
       .send({ code: confirmation.code })
       .expect(HTTP_STATUS.NO_CONTENT_204);
 
-    const confirmedUser = await usersCollection.findOne({ email });
+    const confirmedUser = await UserModel.findOne({ email });
 
     expect(confirmedUser!.confirmation.status).toBe(CONFIRMATION_STATUS.CONFIRMED);
     expect(confirmedUser!.confirmation.expiration).toBeNull;

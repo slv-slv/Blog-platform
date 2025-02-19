@@ -2,11 +2,12 @@ import { PostDbType, PostType } from './posts-types.js';
 import { inject, injectable } from 'inversify';
 import { BlogsQueryRepo } from '../blogs/blogs-query-repo.js';
 import { Collection, ObjectId } from 'mongodb';
+import { Model } from 'mongoose';
 
 @injectable()
 export class PostsRepo {
   constructor(
-    @inject('PostsCollection') private collection: Collection<PostDbType>,
+    @inject('PostModel') private model: Model<PostDbType>,
     @inject(BlogsQueryRepo) private blogsQueryRepo: BlogsQueryRepo,
   ) {}
 
@@ -21,7 +22,7 @@ export class PostsRepo {
     const blog = await this.blogsQueryRepo.findBlog(blogId);
     const blogName = blog!.name;
     const newPost = { title, shortDescription, content, blogId, blogName, createdAt };
-    await this.collection.insertOne({ _id, ...newPost });
+    await this.model.insertOne({ _id, ...newPost });
     const id = _id.toString();
     return { id, ...newPost };
   }
@@ -31,10 +32,7 @@ export class PostsRepo {
       return false;
     }
     const _id = new ObjectId(id);
-    const updateResult = await this.collection.updateOne(
-      { _id },
-      { $set: { title, shortDescription, content } },
-    );
+    const updateResult = await this.model.updateOne({ _id }, { $set: { title, shortDescription, content } });
     if (!updateResult.matchedCount) {
       return false;
     }
@@ -46,7 +44,7 @@ export class PostsRepo {
       return false;
     }
     const _id = new ObjectId(id);
-    const deleteResult = await this.collection.deleteOne({ _id });
+    const deleteResult = await this.model.deleteOne({ _id });
     if (!deleteResult.deletedCount) {
       return false;
     }

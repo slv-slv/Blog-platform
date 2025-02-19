@@ -6,9 +6,9 @@ import { postsRouter } from './features/posts/posts-router.js';
 import { usersRouter } from './features/users/users-router.js';
 import { commentsRouter } from './features/comments/comments-router.js';
 import { authRouter } from './security/auth/auth-router.js';
-import { mongoCluster } from './infrastructure/db/db.js';
 import { SETTINGS } from './settings.js';
 import { securityRouter } from './security/sessions/sessions-router.js';
+import mongoose from 'mongoose';
 
 export const app = express();
 
@@ -23,7 +23,7 @@ app.use('/auth', authRouter);
 app.use('/security', securityRouter);
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
-  await mongoCluster.dropDb(SETTINGS.DB_NAME);
+  await mongoose.connection.dropDatabase();
   res.status(204).end();
 });
 

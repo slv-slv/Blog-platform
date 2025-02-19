@@ -1,23 +1,23 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
-import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
+import { dbName, mongoUri } from '../../../infrastructure/db/db.js';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
 import { CONFIRMATION_STATUS } from '../../../features/users/users-types.js';
-import { usersCollection } from '../../../infrastructure/db/collections.js';
 import { UsersRepo } from '../../../features/users/users-repo.js';
 import { container } from '../../../ioc/container.js';
+import mongoose from 'mongoose';
+import { UserModel } from '../../../features/users/users-model.js';
 
 const usersRepo = container.get(UsersRepo);
 
 beforeAll(async () => {
-  await mongoCluster.run();
-  await mongoCluster.dropDb(dbName);
+  await mongoose.connect(mongoUri, { dbName });
+  await mongoose.connection.dropDatabase();
 });
 
 afterAll(async () => {
-  await mongoCluster.stop();
-  // await mongoMemoryServer.stop();
+  await mongoose.disconnect();
 });
 
 describe('PASSWORD RECOVERY', () => {
@@ -75,10 +75,7 @@ describe('PASSWORD RECOVERY', () => {
   });
 
   it('should return 400 if recovery code is expired', async () => {
-    await usersCollection.updateOne(
-      { login },
-      { $set: { 'passwordRecovery.expiration': pastDate.toISOString() } },
-    );
+    await UserModel.updateOne({ login }, { $set: { 'passwordRecovery.expiration': pastDate.toISOString() } });
 
     const body = {
       newPassword: 'newpassword',

@@ -1,10 +1,11 @@
 import { Collection } from 'mongodb';
 import { DeviceType, SessionType } from './sessions-types.js';
 import { inject, injectable } from 'inversify';
+import { Model } from 'mongoose';
 
 @injectable()
 export class SessionsRepo {
-  constructor(@inject('SessionsCollection') private collection: Collection<SessionType>) {}
+  constructor(@inject('SessionModel') private model: Model<SessionType>) {}
 
   async createSession(
     userId: string,
@@ -22,25 +23,22 @@ export class SessionsRepo {
       exp,
     };
 
-    const session = await this.collection.findOne({ userId });
+    const session = await this.model.findOne({ userId });
     if (!session) {
       // const _id = new ObjectId();
-      const insertResult = await this.collection.insertOne({ userId, devices: [newDevice] });
+      const insertResult = await this.model.insertOne({ userId, devices: [newDevice] });
       // console.log(insertResult);
     } else {
-      const updateResult = await this.collection.updateOne({ userId }, { $push: { devices: newDevice } });
+      const updateResult = await this.model.updateOne({ userId }, { $push: { devices: newDevice } });
       // console.log(updateResult);
     }
   }
 
   async deleteDevice(deviceId: string): Promise<void> {
-    await this.collection.updateOne({ 'devices.id': deviceId }, { $pull: { devices: { id: deviceId } } });
+    await this.model.updateOne({ 'devices.id': deviceId }, { $pull: { devices: { id: deviceId } } });
   }
 
   async deleteOtherDevices(deviceId: string): Promise<void> {
-    await this.collection.updateOne(
-      { 'devices.id': deviceId },
-      { $pull: { devices: { id: { $ne: deviceId } } } },
-    );
+    await this.model.updateOne({ 'devices.id': deviceId }, { $pull: { devices: { id: { $ne: deviceId } } } });
   }
 }

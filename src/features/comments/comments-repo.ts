@@ -2,10 +2,11 @@ import { Collection, ObjectId } from 'mongodb';
 import { CurrentUserType } from '../users/users-types.js';
 import { CommentType, CommentDbType } from './comments-types.js';
 import { inject, injectable } from 'inversify';
+import { Model } from 'mongoose';
 
 @injectable()
 export class CommentsRepo {
-  constructor(@inject('CommentsCollection') private collection: Collection<CommentDbType>) {}
+  constructor(@inject('CommentModel') private model: Model<CommentDbType>) {}
 
   async createComment(
     postId: string,
@@ -15,7 +16,7 @@ export class CommentsRepo {
   ): Promise<CommentType> {
     const _id = new ObjectId();
     const commentatorInfo = { userId: user.userId, userLogin: user.login };
-    await this.collection.insertOne({
+    await this.model.insertOne({
       _id,
       postId,
       content,
@@ -31,7 +32,7 @@ export class CommentsRepo {
       return false;
     }
     const _id = new ObjectId(id);
-    const updateResult = await this.collection.updateOne({ _id }, { $set: { content } });
+    const updateResult = await this.model.updateOne({ _id }, { $set: { content } });
     if (!updateResult.matchedCount) {
       return false;
     }
@@ -43,7 +44,7 @@ export class CommentsRepo {
       return false;
     }
     const _id = new ObjectId(id);
-    const deleteResult = await this.collection.deleteOne({ _id });
+    const deleteResult = await this.model.deleteOne({ _id });
     return deleteResult.deletedCount > 0;
   }
 }

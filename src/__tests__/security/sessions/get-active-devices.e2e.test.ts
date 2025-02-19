@@ -1,7 +1,7 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
+import { dbName, mongoUri } from '../../../infrastructure/db/db.js';
 import { SETTINGS } from '../../../settings.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
@@ -9,17 +9,17 @@ import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
 import { JwtRefreshPayload } from '../../../security/auth/auth-types.js';
 import { container } from '../../../ioc/container.js';
 import { SessionsRepo } from '../../../security/sessions/sessions-repo.js';
+import mongoose from 'mongoose';
 
 const sessionsRepo = container.get(SessionsRepo);
 
 beforeAll(async () => {
-  await mongoCluster.run();
-  await mongoCluster.dropDb(dbName);
+  await mongoose.connect(mongoUri, { dbName });
+  await mongoose.connection.dropDatabase();
 });
 
 afterAll(async () => {
-  await mongoCluster.stop();
-  // await mongoMemoryServer.stop();
+  await mongoose.disconnect();
 });
 
 describe('GET-ACTIVE-DEVICES', () => {

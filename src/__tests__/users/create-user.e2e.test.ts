@@ -2,17 +2,17 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
-import { dbName, mongoCluster } from '../../infrastructure/db/db.js';
+import { dbName, mongoUri } from '../../infrastructure/db/db.js';
+import mongoose from 'mongoose';
 
 describe('CREATE USER', () => {
   beforeAll(async () => {
-    await mongoCluster.run();
-    await mongoCluster.dropDb(dbName);
+    await mongoose.connect(mongoUri, { dbName });
+    await mongoose.connection.dropDatabase();
   });
 
   afterAll(async () => {
-    await mongoCluster.stop();
-    // await mongoMemoryServer.stop();
+    await mongoose.disconnect();
   });
 
   const newUser = {

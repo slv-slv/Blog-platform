@@ -1,10 +1,11 @@
 import { BlogDbType, BlogType } from './blogs-types.js';
 import { inject, injectable } from 'inversify';
 import { Collection, ObjectId } from 'mongodb';
+import { Model } from 'mongoose';
 
 @injectable()
 export class BlogsRepo {
-  constructor(@inject('BlogsCollection') private collection: Collection<BlogDbType>) {}
+  constructor(@inject('BlogModel') private model: Model<BlogDbType>) {}
 
   async createBlog(
     name: string,
@@ -15,7 +16,7 @@ export class BlogsRepo {
   ): Promise<BlogType> {
     const _id = new ObjectId();
     const newBlog = { name, description, websiteUrl, createdAt, isMembership };
-    await this.collection.insertOne({ _id, ...newBlog });
+    await this.model.insertOne({ _id, ...newBlog });
     const id = _id.toString();
     return { id, ...newBlog };
   }
@@ -25,10 +26,7 @@ export class BlogsRepo {
       return false;
     }
     const _id = new ObjectId(id);
-    const updateResult = await this.collection.updateOne(
-      { _id },
-      { $set: { name, description, websiteUrl } },
-    );
+    const updateResult = await this.model.updateOne({ _id }, { $set: { name, description, websiteUrl } });
     if (!updateResult.matchedCount) {
       return false;
     }
@@ -40,7 +38,7 @@ export class BlogsRepo {
       return false;
     }
     const _id = new ObjectId(id);
-    const deleteResult = await this.collection.deleteOne({ _id });
+    const deleteResult = await this.model.deleteOne({ _id });
     if (!deleteResult.deletedCount) {
       return false;
     }

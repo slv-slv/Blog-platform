@@ -1,20 +1,20 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
-import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
+import { dbName, mongoUri } from '../../../infrastructure/db/db.js';
 import { CONFIRMATION_STATUS, UserDbType } from '../../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { usersCollection } from '../../../infrastructure/db/collections.js';
+import mongoose from 'mongoose';
+import { UserModel } from '../../../features/users/users-model.js';
 
 beforeAll(async () => {
-  await mongoCluster.run();
-  await mongoCluster.dropDb(dbName);
+  await mongoose.connect(mongoUri, { dbName });
+  await mongoose.connection.dropDatabase();
 });
 
 afterAll(async () => {
-  await mongoCluster.stop();
-  // await mongoMemoryServer.stop();
+  await mongoose.disconnect();
 });
 
 describe('RESEND CONFIRMATION', () => {
@@ -40,7 +40,7 @@ describe('RESEND CONFIRMATION', () => {
   });
 
   it('should not resend code for confirmed user', async () => {
-    await usersCollection.insertOne(newUser);
+    await UserModel.insertOne(newUser);
 
     await request(app)
       .post('/auth/registration-email-resending')
@@ -49,7 +49,7 @@ describe('RESEND CONFIRMATION', () => {
   });
 
   it('should resend code for not confirmed user', async () => {
-    await usersCollection.updateOne(
+    await UserModel.updateOne(
       { email: newUser.email },
       { $set: { 'confirmation.status': CONFIRMATION_STATUS.NOT_CONFIRMED } },
     );

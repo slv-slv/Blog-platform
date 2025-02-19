@@ -2,29 +2,29 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import setCookie from 'set-cookie-parser';
-import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
+import { dbName, mongoUri } from '../../../infrastructure/db/db.js';
 import { SETTINGS } from '../../../settings.js';
 import { CONFIRMATION_STATUS } from '../../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { usersCollection } from '../../../infrastructure/db/collections.js';
 import { JwtRefreshPayload } from '../../../security/auth/auth-types.js';
 import { container } from '../../../ioc/container.js';
 import { UsersService } from '../../../features/users/users-service.js';
 import { SessionsQueryRepo } from '../../../security/sessions/sessions-query-repo.js';
+import mongoose from 'mongoose';
+import { UserModel } from '../../../features/users/users-model.js';
 
 const usersService = container.get(UsersService);
 const sessionsQueryRepo = container.get(SessionsQueryRepo);
 
 beforeAll(async () => {
-  await mongoCluster.run();
-  await mongoCluster.dropDb(dbName);
+  await mongoose.connect(mongoUri, { dbName });
+  await mongoose.connection.dropDatabase();
 });
 
 afterAll(async () => {
-  await mongoCluster.stop();
-  // await mongoMemoryServer.stop();
+  await mongoose.disconnect();
 });
 
 describe('LOGIN', () => {
@@ -72,7 +72,7 @@ describe('LOGIN', () => {
   });
 
   it('should return 401 status code if user is not confirmed', async () => {
-    await usersCollection.updateOne(
+    await UserModel.updateOne(
       { _id: new ObjectId(userId) },
       {
         $set: {
@@ -89,7 +89,7 @@ describe('LOGIN', () => {
   });
 
   it('should return valid access token for confirmed user', async () => {
-    await usersCollection.updateOne(
+    await UserModel.updateOne(
       { _id: new ObjectId(userId) },
       { $set: { 'confirmation.status': CONFIRMATION_STATUS.CONFIRMED, 'confirmation.expiration': null } },
     );

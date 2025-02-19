@@ -3,18 +3,17 @@ import { SETTINGS } from '../../settings.js';
 import { MongoCluster } from './mongo-cluster.js';
 
 export let mongoMemoryServer: MongoMemoryServer;
-let url: string;
+export let mongoUri: string;
 
 if (process.env.NODE_ENV === 'test') {
   mongoMemoryServer = await MongoMemoryServer.create();
-  url = mongoMemoryServer.getUri();
+  mongoUri = mongoMemoryServer.getUri();
 } else {
-  url = SETTINGS.MONGO_URL;
+  mongoUri = SETTINGS.MONGO_URL;
 }
 
-// console.log('Mongo URL: ', url);
-
-export const mongoCluster = new MongoCluster(url);
+// console.log('Mongo URL: ', mongoUri);
 
 export const dbName = SETTINGS.DB_NAME;
-export const db = mongoCluster.getDb(dbName);
+// export const mongoCluster = new MongoCluster(mongoUri);
+// export const db = mongoCluster.getDb(dbName);

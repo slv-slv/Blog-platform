@@ -7,14 +7,15 @@ import {
   PasswordRecoveryInfo,
 } from './users-types.js';
 import { inject, injectable } from 'inversify';
+import { Model } from 'mongoose';
 
 @injectable()
 export class UsersRepo {
-  constructor(@inject('UsersCollection') private collection: Collection<UserDbType>) {}
+  constructor(@inject('UserModel') private model: Model<UserDbType>) {}
 
   async findUser(loginOrEmail: string): Promise<UserDbType | null> {
     const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
-    return await this.collection.findOne(filter);
+    return await this.model.findOne(filter).lean();
   }
 
   async createUser(
@@ -27,34 +28,34 @@ export class UsersRepo {
   ): Promise<UserType> {
     const _id = new ObjectId();
     const newUser = { _id, login, email, hash, createdAt, confirmation, passwordRecovery };
-    const createResult = await this.collection.insertOne(newUser);
-    const id = createResult.insertedId.toString();
+    await this.model.insertOne(newUser);
+    const id = _id.toString();
     return { id, login, email, createdAt };
   }
 
   async updateConfirmationCode(email: string, code: string, expiration: string): Promise<void> {
-    await this.collection.updateOne(
+    await this.model.updateOne(
       { email },
       { $set: { 'confirmation.code': code, 'confirmation.expiration': expiration } },
     );
   }
 
   async updateRecoveryCode(email: string, code: string, expiration: string): Promise<void> {
-    await this.collection.updateOne(
+    await this.model.updateOne(
       { email },
       { $set: { 'passwordRecovery.code': code, 'passwordRecovery.expiration': expiration } },
     );
   }
 
   async updatePassword(recoveryCode: string, hash: string) {
-    await this.collection.updateOne(
+    await this.model.updateOne(
       { 'passwordRecovery.code': recoveryCode },
       { $set: { hash, 'passwordRecovery.code': null, 'passwordRecovery.expiration': null } },
     );
   }
 
   async confirmUser(code: string): Promise<void> {
-    await this.collection.updateOne(
+    await this.model.updateOne(
       { 'confirmation.code': code },
       { $set: { 'confirmation.status': CONFIRMATION_STATUS.CONFIRMED, 'confirmation.expiration': null } },
     );
@@ -66,7 +67,7 @@ export class UsersRepo {
       return false;
     }
     const _id = new ObjectId(id);
-    const deleteResult = await this.collection.deleteOne({ _id });
+    const deleteResult = await this.model.deleteOne({ _id });
     return deleteResult.deletedCount > 0;
   }
 }

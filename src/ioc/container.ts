@@ -1,13 +1,13 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
-import {
-  blogsCollection,
-  postsCollection,
-  commentsCollection,
-  usersCollection,
-  sessionsCollection,
-  requestLogsCollection,
-} from '../infrastructure/db/collections.js';
+// import {
+//   blogsCollection,
+//   postsCollection,
+//   commentsCollection,
+//   usersCollection,
+//   sessionsCollection,
+//   requestLogsCollection,
+// } from '../infrastructure/db/collections.js';
 import { BlogsRepo } from '../features/blogs/blogs-repo.js';
 import { PostsRepo } from '../features/posts/posts-repo.js';
 import { CommentsRepo } from '../features/comments/comments-repo.js';
@@ -33,15 +33,28 @@ import { CommentsController } from '../features/comments/comments-controller.js'
 import { UsersController } from '../features/users/users-controller.js';
 import { AuthController } from '../security/auth/auth-controller.js';
 import { SessionsController } from '../security/sessions/sessions-controller.js';
+import { BlogModel } from '../features/blogs/blogs-model.js';
+import { PostModel } from '../features/posts/posts-model.js';
+import { CommentModel } from '../features/comments/comments-model.js';
+import { UserModel } from '../features/users/users-model.js';
+import { SessionModel } from '../security/sessions/sessions-model.js';
+import { RequestLogModel } from '../security/request-logs/request-logs-model.js';
 
 export const container: Container = new Container({ autoBindInjectable: true, defaultScope: 'Singleton' });
 
-container.bind('BlogsCollection').toConstantValue(blogsCollection);
-container.bind('PostsCollection').toConstantValue(postsCollection);
-container.bind('CommentsCollection').toConstantValue(commentsCollection);
-container.bind('UsersCollection').toConstantValue(usersCollection);
-container.bind('SessionsCollection').toConstantValue(sessionsCollection);
-container.bind('RequestLogsCollection').toConstantValue(requestLogsCollection);
+container.bind('BlogModel').toConstantValue(BlogModel);
+container.bind('PostModel').toConstantValue(PostModel);
+container.bind('CommentModel').toConstantValue(CommentModel);
+container.bind('UserModel').toConstantValue(UserModel);
+container.bind('SessionModel').toConstantValue(SessionModel);
+container.bind('RequestLogModel').toConstantValue(RequestLogModel);
+
+// container.bind('BlogsCollection').toConstantValue(blogsCollection);
+// container.bind('PostsCollection').toConstantValue(postsCollection);
+// container.bind('CommentsCollection').toConstantValue(commentsCollection);
+// container.bind('UsersCollection').toConstantValue(usersCollection);
+// container.bind('SessionsCollection').toConstantValue(sessionsCollection);
+// container.bind('RequestLogsCollection').toConstantValue(requestLogsCollection);
 
 // container.bind(BlogsRepo).toSelf();
 // container.bind(PostsRepo).toSelf();

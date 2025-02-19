@@ -2,25 +2,26 @@ import { PostDbType, PostsPaginatedType, PostType } from './posts-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { inject, injectable } from 'inversify';
 import { Collection, ObjectId } from 'mongodb';
+import { Model } from 'mongoose';
 
 @injectable()
 export class PostsQueryRepo {
-  constructor(@inject('PostsCollection') private collection: Collection<PostDbType>) {}
+  constructor(@inject('PostModel') private model: Model<PostDbType>) {}
 
   async getPosts(pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedType> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const filter = blogId ? { blogId } : {};
 
-    const totalCount = await this.collection.countDocuments(filter);
+    const totalCount = await this.model.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
-    const postsWithObjectId = await this.collection
+    const postsWithObjectId = await this.model
       .find(filter)
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
-      .toArray();
+      .lean();
 
     const posts = postsWithObjectId.map((post) => {
       return {
@@ -48,7 +49,7 @@ export class PostsQueryRepo {
       return null;
     }
     const _id = new ObjectId(id);
-    const post = await this.collection.findOne({ _id }, { projection: { _id: 0 } });
+    const post = await this.model.findOne({ _id }, { _id: 0 }).lean();
     if (!post) {
       return null;
     }

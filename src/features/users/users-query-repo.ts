@@ -10,10 +10,11 @@ import {
   UserType,
 } from './users-types.js';
 import { inject, injectable } from 'inversify';
+import { Model } from 'mongoose';
 
 @injectable()
 export class UsersQueryRepo {
-  constructor(@inject('UsersCollection') private collection: Collection<UserDbType>) {}
+  constructor(@inject('UserModel') private model: Model<UserDbType>) {}
 
   async getAllUsers(
     searchLoginTerm: string,
@@ -34,15 +35,15 @@ export class UsersQueryRepo {
       filter = loginFilter;
     }
 
-    const totalCount = await this.collection.countDocuments(filter);
+    const totalCount = await this.model.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
-    const usersWithObjectId = await this.collection
-      .find(filter, { projection: { hash: 0 } })
+    const usersWithObjectId = await this.model
+      .find(filter, { hash: 0 })
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
-      .toArray();
+      .lean();
 
     const users = usersWithObjectId.map((user) => {
       return {
@@ -65,7 +66,7 @@ export class UsersQueryRepo {
 
   async findUser(loginOrEmail: string): Promise<UserType | null> {
     const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
-    const user = await this.collection.findOne(filter, { projection: { hash: 0 } });
+    const user = await this.model.findOne(filter, { hash: 0 }).lean();
     if (!user) {
       return null;
     }
@@ -76,7 +77,7 @@ export class UsersQueryRepo {
 
   async getCurrentUser(userId: string): Promise<CurrentUserType | null> {
     const _id = new ObjectId(userId);
-    const user = await this.collection.findOne({ _id }, { projection: { email: 1, login: 1 } });
+    const user = await this.model.findOne({ _id }, { email: 1, login: 1 }).lean();
     if (!user) {
       return null;
     }
@@ -86,7 +87,7 @@ export class UsersQueryRepo {
 
   async isConfirmed(loginOrEmail: string): Promise<boolean> {
     const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
-    const user = await this.collection.findOne(filter, { projection: { _id: 0, 'confirmation.status': 1 } });
+    const user = await this.model.findOne(filter, { _id: 0, 'confirmation.status': 1 }).lean();
     if (!user) {
       return false;
     }
@@ -94,10 +95,7 @@ export class UsersQueryRepo {
   }
 
   async getConfirmationInfo(code: string): Promise<ConfirmationInfo | null> {
-    const user = await this.collection.findOne(
-      { 'confirmation.code': code },
-      { projection: { confirmation: 1 } },
-    );
+    const user = await this.model.findOne({ 'confirmation.code': code }, { confirmation: 1 }).lean();
     if (!user) {
       return null;
     }
@@ -105,10 +103,7 @@ export class UsersQueryRepo {
   }
 
   async getPasswordRecoveryInfo(code: string): Promise<PasswordRecoveryInfo | null> {
-    const user = await this.collection.findOne(
-      { 'passwordRecovery.code': code },
-      { projection: { passwordRecovery: 1 } },
-    );
+    const user = await this.model.findOne({ 'passwordRecovery.code': code }, { passwordRecovery: 1 }).lean();
     if (!user) {
       return null;
     }
@@ -116,18 +111,18 @@ export class UsersQueryRepo {
   }
 
   async isLoginUnique(login: string): Promise<boolean> {
-    const loginCount = await this.collection.countDocuments({ login });
+    const loginCount = await this.model.countDocuments({ login });
     return loginCount === 0;
   }
 
   async isEmailUnique(email: string): Promise<boolean> {
-    const emailCount = await this.collection.countDocuments({ email });
+    const emailCount = await this.model.countDocuments({ email });
     return emailCount === 0;
   }
 
   async getPasswordHash(loginOrEmail: string): Promise<string | null> {
     const filter = loginOrEmail.includes('@') ? { email: loginOrEmail } : { login: loginOrEmail };
-    const user = await this.collection.findOne(filter, { projection: { _id: 0, hash: 1 } });
+    const user = await this.model.findOne(filter, { _id: 0, hash: 1 }).lean();
     if (!user) {
       return null;
     }

@@ -1,24 +1,24 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import { dbName, mongoCluster } from '../../../infrastructure/db/db.js';
+import { dbName, mongoUri } from '../../../infrastructure/db/db.js';
 import { SETTINGS } from '../../../settings.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
 import { container } from '../../../ioc/container.js';
 import { UsersService } from '../../../features/users/users-service.js';
+import mongoose from 'mongoose';
 
 const usersService = container.get(UsersService);
 
 beforeAll(async () => {
-  await mongoCluster.run();
-  await mongoCluster.dropDb(dbName);
+  await mongoose.connect(mongoUri, { dbName });
+  await mongoose.connection.dropDatabase();
 });
 
 afterAll(async () => {
-  await mongoCluster.stop();
-  // await mongoMemoryServer.stop();
+  await mongoose.disconnect();
 });
 
 describe('GET CURRENT USER', () => {
