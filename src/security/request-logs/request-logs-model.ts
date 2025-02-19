@@ -7,10 +7,13 @@ export type RequestLogType = {
   timestamp: number;
 };
 
-const requestLogSchema = new mongoose.Schema<RequestLogType>({
-  ip: { type: String, required: true },
-  url: { type: String, required: true },
-  timestamp: { type: Number, required: true },
-});
+const requestLogSchema = new mongoose.Schema<RequestLogType>(
+  {
+    ip: { type: String, required: true },
+    url: { type: String, required: true },
+    timestamp: { type: Number, required: true },
+  },
+  { versionKey: false },
+);
 
 export const RequestLogModel = mongoose.model(SETTINGS.DB_COLLECTIONS.REQUEST_LOGS, requestLogSchema);

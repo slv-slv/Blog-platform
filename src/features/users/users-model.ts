@@ -13,13 +13,16 @@ const passwordRecoveryInfoSchema = new Schema<PasswordRecoveryInfo>({
   expiration: { type: String, default: null },
 });
 
-const userSchema = new Schema<UserDbType>({
-  login: { type: String, required: true },
-  email: { type: String, required: true },
-  hash: { type: String, required: true },
-  createdAt: { type: String, required: true },
-  confirmation: { type: confirmationInfoSchema, required: true },
-  passwordRecovery: { type: passwordRecoveryInfoSchema, required: true },
-});
+const userSchema = new Schema<UserDbType>(
+  {
+    login: { type: String, required: true },
+    email: { type: String, required: true },
+    hash: { type: String, required: true },
+    createdAt: { type: String, required: true },
+    confirmation: { type: confirmationInfoSchema, required: true },
+    passwordRecovery: { type: passwordRecoveryInfoSchema, required: true },
+  },
+  { versionKey: false },
+);
 
 export const UserModel = mongoose.model(SETTINGS.DB_COLLECTIONS.USERS, userSchema);
