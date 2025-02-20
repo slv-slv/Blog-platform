@@ -4,12 +4,14 @@ import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-statu
 import { inject, injectable } from 'inversify';
 import { CommentsQueryRepo } from './comments-query-repo.js';
 import { CommentsService } from './comments-service.js';
+import { LikesService } from '../likes/likes-service.js';
 
 @injectable()
 export class CommentsController {
   constructor(
     @inject(CommentsQueryRepo) private commentsQueryRepo: CommentsQueryRepo,
     @inject(CommentsService) private commentsService: CommentsService,
+    @inject(LikesService) private likesService: LikesService,
   ) {}
 
   async findComment(req: Request, res: Response) {
@@ -62,12 +64,22 @@ export class CommentsController {
       return;
     }
 
-    const isDeleted = await this.commentsService.deleteComment(id);
-    if (isDeleted.status !== RESULT_STATUS.NO_CONTENT) {
-      res.status(httpCodeByResult(isDeleted.status)).json(isDeleted.extensions);
+    await this.commentsService.deleteComment(id);
+    res.status(HTTP_STATUS.NO_CONTENT_204).end();
+  }
+
+  async setLikeStatus(req: Request, res: Response) {
+    const commentId = req.params.commentId;
+    const userId = res.locals.userId;
+    const likeStatus = req.body.likeStatus;
+
+    const comment = await this.commentsQueryRepo.findComment(commentId);
+    if (!comment) {
+      res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
       return;
     }
 
-    res.status(httpCodeByResult(isDeleted.status)).end();
+    await this.likesService.setLikeStatus(commentId, userId, likeStatus);
+    res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 }

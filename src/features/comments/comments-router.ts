@@ -23,3 +23,11 @@ commentsRouter.delete(
   checkAccessToken,
   commentsController.deleteComment.bind(commentsController),
 );
+
+commentsRouter.put(
+  '/:commentId/like-status',
+  checkAccessToken,
+  commentsValidator.likeStatus,
+  getValidationResult,
+  commentsController.setLikeStatus.bind(commentsController),
+);

@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
 import { CurrentUserType } from '../users/users-types.js';
-import { CommentType, CommentDbType } from './comments-types.js';
+import { CommentDbType, CommentDtoType } from './comments-types.js';
 import { inject, injectable } from 'inversify';
 import { Model } from 'mongoose';
 
@@ -13,7 +13,7 @@ export class CommentsRepo {
     content: string,
     user: CurrentUserType,
     createdAt: string,
-  ): Promise<CommentType> {
+  ): Promise<CommentDtoType> {
     const _id = new ObjectId();
     const commentatorInfo = { userId: user.userId, userLogin: user.login };
     await this.model.insertOne({

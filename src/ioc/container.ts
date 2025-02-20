@@ -39,6 +39,7 @@ import { CommentModel } from '../features/comments/comments-model.js';
 import { UserModel } from '../features/users/users-model.js';
 import { SessionModel } from '../security/sessions/sessions-model.js';
 import { RequestLogModel } from '../security/request-logs/request-logs-model.js';
+import { CommentLikesModel } from '../features/likes/likes-models.js';
 
 export const container: Container = new Container({ autoBindInjectable: true, defaultScope: 'Singleton' });
 
@@ -48,6 +49,7 @@ container.bind('CommentModel').toConstantValue(CommentModel);
 container.bind('UserModel').toConstantValue(UserModel);
 container.bind('SessionModel').toConstantValue(SessionModel);
 container.bind('RequestLogModel').toConstantValue(RequestLogModel);
+container.bind('CommentLikesModel').toConstantValue(CommentLikesModel);
 
 // container.bind('BlogsCollection').toConstantValue(blogsCollection);
 // container.bind('PostsCollection').toConstantValue(postsCollection);

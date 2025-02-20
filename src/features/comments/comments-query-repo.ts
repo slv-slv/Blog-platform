@@ -1,12 +1,16 @@
 import { Collection, ObjectId } from 'mongodb';
-import { CommentType, CommentDbType, CommentsPaginatedType } from './comments-types.js';
+import { CommentDbType, CommentsPaginatedType, CommentViewType } from './comments-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { inject, injectable } from 'inversify';
 import { Model } from 'mongoose';
+import { CommentLikesQueryRepo } from '../likes/likes-query-repo.js';
 
 @injectable()
 export class CommentsQueryRepo {
-  constructor(@inject('CommentModel') private model: Model<CommentDbType>) {}
+  constructor(
+    @inject('CommentModel') private model: Model<CommentDbType>,
+    @inject(CommentLikesQueryRepo) private commentLikesQueryRepo: CommentLikesQueryRepo,
+  ) {}
 
   async getCommentsForPost(postId: string, pagingParams: PagingParams): Promise<CommentsPaginatedType> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
@@ -21,14 +25,20 @@ export class CommentsQueryRepo {
       .limit(pageSize)
       .lean();
 
-    const comments = commentsWithObjectId.map((comment) => {
-      return {
-        id: comment._id.toString(),
-        content: comment.content,
-        commentatorInfo: comment.commentatorInfo,
-        createdAt: comment.createdAt,
-      };
-    });
+    const comments = await Promise.all(
+      commentsWithObjectId.map(async (comment) => {
+        return {
+          id: comment._id.toString(),
+          content: comment.content,
+          commentatorInfo: comment.commentatorInfo,
+          createdAt: comment.createdAt,
+          likesInfo: await this.commentLikesQueryRepo.getLikesInfo(
+            comment._id.toString(),
+            comment.commentatorInfo.userId,
+          ),
+        };
+      }),
+    );
 
     return {
       pagesCount,
@@ -39,7 +49,7 @@ export class CommentsQueryRepo {
     };
   }
 
-  async findComment(id: string): Promise<CommentType | null> {
+  async findComment(id: string): Promise<CommentViewType | null> {
     if (!ObjectId.isValid(id)) {
       return null;
     }
@@ -48,6 +58,9 @@ export class CommentsQueryRepo {
     if (!comment) {
       return null;
     }
-    return { id, ...comment };
+
+    const likesInfo = await this.commentLikesQueryRepo.getLikesInfo(id, comment.commentatorInfo.userId);
+
+    return { id, ...comment, likesInfo };
   }
 }
