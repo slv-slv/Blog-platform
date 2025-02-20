@@ -65,7 +65,7 @@ describe('CONFIRM USER', () => {
       .send({ code: confirmation.code })
       .expect(HTTP_STATUS.NO_CONTENT_204);
 
-    const confirmedUser = await UserModel.findOne({ email });
+    const confirmedUser = await UserModel.findOne({ email }).lean();
 
     expect(confirmedUser!.confirmation.status).toBe(CONFIRMATION_STATUS.CONFIRMED);
     expect(confirmedUser!.confirmation.expiration).toBeNull;

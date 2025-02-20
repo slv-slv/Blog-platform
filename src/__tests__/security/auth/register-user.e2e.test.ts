@@ -26,7 +26,7 @@ describe('REGISTER USER', () => {
   it('should register new user', async () => {
     await request(app).post('/auth/registration').send(newUser).expect(HTTP_STATUS.NO_CONTENT_204);
 
-    const insertedUser = await UserModel.findOne({ login: newUser.login });
+    const insertedUser = await UserModel.findOne({ login: newUser.login }).lean();
 
     expect(insertedUser).toHaveProperty('_id');
     expect(insertedUser).toHaveProperty('login', newUser.login);
