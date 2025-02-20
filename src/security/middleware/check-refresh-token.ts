@@ -25,7 +25,6 @@ export const checkRefreshToken = async (req: Request, res: Response, next: NextF
   res.locals.userId = userId;
   res.locals.deviceId = deviceId;
   res.locals.iat = iat;
-  res.locals.exp = exp;
 
   next();
 };
