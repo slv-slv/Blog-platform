@@ -17,13 +17,15 @@ export class CommentLikesQueryRepo {
   }
 
   async getLikeStatus(commentId: string, userId: string): Promise<LikeStatus> {
-    const isLiked = await this.model.findOne({ commentId, 'likes.userIds': { $elemMatch: userId } }).lean();
+    const isLiked = await this.model
+      .findOne({ commentId, 'likes.userIds': { $elemMatch: { $eq: userId } } })
+      .lean();
     if (isLiked) {
       return LikeStatus.Like;
     }
 
     const isDisliked = await this.model
-      .findOne({ commentId, 'dislikes.userIds': { $elemMatch: userId } })
+      .findOne({ commentId, 'dislikes.userIds': { $elemMatch: { $eq: userId } } })
       .lean();
     if (isDisliked) {
       return LikeStatus.Dislike;
