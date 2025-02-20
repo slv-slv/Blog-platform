@@ -11,6 +11,7 @@ const start = async () => {
     });
   } catch (error) {
     console.error(error);
+    mongoose.disconnect();
     process.exit(1);
   }
 };
