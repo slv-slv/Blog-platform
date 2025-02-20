@@ -14,12 +14,4 @@ const postSchema = new Schema<PostDbType>(
   { versionKey: false },
 );
 
-// const postPaginatedSchema = new Schema({
-//   pagesCount: { type: Number, required: true },
-//   page: { type: Number, required: true },
-//   pageSize: { type: Number, required: true },
-//   totalCount: { type: Number, required: true },
-//   items: [postSchema],
-// });
-
 export const PostModel = mongoose.model(SETTINGS.DB_COLLECTIONS.POSTS, postSchema);
