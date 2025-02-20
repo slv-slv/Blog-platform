@@ -1,11 +1,11 @@
 import { Collection } from 'mongodb';
-import { DeviceType, SessionType } from './sessions-types.js';
+import { DeviceType, SessionDbType } from './sessions-types.js';
 import { inject, injectable } from 'inversify';
 import { Model } from 'mongoose';
 
 @injectable()
 export class SessionsRepo {
-  constructor(@inject('SessionModel') private model: Model<SessionType>) {}
+  constructor(@inject('SessionModel') private model: Model<SessionDbType>) {}
 
   async createSession(
     userId: string,

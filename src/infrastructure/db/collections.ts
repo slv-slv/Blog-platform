@@ -1,7 +1,7 @@
 import { BlogDbType } from '../../features/blogs/blogs-types.js';
 import { CommentDbType } from '../../features/comments/comments-types.js';
 import { PostDbType } from '../../features/posts/posts-types.js';
-import { SessionType } from '../../security/sessions/sessions-types.js';
+import { SessionDbType } from '../../security/sessions/sessions-types.js';
 import { UserDbType } from '../../features/users/users-types.js';
 import { SETTINGS } from '../../settings.js';
 // import { db } from './db.js';

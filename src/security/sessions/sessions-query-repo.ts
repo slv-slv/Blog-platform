@@ -1,11 +1,11 @@
 import { Collection } from 'mongodb';
-import { DeviceType, DeviceViewType, SessionType } from './sessions-types.js';
+import { DeviceType, DeviceViewType, SessionDbType } from './sessions-types.js';
 import { inject, injectable } from 'inversify';
 import { Model } from 'mongoose';
 
 @injectable()
 export class SessionsQueryRepo {
-  constructor(@inject('SessionModel') private model: Model<SessionType>) {}
+  constructor(@inject('SessionModel') private model: Model<SessionDbType>) {}
 
   async checkSession(userId: string, deviceId: string, iat: number): Promise<boolean> {
     const session = await this.model

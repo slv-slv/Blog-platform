@@ -1,9 +1,9 @@
-import { ObjectId } from 'mongodb';
+import { ObjectId, WithId } from 'mongodb';
 
-export type SessionType = {
+export type SessionDbType = WithId<{
   userId: string;
   devices: DeviceType[];
-};
+}>;
 
 export type DeviceType = {
   id: string;

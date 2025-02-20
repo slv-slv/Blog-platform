@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { SETTINGS } from '../../settings.js';
-import { DeviceType, SessionType } from './sessions-types.js';
+import { DeviceType, SessionDbType } from './sessions-types.js';
 
 const deviceSchema = new mongoose.Schema<DeviceType>(
   {
@@ -13,7 +13,7 @@ const deviceSchema = new mongoose.Schema<DeviceType>(
   { versionKey: false },
 );
 
-const sessionSchema = new mongoose.Schema<SessionType>(
+const sessionSchema = new mongoose.Schema<SessionDbType>(
   {
     userId: { type: String, required: true },
     devices: { type: [deviceSchema], required: true },
