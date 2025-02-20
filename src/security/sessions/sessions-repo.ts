@@ -25,12 +25,9 @@ export class SessionsRepo {
 
     const session = await this.model.findOne({ userId });
     if (!session) {
-      // const _id = new ObjectId();
-      const insertResult = await this.model.insertOne({ userId, devices: [newDevice] });
-      // console.log(insertResult);
+      await this.model.insertOne({ userId, devices: [newDevice] });
     } else {
-      const updateResult = await this.model.updateOne({ userId }, { $push: { devices: newDevice } });
-      // console.log(updateResult);
+      await this.model.updateOne({ userId }, { $push: { devices: newDevice } });
     }
   }
 
