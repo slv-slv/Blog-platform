@@ -27,8 +27,14 @@ export class AuthService {
     const jwtRefreshPayload = { userId, deviceId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
 
-    const accessToken = jwt.sign(jwtAccessPayload, secret, { algorithm: 'HS256', expiresIn: '10 s' });
-    const refreshToken = jwt.sign(jwtRefreshPayload, secret, { algorithm: 'HS256', expiresIn: '20 s' });
+    const accessToken = jwt.sign(jwtAccessPayload, secret, {
+      algorithm: 'HS256',
+      expiresIn: SETTINGS.ACCESS_TOKEN_LIFETIME,
+    });
+    const refreshToken = jwt.sign(jwtRefreshPayload, secret, {
+      algorithm: 'HS256',
+      expiresIn: SETTINGS.REFRESH_TOKEN_LIFETIME,
+    });
 
     return { accessToken, refreshToken };
   }
