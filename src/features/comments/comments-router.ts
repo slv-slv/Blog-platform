@@ -4,11 +4,12 @@ import { getValidationResult } from '../../common/middleware/get-validation-resu
 import { checkAccessToken } from '../../security/middleware/check-access-token.js';
 import { container } from '../../ioc/container.js';
 import { CommentsController } from './comments-controller.js';
+import { getUserId } from '../../security/middleware/get-user-id.js';
 
 export const commentsRouter = Router();
 const commentsController = container.get(CommentsController);
 
-commentsRouter.get('/:id', commentsController.findComment.bind(commentsController));
+commentsRouter.get('/:id', getUserId, commentsController.findComment.bind(commentsController));
 
 commentsRouter.put(
   '/:commentId',
@@ -26,7 +27,7 @@ commentsRouter.delete(
 
 commentsRouter.put(
   '/:commentId/like-status',
-  checkAccessToken,
+  getUserId,
   commentsValidator.likeStatus,
   getValidationResult,
   commentsController.setLikeStatus.bind(commentsController),

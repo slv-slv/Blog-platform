@@ -7,6 +7,7 @@ import { basicAuth } from '../../security/middleware/basic-auth.js';
 import { checkAccessToken } from '../../security/middleware/check-access-token.js';
 import { container } from '../../ioc/container.js';
 import { PostsController } from './posts-controller.js';
+import { getUserId } from '../../security/middleware/get-user-id.js';
 
 export const postsRouter = Router();
 const postsController = container.get(PostsController);
@@ -48,6 +49,7 @@ postsRouter.delete('/:id', basicAuth, postsController.deletePost.bind(postsContr
 
 postsRouter.get(
   '/:postId/comments',
+  getUserId,
   pagingValidator.commentsSortBy,
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,

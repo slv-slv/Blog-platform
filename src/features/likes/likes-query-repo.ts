@@ -23,6 +23,8 @@ export class CommentLikesQueryRepo {
   }
 
   async getLikeStatus(commentId: string, userId: string): Promise<LikeStatus> {
+    if (!userId) return LikeStatus.None;
+
     const likedComment = await this.model
       .findOne({ commentId, usersLiked: { $elemMatch: { $eq: userId } } })
       .lean();
@@ -47,4 +49,8 @@ export class CommentLikesQueryRepo {
 
     return { likesCount, dislikesCount, myStatus };
   }
+
+  // async getLikesInfoArray(commentIds: string[], userId: string): Promise<Array<string & LikesInfoViewType>> {
+  //   const arr = this.model.find({ commentId: { $elemMatch: commentIds } });
+  // }
 }

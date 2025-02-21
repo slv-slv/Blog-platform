@@ -25,6 +25,8 @@ export class CommentsQueryRepo {
       .limit(pageSize)
       .lean();
 
+    // const commentIds = commentsWithObjectId.map((comment) => comment._id.toString());
+
     const comments = await Promise.all(
       commentsWithObjectId.map(async (comment) => {
         return {

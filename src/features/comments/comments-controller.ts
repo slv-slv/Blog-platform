@@ -70,16 +70,16 @@ export class CommentsController {
 
   async setLikeStatus(req: Request, res: Response) {
     const commentId = req.params.commentId;
-    const userId = res.locals.userId;
     const likeStatus = req.body.likeStatus;
 
-    const comment = await this.commentsQueryRepo.findComment(commentId);
-    if (!comment) {
-      res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
-      return;
+    const userId = res.locals.userId ?? null;
+
+    const result = await this.likesService.setLikeStatus(commentId, userId, likeStatus);
+
+    if (result.status !== RESULT_STATUS.NO_CONTENT) {
+      res.status(httpCodeByResult(result.status)).json(result.extensions);
     }
 
-    await this.likesService.setLikeStatus(commentId, userId, likeStatus);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 }

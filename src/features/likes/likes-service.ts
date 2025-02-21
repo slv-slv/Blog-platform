@@ -27,21 +27,22 @@ export class LikesService {
 
     const currentLikeStatus = await this.commentLikesQueryRepo.getLikeStatus(commentId, userId);
 
+    if (likeStatus === currentLikeStatus) {
+      return {
+        status: RESULT_STATUS.NO_CONTENT,
+        data: null,
+      };
+    }
+
     switch (likeStatus) {
       case LikeStatus.None:
-        if (currentLikeStatus !== LikeStatus.None) {
-          await this.commentLikesRepo.setNone(commentId, userId);
-        }
+        await this.commentLikesRepo.setNone(commentId, userId);
         break;
       case LikeStatus.Like:
-        if (currentLikeStatus !== LikeStatus.Like) {
-          await this.commentLikesRepo.setLike(commentId, userId);
-        }
+        await this.commentLikesRepo.setLike(commentId, userId);
         break;
       case LikeStatus.Dislike:
-        if (currentLikeStatus !== LikeStatus.Dislike) {
-          await this.commentLikesRepo.setDislike(commentId, userId);
-        }
+        await this.commentLikesRepo.setDislike(commentId, userId);
         break;
     }
 
