@@ -70,7 +70,7 @@ describe('CREATE COMMENT', () => {
     expect(response.body.commentatorInfo.userId).toBe(userId);
   });
 
-  it('should return 401 if no access token has been sent.', async () => {
+  it('should return 401 if no access token has been sent', async () => {
     await request(app)
       .post(`/posts/${postId}/comments`)
       .send({ content: 'very long boring content' })
