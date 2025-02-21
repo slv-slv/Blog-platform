@@ -65,7 +65,7 @@ describe('CREATE COMMENT', () => {
       .send({ content: 'very long boring content' })
       .expect(HTTP_STATUS.CREATED_201);
 
-    expect(Object.keys(response.body)).toHaveLength(4);
+    expect(Object.keys(response.body)).toHaveLength(5);
 
     expect(response.body.commentatorInfo.userId).toBe(userId);
   });

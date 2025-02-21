@@ -27,11 +27,10 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-describe('CREATE COMMENT', () => {
+describe('GET COMMENT', () => {
   const login = 'NewUser';
   const email = 'example@gmail.com';
   const password = 'somepassword';
-  const createdAt = new Date().toISOString();
 
   let postId: string;
   let accessToken: string;
@@ -72,7 +71,7 @@ describe('CREATE COMMENT', () => {
     commentId = response.body.id;
 
     response = await request(app).get(`/comments/${commentId}`).expect(HTTP_STATUS.OK_200);
-    expect(Object.keys(response.body)).toHaveLength(4);
+    expect(Object.keys(response.body)).toHaveLength(5);
   });
 
   it('should return 404 if the comment is not found', async () => {
