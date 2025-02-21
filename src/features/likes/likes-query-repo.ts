@@ -23,7 +23,7 @@ export class CommentLikesQueryRepo {
   }
 
   async getLikeStatus(commentId: string, userId: string): Promise<LikeStatus> {
-    if (!userId) return LikeStatus.None;
+    if (userId === null) return LikeStatus.None;
 
     const likedComment = await this.model
       .findOne({ commentId, usersLiked: { $elemMatch: { $eq: userId } } })
@@ -46,6 +46,8 @@ export class CommentLikesQueryRepo {
     const likesCount = await this.getLikesCount(commentId);
     const dislikesCount = await this.getDislikesCount(commentId);
     const myStatus = await this.getLikeStatus(commentId, userId);
+
+    // console.log('id в getLikesInfo: ', userId);
 
     return { likesCount, dislikesCount, myStatus };
   }

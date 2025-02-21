@@ -27,7 +27,7 @@ commentsRouter.delete(
 
 commentsRouter.put(
   '/:commentId/like-status',
-  getUserId,
+  checkAccessToken,
   commentsValidator.likeStatus,
   getValidationResult,
   commentsController.setLikeStatus.bind(commentsController),

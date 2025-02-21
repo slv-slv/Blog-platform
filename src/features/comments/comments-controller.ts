@@ -16,7 +16,8 @@ export class CommentsController {
 
   async findComment(req: Request, res: Response) {
     const id = req.params.id;
-    const comment = await this.commentsQueryRepo.findComment(id);
+    const userId = res.locals.userId ?? null;
+    const comment = await this.commentsQueryRepo.findComment(id, userId);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
       return;
@@ -26,7 +27,8 @@ export class CommentsController {
 
   async updateComment(req: Request, res: Response) {
     const id = req.params.commentId;
-    const comment = await this.commentsQueryRepo.findComment(id);
+    const userId = res.locals.userId ?? null;
+    const comment = await this.commentsQueryRepo.findComment(id, userId);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
       return;
@@ -52,7 +54,8 @@ export class CommentsController {
 
   async deleteComment(req: Request, res: Response) {
     const id = req.params.commentId;
-    const comment = await this.commentsQueryRepo.findComment(id);
+    const userId = res.locals.userId ?? null;
+    const comment = await this.commentsQueryRepo.findComment(id, userId);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
       return;
@@ -70,9 +73,10 @@ export class CommentsController {
 
   async setLikeStatus(req: Request, res: Response) {
     const commentId = req.params.commentId;
+    const userId = res.locals.userId;
     const likeStatus = req.body.likeStatus;
 
-    const userId = res.locals.userId ?? null;
+    // console.log('id в setLikeStatus: ', userId);
 
     const result = await this.likesService.setLikeStatus(commentId, userId, likeStatus);
 

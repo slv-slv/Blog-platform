@@ -65,13 +65,14 @@ export class PostsController {
 
   async getCommentsForPost(req: Request, res: Response) {
     const postId = req.params.postId;
+    const userId = res.locals.userId ?? null;
     const post = await this.postsQueryRepo.findPost(postId);
     if (!post) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Post not found' });
       return;
     }
     const pagingParams = getPagingParams(req);
-    const comments = await this.commentsQueryRepo.getCommentsForPost(postId, pagingParams);
+    const comments = await this.commentsQueryRepo.getCommentsForPost(postId, userId, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(comments);
   }
 
