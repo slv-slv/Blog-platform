@@ -96,15 +96,7 @@ export class AuthController {
 
     await this.sessionsService.deleteDevice(deviceId);
 
-    res
-      .cookie('refreshToken', '', {
-        expires: new Date(0),
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-      })
-      .status(HTTP_STATUS.NO_CONTENT_204)
-      .end();
+    res.clearCookie('refreshToken').status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
   async me(req: Request, res: Response) {
