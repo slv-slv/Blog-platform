@@ -7,27 +7,33 @@ export class CommentLikesQueryRepo {
   constructor(@inject('CommentLikesModel') private model: Model<CommentLikesDbType>) {}
 
   async getLikesCount(commentId: string): Promise<number> {
-    const comment = await this.model.findOne({ commentId }, { likes: 1 }).lean();
-    return comment!.likes.count;
+    const result = await this.model.aggregate([
+      { $match: { commentId } },
+      { $project: { likesCount: { $size: '$usersLiked' } } },
+    ]);
+    return result[0]?.likesCount ?? 0;
   }
 
   async getDislikesCount(commentId: string): Promise<number> {
-    const comment = await this.model.findOne({ commentId }, { dislikes: 1 }).lean();
-    return comment!.dislikes.count;
+    const result = await this.model.aggregate([
+      { $match: { commentId } },
+      { $project: { dislikesCount: { $size: '$usersDisliked' } } },
+    ]);
+    return result[0]?.dislikesCount ?? 0;
   }
 
   async getLikeStatus(commentId: string, userId: string): Promise<LikeStatus> {
-    const isLiked = await this.model
-      .findOne({ commentId, 'likes.userIds': { $elemMatch: { $eq: userId } } })
+    const likedComment = await this.model
+      .findOne({ commentId, usersLiked: { $elemMatch: { $eq: userId } } })
       .lean();
-    if (isLiked) {
+    if (likedComment) {
       return LikeStatus.Like;
     }
 
-    const isDisliked = await this.model
-      .findOne({ commentId, 'dislikes.userIds': { $elemMatch: { $eq: userId } } })
+    const dislikedComment = await this.model
+      .findOne({ commentId, usersDisliked: { $elemMatch: { $eq: userId } } })
       .lean();
-    if (isDisliked) {
+    if (dislikedComment) {
       return LikeStatus.Dislike;
     }
 

@@ -13,31 +13,21 @@ export class CommentLikesRepo {
     await this.model.deleteOne({ commentId });
   }
 
-  async like(commentId: string, userId: string): Promise<void> {
+  async setLike(commentId: string, userId: string): Promise<void> {
     await this.model.updateOne(
       { commentId },
-      { $inc: { 'likes.count': 1, $push: { 'likes.userIds': userId } } },
+      { $push: { usersLiked: userId }, $pull: { usersDisliked: userId } },
     );
   }
 
-  async unlike(commentId: string, userId: string): Promise<void> {
+  async setDislike(commentId: string, userId: string): Promise<void> {
     await this.model.updateOne(
       { commentId },
-      { $inc: { 'likes.count': -1, $pull: { 'likes.userIds': userId } } },
+      { $push: { usersDisliked: userId }, $pull: { usersLiked: userId } },
     );
   }
 
-  async dislike(commentId: string, userId: string): Promise<void> {
-    await this.model.updateOne(
-      { commentId },
-      { $inc: { 'dislikes.count': 1, $push: { 'dislikes.userIds': userId } } },
-    );
-  }
-
-  async undislike(commentId: string, userId: string): Promise<void> {
-    await this.model.updateOne(
-      { commentId },
-      { $inc: { 'dislikes.count': -1, $pull: { 'dislikes.userIds': userId } } },
-    );
+  async setNone(commentId: string, userId: string): Promise<void> {
+    await this.model.updateOne({ commentId }, { $pull: { usersLiked: userId, usersDisliked: userId } });
   }
 }

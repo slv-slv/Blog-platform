@@ -8,6 +8,18 @@ import { Model } from 'mongoose';
 export class CommentsRepo {
   constructor(@inject('CommentModel') private model: Model<CommentDbType>) {}
 
+  async findComment(id: string): Promise<CommentDtoType | null> {
+    if (!ObjectId.isValid(id)) {
+      return null;
+    }
+    const _id = new ObjectId(id);
+    const comment = await this.model.findById(_id, { _id: 0 }).lean();
+    if (!comment) {
+      return null;
+    }
+    return { id, ...comment };
+  }
+
   async createComment(
     postId: string,
     content: string,

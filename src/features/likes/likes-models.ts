@@ -5,14 +5,8 @@ import { SETTINGS } from '../../settings.js';
 const commentLikesSchema = new Schema<CommentLikesDbType>(
   {
     commentId: { type: String, required: true },
-    likes: {
-      count: { type: Number, required: true },
-      userIds: { type: [String], required: true },
-    },
-    dislikes: {
-      count: { type: Number, required: true },
-      userIds: { type: [String], required: true },
-    },
+    usersLiked: { type: [String], required: true, default: [] },
+    usersDisliked: { type: [String], required: true, default: [] },
   },
   { versionKey: false },
 );
