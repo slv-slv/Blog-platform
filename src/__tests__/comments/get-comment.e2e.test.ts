@@ -7,16 +7,14 @@ import { SETTINGS } from '../../settings.js';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { container } from '../../ioc/container.js';
-import { BlogsRepo } from '../../features/blogs/blogs-repo.js';
-import { PostsRepo } from '../../features/posts/posts-repo.js';
-import { CommentsRepo } from '../../features/comments/comments-repo.js';
 import { UsersService } from '../../features/users/users-service.js';
 import mongoose from 'mongoose';
+import { CommentsService } from '../../features/comments/comments-service.js';
+import { UsersQueryRepo } from '../../features/users/users-query-repo.js';
 
-const blogsRepo = container.get(BlogsRepo);
-const postsRepo = container.get(PostsRepo);
-const commentsRepo = container.get(CommentsRepo);
+const usersQueryRepo = container.get(UsersQueryRepo);
 const usersService = container.get(UsersService);
+const commentsService = container.get(CommentsService);
 
 beforeAll(async () => {
   await mongoose.connect(mongoUri, { dbName });
@@ -32,7 +30,6 @@ describe('GET COMMENT', () => {
   const email = 'example@gmail.com';
   const password = 'somepassword';
 
-  let postId: string;
   let accessToken: string;
   let commentId: string;
 
@@ -44,33 +41,14 @@ describe('GET COMMENT', () => {
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
 
-    const blog = await blogsRepo.createBlog(
-      'blog name',
-      'blog description',
-      'https://www.example.com',
-      new Date().toISOString(),
-      false,
-    );
+    const postId = new ObjectId().toString();
+    const content = 'very long boring content';
+    const currentUser = await usersQueryRepo.getCurrentUser(userId);
 
-    const post = await postsRepo.createPost(
-      'post title',
-      'description',
-      'long boring text',
-      blog.id,
-      new Date().toISOString(),
-    );
+    const comment = await commentsService.createComment(postId, content, currentUser!);
+    commentId = comment.data.id;
 
-    postId = post.id;
-
-    let response = await request(app)
-      .post(`/posts/${postId}/comments`)
-      .auth(accessToken, { type: 'bearer' })
-      .send({ content: 'very long boring content' })
-      .expect(HTTP_STATUS.CREATED_201);
-
-    commentId = response.body.id;
-
-    response = await request(app).get(`/comments/${commentId}`).expect(HTTP_STATUS.OK_200);
+    const response = await request(app).get(`/comments/${commentId}`).expect(HTTP_STATUS.OK_200);
     expect(Object.keys(response.body)).toHaveLength(5);
   });
 
@@ -78,7 +56,7 @@ describe('GET COMMENT', () => {
     const incorrectPostId = new ObjectId();
     await request(app).get(`/comments/${incorrectPostId}`).expect(HTTP_STATUS.NOT_FOUND_404);
 
-    await commentsRepo.deleteComment(commentId);
+    await commentsService.deleteComment(commentId);
     await request(app).get(`/comments/${commentId}`).expect(HTTP_STATUS.NOT_FOUND_404);
   });
 });
