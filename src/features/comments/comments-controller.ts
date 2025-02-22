@@ -5,11 +5,13 @@ import { inject, injectable } from 'inversify';
 import { CommentsQueryRepo } from './comments-query-repo.js';
 import { CommentsService } from './comments-service.js';
 import { LikesService } from '../likes/likes-service.js';
+import { CommentsRepo } from './comments-repo.js';
 
 @injectable()
 export class CommentsController {
   constructor(
     @inject(CommentsQueryRepo) private commentsQueryRepo: CommentsQueryRepo,
+    @inject(CommentsRepo) private commentsRepo: CommentsRepo,
     @inject(CommentsService) private commentsService: CommentsService,
     @inject(LikesService) private likesService: LikesService,
   ) {}
@@ -26,48 +28,29 @@ export class CommentsController {
   }
 
   async updateComment(req: Request, res: Response) {
-    const id = req.params.commentId;
-    const userId = res.locals.userId ?? null;
-    const comment = await this.commentsQueryRepo.findComment(id, userId);
-    if (!comment) {
-      res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
-      return;
-    }
-
-    const jwtPayload = res.locals.jwtPayload;
-    const tokenOwnerId = jwtPayload.userId;
-    if (tokenOwnerId !== comment.commentatorInfo.userId) {
-      res.status(HTTP_STATUS.FORBIDDEN_403).json({ error: 'Access denied' });
-      return;
-    }
-
+    const commentId = req.params.commentId;
     const content = req.body.content;
+    const userId = res.locals.userId;
 
-    const isUpdated = await this.commentsService.updateComment(id, content);
-    if (isUpdated.status !== RESULT_STATUS.NO_CONTENT) {
-      res.status(httpCodeByResult(isUpdated.status)).json(isUpdated.extensions);
+    const result = await this.commentsService.updateComment(commentId, content, userId);
+    if (result.status !== RESULT_STATUS.NO_CONTENT) {
+      res.status(httpCodeByResult(result.status)).json(result.extensions);
       return;
     }
 
-    res.status(httpCodeByResult(isUpdated.status)).end();
+    res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
   async deleteComment(req: Request, res: Response) {
-    const id = req.params.commentId;
-    const userId = res.locals.userId ?? null;
-    const comment = await this.commentsQueryRepo.findComment(id, userId);
-    if (!comment) {
-      res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
+    const commentId = req.params.commentId;
+    const userId = res.locals.userId;
+
+    const result = await this.commentsService.deleteComment(commentId, userId);
+    if (result.status !== RESULT_STATUS.NO_CONTENT) {
+      res.status(httpCodeByResult(result.status)).json(result.extensions);
       return;
     }
 
-    const tokenOwnerId = res.locals.userId;
-    if (tokenOwnerId !== comment.commentatorInfo.userId) {
-      res.status(HTTP_STATUS.FORBIDDEN_403).json({ error: 'Access denied' });
-      return;
-    }
-
-    await this.commentsService.deleteComment(id);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 

@@ -43,16 +43,4 @@ export class PostsQueryRepo {
       items: posts,
     };
   }
-
-  async findPost(id: string): Promise<PostType | null> {
-    if (!ObjectId.isValid(id)) {
-      return null;
-    }
-    const _id = new ObjectId(id);
-    const post = await this.model.findOne({ _id }, { _id: 0 }).lean();
-    if (!post) {
-      return null;
-    }
-    return { id, ...post };
-  }
 }

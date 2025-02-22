@@ -1,8 +1,8 @@
 import { body } from 'express-validator';
 import { container } from '../../ioc/container.js';
-import { BlogsQueryRepo } from '../blogs/blogs-query-repo.js';
+import { BlogsRepo } from '../blogs/blogs-repo.js';
 
-const blogsQueryRepo = container.get(BlogsQueryRepo);
+const blogsRepo = container.get(BlogsRepo);
 
 export const postsValidator = {
   blogExists: body('blogId')
@@ -14,7 +14,7 @@ export const postsValidator = {
     .notEmpty()
     .withMessage('Blog ID must not be empty')
     .custom(async (blogId) => {
-      const blog = await blogsQueryRepo.findBlog(blogId);
+      const blog = await blogsRepo.findBlog(blogId);
       if (!blog) {
         throw new Error('Blog does not exist');
       }

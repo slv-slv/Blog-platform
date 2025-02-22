@@ -23,11 +23,10 @@ export class CommentsRepo {
   async createComment(
     postId: string,
     content: string,
-    user: CurrentUserType,
     createdAt: string,
+    commentatorInfo: { userId: string; userLogin: string },
   ): Promise<CommentDtoType> {
     const _id = new ObjectId();
-    const commentatorInfo = { userId: user.userId, userLogin: user.login };
     await this.model.insertOne({
       _id,
       postId,
