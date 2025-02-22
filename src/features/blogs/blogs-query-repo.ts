@@ -42,16 +42,4 @@ export class BlogsQueryRepo {
       items: blogs,
     };
   }
-
-  async findBlog(id: string): Promise<BlogType | null> {
-    if (!ObjectId.isValid(id)) {
-      return null;
-    }
-    const _id = new ObjectId(id);
-    const blog = await this.model.findOne({ _id }, { _id: 0 }).lean();
-    if (!blog) {
-      return null;
-    }
-    return { id, ...blog };
-  }
 }

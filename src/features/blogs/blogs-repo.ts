@@ -7,6 +7,18 @@ import { Model } from 'mongoose';
 export class BlogsRepo {
   constructor(@inject('BlogModel') private model: Model<BlogDbType>) {}
 
+  async findBlog(id: string): Promise<BlogType | null> {
+    if (!ObjectId.isValid(id)) {
+      return null;
+    }
+    const _id = new ObjectId(id);
+    const blog = await this.model.findOne({ _id }, { _id: 0 }).lean();
+    if (!blog) {
+      return null;
+    }
+    return { id, ...blog };
+  }
+
   async createBlog(
     name: string,
     description: string,
