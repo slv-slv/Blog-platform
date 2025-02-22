@@ -47,8 +47,6 @@ export class CommentLikesQueryRepo {
     const dislikesCount = await this.getDislikesCount(commentId);
     const myStatus = await this.getLikeStatus(commentId, userId);
 
-    // console.log('id в getLikesInfo: ', userId);
-
     return { likesCount, dislikesCount, myStatus };
   }
 

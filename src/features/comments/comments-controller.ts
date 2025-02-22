@@ -76,8 +76,6 @@ export class CommentsController {
     const userId = res.locals.userId;
     const likeStatus = req.body.likeStatus;
 
-    // console.log('id в setLikeStatus: ', userId);
-
     const result = await this.likesService.setLikeStatus(commentId, userId, likeStatus);
 
     if (result.status !== RESULT_STATUS.NO_CONTENT) {

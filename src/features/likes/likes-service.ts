@@ -26,7 +26,6 @@ export class LikesService {
     }
 
     const currentLikeStatus = await this.commentLikesQueryRepo.getLikeStatus(commentId, userId);
-
     if (likeStatus === currentLikeStatus) {
       return {
         status: RESULT_STATUS.NO_CONTENT,
