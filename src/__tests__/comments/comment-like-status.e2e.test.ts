@@ -136,8 +136,30 @@ describe('LIKE STATUS', () => {
     expect(comment?.likesInfo.myStatus).toBe('Dislike');
   });
 
+  it('should increase the number of dislikes when another user dislikes', async () => {
+    const userId = new ObjectId().toString();
+    const payload = { userId };
+    const secret = SETTINGS.JWT_PRIVATE_KEY!;
+    const anotherAccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+
+    await request(app)
+      .put(`/comments/${commentId}/like-status`)
+      .auth(anotherAccessToken, { type: 'bearer' })
+      .send({ likeStatus: 'Dislike' })
+      .expect(HTTP_STATUS.NO_CONTENT_204);
+
+    const response = await request(app)
+      .get(`/comments/${commentId}`)
+      .auth(anotherAccessToken, { type: 'bearer' });
+    const comment = response.body;
+    console.log(comment);
+
+    expect(comment?.likesInfo.likesCount).toBe(0);
+    expect(comment?.likesInfo.dislikesCount).toBe(2);
+    expect(comment?.likesInfo.myStatus).toBe('Dislike');
+  });
+
   it('should show status "None" to unauthorized user', async () => {
-    // console.log('Тест с неавторизованным пользователем');
     const response = await request(app).get(`/comments/${commentId}`);
     const comment = response.body;
     expect(comment?.likesInfo.myStatus).toBe('None');
