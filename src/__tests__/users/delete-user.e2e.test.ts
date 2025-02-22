@@ -36,10 +36,10 @@ describe('DELETE USER', () => {
 
   it('should return 204 and delete user by id', async () => {
     const createdUser01 = await usersService.createUser(user01.login, user01.email, user01.password);
-    id01 = createdUser01.id;
+    id01 = createdUser01.data!.id;
 
     const createdUser02 = await usersService.createUser(user02.login, user02.email, user02.password);
-    id02 = createdUser02.id;
+    id02 = createdUser02.data!.id;
 
     let response = await request(app)
       .get('/users')

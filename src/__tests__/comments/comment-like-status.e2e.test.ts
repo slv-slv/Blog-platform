@@ -10,9 +10,11 @@ import { container } from '../../ioc/container.js';
 import { UsersService } from '../../features/users/users-service.js';
 import mongoose from 'mongoose';
 import { CommentsService } from '../../features/comments/comments-service.js';
-import { UsersQueryRepo } from '../../features/users/users-query-repo.js';
+import { BlogsService } from '../../features/blogs/blogs-service.js';
+import { PostsService } from '../../features/posts/posts-service.js';
 
-const usersQueryRepo = container.get(UsersQueryRepo);
+const blogsService = container.get(BlogsService);
+const postsService = container.get(PostsService);
 const usersService = container.get(UsersService);
 const commentsService = container.get(CommentsService);
 
@@ -35,18 +37,21 @@ describe('LIKE STATUS', () => {
 
   it('should return 401 if no access token has been sent', async () => {
     const insertedUser = await usersService.createUser(login, email, password);
-    const userId = insertedUser.id;
+    const userId = insertedUser.data!.id;
 
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
 
-    const postId = new ObjectId().toString();
+    const blog = await blogsService.createBlog('blog name', 'blog description', 'https://www.example.com');
+    const blogId = blog.id;
 
-    const currentUser = await usersQueryRepo.getCurrentUser(userId);
-    const comment = await commentsService.createComment(postId, 'long boring content', currentUser!);
+    const post = await postsService.createPost('post title', 'description', 'long boring text', blogId);
+    const postId = post.data!.id;
 
-    commentId = comment.data.id;
+    const comment = await commentsService.createComment(postId, 'long boring content', userId);
+
+    commentId = comment.data!.id;
 
     await request(app)
       .put(`/comments/${commentId}/like-status`)

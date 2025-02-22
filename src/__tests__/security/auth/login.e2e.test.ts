@@ -36,7 +36,7 @@ describe('LOGIN', () => {
 
   it('should return 400 status code if login or password has incorrect value', async () => {
     const user = await usersService.createUser(login, email, password);
-    userId = user.id;
+    userId = user.data!.id;
 
     await request(app)
       .post('/auth/login')

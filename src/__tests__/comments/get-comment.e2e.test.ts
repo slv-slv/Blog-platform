@@ -10,9 +10,11 @@ import { container } from '../../ioc/container.js';
 import { UsersService } from '../../features/users/users-service.js';
 import mongoose from 'mongoose';
 import { CommentsService } from '../../features/comments/comments-service.js';
-import { UsersQueryRepo } from '../../features/users/users-query-repo.js';
+import { PostsService } from '../../features/posts/posts-service.js';
+import { BlogsService } from '../../features/blogs/blogs-service.js';
 
-const usersQueryRepo = container.get(UsersQueryRepo);
+const blogsService = container.get(BlogsService);
+const postsService = container.get(PostsService);
 const usersService = container.get(UsersService);
 const commentsService = container.get(CommentsService);
 
@@ -30,23 +32,28 @@ describe('GET COMMENT', () => {
   const email = 'example@gmail.com';
   const password = 'somepassword';
 
+  let userId: string;
   let accessToken: string;
   let commentId: string;
 
   it('should return 200 and return comment by id', async () => {
     const insertedUser = await usersService.createUser(login, email, password);
-    const userId = insertedUser.id;
+    userId = insertedUser.data!.id;
 
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
 
-    const postId = new ObjectId().toString();
-    const content = 'very long boring content';
-    const currentUser = await usersQueryRepo.getCurrentUser(userId);
+    const blog = await blogsService.createBlog('blog title', 'blog description', 'example@google.ru');
+    const blogId = blog.id;
 
-    const comment = await commentsService.createComment(postId, content, currentUser!);
-    commentId = comment.data.id;
+    const post = await postsService.createPost('post title', 'description', 'long boring text', blogId);
+    const postId = post.data!.id;
+
+    const content = 'long boring comment';
+
+    const comment = await commentsService.createComment(postId, content, userId);
+    commentId = comment.data!.id;
 
     const response = await request(app).get(`/comments/${commentId}`).expect(HTTP_STATUS.OK_200);
     expect(Object.keys(response.body)).toHaveLength(5);
@@ -56,7 +63,7 @@ describe('GET COMMENT', () => {
     const incorrectPostId = new ObjectId();
     await request(app).get(`/comments/${incorrectPostId}`).expect(HTTP_STATUS.NOT_FOUND_404);
 
-    await commentsService.deleteComment(commentId);
+    await commentsService.deleteComment(commentId, userId);
     await request(app).get(`/comments/${commentId}`).expect(HTTP_STATUS.NOT_FOUND_404);
   });
 });

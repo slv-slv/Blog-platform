@@ -33,7 +33,7 @@ describe('GET CURRENT USER', () => {
 
   it('should return 401 status code if no token sent', async () => {
     const user = await usersService.createUser(login, email, password);
-    userId = user.id;
+    userId = user.data!.id;
 
     payload = { userId };
 
