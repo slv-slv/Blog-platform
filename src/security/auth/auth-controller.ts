@@ -33,7 +33,7 @@ export class AuthController {
       return;
     }
 
-    await this.usersService.registerUser(login, email, password);
+    const result = await this.usersService.registerUser(login, email, password);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
@@ -92,7 +92,6 @@ export class AuthController {
   async logout(req: Request, res: Response) {
     // const userId = res.locals.userId;
     const deviceId = res.locals.deviceId;
-    // const iat = res.locals.iat;
 
     await this.sessionsService.deleteDevice(deviceId);
 

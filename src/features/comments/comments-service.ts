@@ -23,7 +23,7 @@ export class CommentsService {
     content: string,
     userId: string,
   ): Promise<Result<CommentViewType | null>> {
-    const post = this.postsRepo.findPost(postId);
+    const post = await this.postsRepo.findPost(postId);
     if (!post) {
       return {
         status: RESULT_STATUS.NOT_FOUND,
@@ -36,6 +36,15 @@ export class CommentsService {
     const createdAt = new Date().toISOString();
 
     const userLogin = await this.usersRepo.getLogin(userId);
+    if (!userLogin) {
+      return {
+        status: RESULT_STATUS.UNAUTHORIZED,
+        errorMessage: 'Unauthorized',
+        extensions: [{ message: 'Access denied', field: 'userId' }],
+        data: null,
+      };
+    }
+
     const commentatorInfo = { userId, userLogin };
 
     const newComment = await this.commentsRepo.createComment(postId, content, createdAt, commentatorInfo);

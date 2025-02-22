@@ -15,18 +15,15 @@ export class PostsService {
     blogId: string,
   ): Promise<Result<PostType | null>> {
     const createdAt = new Date().toISOString();
-
     const newPost = await this.postsRepo.createPost(title, shortDescription, content, blogId, createdAt);
-
-    // Эта логика есть в кастомном методе валидатора
-    // if (!newPost) {
-    //   return {
-    //     status: RESULT_STATUS.NOT_FOUND,
-    //     errorMessage: 'Not found',
-    //     extensions: [{ message: 'Blog not found', field: 'blogId' }],
-    //     data: null,
-    //   };
-    // }
+    if (!newPost) {
+      return {
+        status: RESULT_STATUS.NOT_FOUND,
+        errorMessage: 'Not found',
+        extensions: [{ message: 'Blog not found', field: 'blogId' }],
+        data: null,
+      };
+    }
 
     return {
       status: RESULT_STATUS.CREATED,
