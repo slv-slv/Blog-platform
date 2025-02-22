@@ -4,6 +4,7 @@ import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { inject, injectable } from 'inversify';
 import { UsersQueryRepo } from './users-query-repo.js';
 import { UsersService } from './users-service.js';
+import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
 
 @injectable()
 export class UsersController {
@@ -23,31 +24,23 @@ export class UsersController {
   async createUser(req: Request, res: Response) {
     const { login, password, email } = req.body;
 
-    if (!(await this.usersService.isLoginUnique(login))) {
-      res
-        .status(HTTP_STATUS.BAD_REQUEST_400)
-        .json({ errorsMessages: [{ message: 'Login already exists', field: 'login' }] });
-      return;
+    const result = await this.usersService.createUser(login, email, password);
+
+    if (result.status !== RESULT_STATUS.CREATED) {
+      res.status(httpCodeByResult(result.status)).json(result.extensions);
     }
 
-    if (!(await this.usersService.isEmailUnique(email))) {
-      res
-        .status(HTTP_STATUS.BAD_REQUEST_400)
-        .json({ errorsMessages: [{ message: 'Email already exists', field: 'email' }] });
-      return;
-    }
-
-    const newUser = await this.usersService.createUser(login, email, password);
-    res.status(HTTP_STATUS.CREATED_201).json(newUser);
+    res.status(HTTP_STATUS.CREATED_201).json(result.data);
   }
 
   async deleteUser(req: Request, res: Response) {
     const id = req.params.id;
-    const isDeleted = await this.usersService.deleteUser(id);
-    if (!isDeleted) {
-      res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'User not found' });
-      return;
+    const result = await this.usersService.deleteUser(id);
+
+    if (result.status !== RESULT_STATUS.NO_CONTENT) {
+      res.status(httpCodeByResult(result.status)).json(result.extensions);
     }
+
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 }

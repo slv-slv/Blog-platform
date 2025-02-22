@@ -18,7 +18,25 @@ export class UsersService {
     @inject(EmailService) private emailService: EmailService,
   ) {}
 
-  async createUser(login: string, email: string, password: string): Promise<UserType> {
+  async createUser(login: string, email: string, password: string): Promise<Result<UserType | null>> {
+    if (!(await this.isLoginUnique(login))) {
+      return {
+        status: RESULT_STATUS.BAD_REQUEST,
+        errorMessage: 'Bad Request',
+        extensions: [{ message: 'Login already exists', field: 'login' }],
+        data: null,
+      };
+    }
+
+    if (!(await this.isEmailUnique(email))) {
+      return {
+        status: RESULT_STATUS.BAD_REQUEST,
+        errorMessage: 'Bad Request',
+        extensions: [{ message: 'Email already exists', field: 'email' }],
+        data: null,
+      };
+    }
+
     const hash = await this.authService.hashPassword(password);
     const createdAt = new Date().toISOString();
     const confirmation: ConfirmationInfo = {
@@ -28,7 +46,19 @@ export class UsersService {
     };
     const passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null };
 
-    return await this.usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
+    const newUser = await this.usersRepo.createUser(
+      login,
+      email,
+      hash,
+      createdAt,
+      confirmation,
+      passwordRecovery,
+    );
+
+    return {
+      status: RESULT_STATUS.CREATED,
+      data: newUser,
+    };
   }
 
   async registerUser(login: string, email: string, password: string): Promise<UserType> {
@@ -157,8 +187,21 @@ export class UsersService {
     };
   }
 
-  async deleteUser(id: string): Promise<boolean> {
-    return await this.usersRepo.deleteUser(id);
+  async deleteUser(id: string): Promise<Result<null>> {
+    const isDeleted = await this.usersRepo.deleteUser(id);
+    if (!isDeleted) {
+      return {
+        status: RESULT_STATUS.NOT_FOUND,
+        errorMessage: 'Not found',
+        extensions: [{ message: 'User not found', field: 'id' }],
+        data: null,
+      };
+    }
+
+    return {
+      status: RESULT_STATUS.NO_CONTENT,
+      data: null,
+    };
   }
 
   async isLoginUnique(login: string): Promise<boolean> {
