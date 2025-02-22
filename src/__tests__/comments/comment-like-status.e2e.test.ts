@@ -7,15 +7,11 @@ import { SETTINGS } from '../../settings.js';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { container } from '../../ioc/container.js';
-import { BlogsRepo } from '../../features/blogs/blogs-repo.js';
-import { PostsRepo } from '../../features/posts/posts-repo.js';
 import { UsersService } from '../../features/users/users-service.js';
 import mongoose from 'mongoose';
 import { CommentsService } from '../../features/comments/comments-service.js';
 import { UsersQueryRepo } from '../../features/users/users-query-repo.js';
 
-const blogsRepo = container.get(BlogsRepo);
-const postsRepo = container.get(PostsRepo);
 const usersQueryRepo = container.get(UsersQueryRepo);
 const usersService = container.get(UsersService);
 const commentsService = container.get(CommentsService);
@@ -34,7 +30,6 @@ describe('LIKE STATUS', () => {
   const email = 'example@gmail.com';
   const password = 'somepassword';
 
-  let postId: string;
   let accessToken: string;
   let commentId: string;
 
@@ -46,23 +41,7 @@ describe('LIKE STATUS', () => {
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
 
-    const blog = await blogsRepo.createBlog(
-      'blog name',
-      'blog description',
-      'https://www.example.com',
-      new Date().toISOString(),
-      false,
-    );
-
-    const post = await postsRepo.createPost(
-      'post title',
-      'description',
-      'long boring text',
-      blog.id,
-      new Date().toISOString(),
-    );
-
-    postId = post.id;
+    const postId = new ObjectId().toString();
 
     const currentUser = await usersQueryRepo.getCurrentUser(userId);
     const comment = await commentsService.createComment(postId, 'long boring content', currentUser!);
@@ -151,8 +130,8 @@ describe('LIKE STATUS', () => {
     const response = await request(app)
       .get(`/comments/${commentId}`)
       .auth(anotherAccessToken, { type: 'bearer' });
+
     const comment = response.body;
-    console.log(comment);
 
     expect(comment?.likesInfo.likesCount).toBe(0);
     expect(comment?.likesInfo.dislikesCount).toBe(2);
