@@ -18,6 +18,12 @@ export class UsersRepo {
     return await this.model.findOne(filter).lean();
   }
 
+  async getLogin(id: string): Promise<string> {
+    const _id = new ObjectId(id);
+    const user = await this.model.findById(_id, { login: 1 });
+    return user!.login;
+  }
+
   async createUser(
     login: string,
     email: string,
