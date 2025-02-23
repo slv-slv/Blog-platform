@@ -19,51 +19,36 @@ export class AuthController {
   async registration(req: Request, res: Response) {
     const { login, email, password } = req.body;
 
-    if (!(await this.usersService.isLoginUnique(login))) {
-      res
-        .status(HTTP_STATUS.BAD_REQUEST_400)
-        .json({ errorsMessages: [{ message: 'Login already exists', field: 'login' }] });
-      return;
-    }
-
-    if (!(await this.usersService.isEmailUnique(email))) {
-      res
-        .status(HTTP_STATUS.BAD_REQUEST_400)
-        .json({ errorsMessages: [{ message: 'Email already exists', field: 'email' }] });
-      return;
-    }
-
     const result = await this.usersService.registerUser(login, email, password);
+
+    if (result.status !== RESULT_STATUS.CREATED) {
+      res.status(httpCodeByResult(result.status)).json({ errorsMessages: result.extensions });
+      return;
+    }
+
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
   async registrationEmailResending(req: Request, res: Response) {
     const { email } = req.body;
 
-    if (!(await this.usersQueryRepo.findUser(email))) {
-      res
-        .status(HTTP_STATUS.BAD_REQUEST_400)
-        .json({ errorsMessages: [{ message: 'Incorrect email', field: 'email' }] });
+    const result = await this.usersService.sendConfirmationCode(email);
+
+    if (result.status !== RESULT_STATUS.NO_CONTENT) {
+      res.status(httpCodeByResult(result.status)).json({ errorsMessages: result.extensions });
+      return;
     }
 
-    if (await this.usersService.isConfirmed(email)) {
-      res
-        .status(HTTP_STATUS.BAD_REQUEST_400)
-        .json({ errorsMessages: [{ message: 'Email already confirmed', field: 'email' }] });
-    }
-
-    await this.usersService.sendConfirmationCode(email);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
   async registrationConfirmation(req: Request, res: Response) {
     const code = req.body.code;
-    const confirmationResult = await this.usersService.confirmUser(code);
 
-    if (confirmationResult.status !== RESULT_STATUS.NO_CONTENT) {
-      res
-        .status(httpCodeByResult(confirmationResult.status))
-        .json({ errorsMessages: confirmationResult.extensions });
+    const result = await this.usersService.confirmUser(code);
+
+    if (result.status !== RESULT_STATUS.NO_CONTENT) {
+      res.status(httpCodeByResult(result.status)).json({ errorsMessages: result.extensions });
       return;
     }
 

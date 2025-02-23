@@ -18,7 +18,17 @@ export class UsersService {
     @inject(EmailService) private emailService: EmailService,
   ) {}
 
-  async createUser(login: string, email: string, password: string): Promise<Result<UserType | null>> {
+  async createUser(
+    login: string,
+    email: string,
+    password: string,
+    confirmation: ConfirmationInfo = {
+      status: CONFIRMATION_STATUS.CONFIRMED,
+      code: null,
+      expiration: null,
+    },
+    passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null },
+  ): Promise<Result<UserType | null>> {
     if (!(await this.isLoginUnique(login))) {
       return {
         status: RESULT_STATUS.BAD_REQUEST,
@@ -39,12 +49,14 @@ export class UsersService {
 
     const hash = await this.authService.hashPassword(password);
     const createdAt = new Date().toISOString();
-    const confirmation: ConfirmationInfo = {
-      status: CONFIRMATION_STATUS.CONFIRMED,
-      code: null,
-      expiration: null,
-    };
-    const passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null };
+
+    // const confirmation: ConfirmationInfo = {
+    //   status: CONFIRMATION_STATUS.CONFIRMED,
+    //   code: null,
+    //   expiration: null,
+    // };
+
+    // const passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null };
 
     const newUser = await this.usersRepo.createUser(
       login,
@@ -61,10 +73,7 @@ export class UsersService {
     };
   }
 
-  async registerUser(login: string, email: string, password: string): Promise<UserType> {
-    const hash = await this.authService.hashPassword(password);
-    const createdAt = new Date().toISOString();
-
+  async registerUser(login: string, email: string, password: string): Promise<Result<UserType | null>> {
     const code = crypto.randomUUID();
 
     const currentDate = new Date();
@@ -72,19 +81,40 @@ export class UsersService {
     const expiration = new Date(
       currentDate.setHours(hours + SETTINGS.CONFIRMATION_CODE_LIFETIME),
     ).toISOString();
+
     const confirmation = {
       status: CONFIRMATION_STATUS.NOT_CONFIRMED,
       code,
       expiration,
     };
+
     const passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null };
 
     // await emailService.sendConfirmationCode(email, code);
 
-    return await this.usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
+    // return await this.usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
+    return await this.createUser(login, email, password, confirmation, passwordRecovery);
   }
 
-  async sendConfirmationCode(email: string): Promise<string | null> {
+  async sendConfirmationCode(email: string): Promise<Result<null>> {
+    if (!(await this.usersRepo.findUser(email))) {
+      return {
+        status: RESULT_STATUS.BAD_REQUEST,
+        errorMessage: 'Bad Request',
+        extensions: [{ message: 'Incorrect email', field: 'email' }],
+        data: null,
+      };
+    }
+
+    if (await this.isConfirmed(email)) {
+      return {
+        status: RESULT_STATUS.BAD_REQUEST,
+        errorMessage: 'Bad Request',
+        extensions: [{ message: 'Email already confirmed', field: 'email' }],
+        data: null,
+      };
+    }
+
     const code = crypto.randomUUID();
 
     const currentDate = new Date();
@@ -95,9 +125,12 @@ export class UsersService {
 
     await this.usersRepo.updateConfirmationCode(email, code, expiration);
 
-    // emailService.sendConfirmationCode(email, code);
+    return {
+      status: RESULT_STATUS.NO_CONTENT,
+      data: null,
+    };
 
-    return code;
+    // await emailService.sendConfirmationCode(email, code);
   }
 
   async sendRecoveryCode(email: string): Promise<string | null> {
