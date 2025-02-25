@@ -3,12 +3,14 @@ import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { inject, injectable } from 'inversify';
 import { SessionsService } from './sessions-service.js';
 import { SessionsQueryRepo } from './sessions-query-repo.js';
+import { SessionsRepo } from './sessions-repo.js';
 
 @injectable()
 export class SessionsController {
   constructor(
     @inject(SessionsService) private sessionsService: SessionsService,
     @inject(SessionsQueryRepo) private sessionsQueryRepo: SessionsQueryRepo,
+    @inject(SessionsRepo) private sessionsRepo: SessionsRepo,
   ) {}
 
   async getDevices(req: Request, res: Response) {
@@ -29,12 +31,12 @@ export class SessionsController {
     const userId = res.locals.userId;
     const deviceId = req.params.deviceId;
 
-    if (!(await this.sessionsQueryRepo.findDevice(deviceId))) {
+    if (!(await this.sessionsRepo.findDevice(deviceId))) {
       res.status(HTTP_STATUS.NOT_FOUND_404).end();
       return;
     }
 
-    const deviceOwner = await this.sessionsQueryRepo.getDeviceOwner(deviceId);
+    const deviceOwner = await this.sessionsRepo.getDeviceOwner(deviceId);
 
     if (deviceOwner !== userId) {
       res.status(HTTP_STATUS.FORBIDDEN_403).end();
