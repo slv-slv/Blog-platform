@@ -33,15 +33,17 @@ export class LikesService {
       };
     }
 
+    const createdAt = new Date();
+
     switch (likeStatus) {
       case LikeStatus.None:
         await this.commentLikesRepo.setNone(commentId, userId);
         break;
       case LikeStatus.Like:
-        await this.commentLikesRepo.setLike(commentId, userId);
+        await this.commentLikesRepo.setLike(commentId, userId, createdAt);
         break;
       case LikeStatus.Dislike:
-        await this.commentLikesRepo.setDislike(commentId, userId);
+        await this.commentLikesRepo.setDislike(commentId, userId, createdAt);
         break;
     }
 
@@ -54,8 +56,8 @@ export class LikesService {
   async createLikesInfo(commentId: string): Promise<void> {
     const likesInfo: CommentLikesType = {
       commentId,
-      usersLiked: [],
-      usersDisliked: [],
+      likes: [],
+      dislikes: [],
     };
 
     await this.commentLikesRepo.createLikesInfo(likesInfo);

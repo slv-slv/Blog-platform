@@ -13,21 +13,26 @@ export class CommentLikesRepo {
     await this.model.deleteOne({ commentId });
   }
 
-  async setLike(commentId: string, userId: string): Promise<void> {
+  async setLike(commentId: string, userId: string, createdAt: Date): Promise<void> {
+    const like = { userId, createdAt };
     await this.model.updateOne(
       { commentId },
-      { $push: { usersLiked: userId }, $pull: { usersDisliked: userId } },
+      { $push: { likes: like }, $pull: { dislikes: { userId: userId } } },
     );
   }
 
-  async setDislike(commentId: string, userId: string): Promise<void> {
+  async setDislike(commentId: string, userId: string, createdAt: Date): Promise<void> {
+    const dislike = { userId, createdAt };
     await this.model.updateOne(
       { commentId },
-      { $push: { usersDisliked: userId }, $pull: { usersLiked: userId } },
+      { $push: { dislikes: dislike }, $pull: { likes: { userId: userId } } },
     );
   }
 
   async setNone(commentId: string, userId: string): Promise<void> {
-    await this.model.updateOne({ commentId }, { $pull: { usersLiked: userId, usersDisliked: userId } });
+    await this.model.updateOne(
+      { commentId },
+      { $pull: { likes: { userId: userId }, dislikes: { userId: userId } } },
+    );
   }
 }

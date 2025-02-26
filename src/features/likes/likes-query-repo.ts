@@ -9,7 +9,7 @@ export class CommentLikesQueryRepo {
   async getLikesCount(commentId: string): Promise<number> {
     const result = await this.model.aggregate([
       { $match: { commentId } },
-      { $project: { likesCount: { $size: '$usersLiked' } } },
+      { $project: { likesCount: { $size: '$likes' } } },
     ]);
     return result[0]?.likesCount ?? 0;
   }
@@ -17,7 +17,7 @@ export class CommentLikesQueryRepo {
   async getDislikesCount(commentId: string): Promise<number> {
     const result = await this.model.aggregate([
       { $match: { commentId } },
-      { $project: { dislikesCount: { $size: '$usersDisliked' } } },
+      { $project: { dislikesCount: { $size: '$dislikes' } } },
     ]);
     return result[0]?.dislikesCount ?? 0;
   }
@@ -25,19 +25,14 @@ export class CommentLikesQueryRepo {
   async getLikeStatus(commentId: string, userId: string): Promise<LikeStatus> {
     if (userId === null) return LikeStatus.None;
 
-    const likedComment = await this.model
-      .findOne({ commentId, usersLiked: { $elemMatch: { $eq: userId } } })
+    const comment = await this.model
+      .findOne({ commentId, $or: [{ 'likes.userId': userId }, { 'dislikes.userId': userId }] })
       .lean();
-    if (likedComment) {
-      return LikeStatus.Like;
-    }
 
-    const dislikedComment = await this.model
-      .findOne({ commentId, usersDisliked: { $elemMatch: { $eq: userId } } })
-      .lean();
-    if (dislikedComment) {
-      return LikeStatus.Dislike;
-    }
+    if (!comment) return LikeStatus.None;
+
+    if (comment.likes.length > 0) return LikeStatus.Like;
+    if (comment.dislikes.length > 0) return LikeStatus.Dislike;
 
     return LikeStatus.None;
   }
