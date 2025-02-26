@@ -5,8 +5,18 @@ import { SETTINGS } from '../../settings.js';
 const commentLikesSchema = new Schema<CommentLikesDbType>(
   {
     commentId: { type: String, required: true },
-    usersLiked: { type: [String], required: true, default: [] },
-    usersDisliked: { type: [String], required: true, default: [] },
+    likes: [
+      {
+        userId: { type: String, required: true },
+        createdAt: { type: Date, required: true },
+      },
+    ],
+    dislikes: [
+      {
+        userId: { type: String, required: true },
+        createdAt: { type: Date, required: true },
+      },
+    ],
   },
   { versionKey: false },
 );
