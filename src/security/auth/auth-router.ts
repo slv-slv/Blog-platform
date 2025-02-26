@@ -10,7 +10,7 @@ import { checkRefreshToken } from '../middleware/check-refresh-token.js';
 import { generateJwtPair } from '../middleware/generate-jwt-pair.js';
 import { createSession } from '../middleware/create-session.js';
 import { checkSession } from '../middleware/check-session.js';
-import { rateLimiter } from '../middleware/rate-limiter.js';
+import { rateLimiter } from '../rate-limiter/rate-limiter-middleware.js';
 import { container } from '../../ioc/container.js';
 import { AuthController } from './auth-controller.js';
 

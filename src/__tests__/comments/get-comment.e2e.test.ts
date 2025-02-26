@@ -12,11 +12,13 @@ import mongoose from 'mongoose';
 import { CommentsService } from '../../features/comments/comments-service.js';
 import { PostsService } from '../../features/posts/posts-service.js';
 import { BlogsService } from '../../features/blogs/blogs-service.js';
+import { CommentsRepo } from '../../features/comments/comments-repo.js';
 
 const blogsService = container.get(BlogsService);
 const postsService = container.get(PostsService);
 const usersService = container.get(UsersService);
 const commentsService = container.get(CommentsService);
+const commentsRepo = container.get(CommentsRepo);
 
 beforeAll(async () => {
   await mongoose.connect(mongoUri, { dbName });

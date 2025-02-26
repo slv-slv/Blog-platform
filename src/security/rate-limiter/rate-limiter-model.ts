@@ -1,13 +1,8 @@
 import mongoose from 'mongoose';
 import { SETTINGS } from '../../settings.js';
+import { RateLimiterType } from './rate-limiter-types.js';
 
-export type RequestLogType = {
-  ip: string;
-  url: string;
-  timestamp: number;
-};
-
-const requestLogSchema = new mongoose.Schema<RequestLogType>(
+const rateLimiterSchema = new mongoose.Schema<RateLimiterType>(
   {
     ip: { type: String, required: true },
     url: { type: String, required: true },
@@ -16,4 +11,4 @@ const requestLogSchema = new mongoose.Schema<RequestLogType>(
   { versionKey: false },
 );
 
-export const RequestLogModel = mongoose.model(SETTINGS.DB_COLLECTIONS.REQUEST_LOGS, requestLogSchema);
+export const RateLimiterModel = mongoose.model(SETTINGS.DB_COLLECTIONS.RATE_LIMITER, rateLimiterSchema);

@@ -1,15 +1,14 @@
 import { inject, injectable } from 'inversify';
-import { RequestLogType } from './request-logs-types.js';
-import { Collection } from 'mongodb';
+import { RateLimiterType } from './rate-limiter-types.js';
 import { Model } from 'mongoose';
 
 @injectable()
-export class RequestLogsRepo {
-  constructor(@inject('RequestLogModel') private model: Model<RequestLogType>) {}
+export class RateLimiterRepo {
+  constructor(@inject('RateLimiterModel') private model: Model<RateLimiterType>) {}
 
   async addRequest(ip: string, url: string, timestamp: number): Promise<void> {
-    const requestLog = { ip, url, timestamp };
-    await this.model.insertOne(requestLog);
+    const request = { ip, url, timestamp };
+    await this.model.insertOne(request);
   }
 
   async countRequests(ip: string, url: string, fromTime: number): Promise<number> {

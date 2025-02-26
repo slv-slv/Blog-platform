@@ -5,7 +5,7 @@ import { SessionDbType } from '../../security/sessions/sessions-types.js';
 import { UserDbType } from '../../features/users/users-types.js';
 import { SETTINGS } from '../../settings.js';
 // import { db } from './db.js';
-import { RequestLogType } from '../../security/request-logs/request-logs-types.js';
+import { RateLimiterType } from '../../security/rate-limiter/rate-limiter-types.js';
 
 // export const blogsCollection = db.collection<BlogDbType>(SETTINGS.DB_COLLECTIONS.BLOGS);
 // export const postsCollection = db.collection<PostDbType>(SETTINGS.DB_COLLECTIONS.POSTS);

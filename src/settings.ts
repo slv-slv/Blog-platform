@@ -19,7 +19,7 @@ export const SETTINGS = {
     COMMENTS: 'comments',
     COMMENT_LIKES: 'commentLikes',
     SESSIONS: 'sessions',
-    REQUEST_LOGS: 'requestLogs',
+    RATE_LIMITER: 'rateLimiter',
   },
   MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017',
   PAGING_DEFAULT_PARAMS: {

@@ -1,13 +1,13 @@
 import { inject, injectable } from 'inversify';
-import { RequestLogsRepo } from './request-logs-repo.js';
+import { RateLimiterRepo } from './rate-limiter-repo.js';
 
 @injectable()
-export class RequestLogsService {
-  constructor(@inject(RequestLogsRepo) private requestLogsRepo: RequestLogsRepo) {}
+export class RateLimiterService {
+  constructor(@inject(RateLimiterRepo) private rateLimiterRepo: RateLimiterRepo) {}
 
   async addRequest(ip: string, url: string): Promise<void> {
     const timestamp = Date.now();
-    await this.requestLogsRepo.addRequest(ip, url, timestamp);
+    await this.rateLimiterRepo.addRequest(ip, url, timestamp);
   }
 
   async shouldBlockRequest(ip: string, url: string): Promise<boolean> {
@@ -18,7 +18,7 @@ export class RequestLogsService {
     date.setSeconds(date.getSeconds() - interval);
     const fromTime = date.getTime();
 
-    const count = await this.requestLogsRepo.countRequests(ip, url, fromTime);
+    const count = await this.rateLimiterRepo.countRequests(ip, url, fromTime);
     return count >= maxRequests;
   }
 }
