@@ -50,14 +50,6 @@ export class UsersService {
     const hash = await this.authService.hashPassword(password);
     const createdAt = new Date().toISOString();
 
-    // const confirmation: ConfirmationInfo = {
-    //   status: CONFIRMATION_STATUS.CONFIRMED,
-    //   code: null,
-    //   expiration: null,
-    // };
-
-    // const passwordRecovery: PasswordRecoveryInfo = { code: null, expiration: null };
-
     const newUser = await this.usersRepo.createUser(
       login,
       email,
@@ -92,7 +84,6 @@ export class UsersService {
 
     // await emailService.sendConfirmationCode(email, code);
 
-    // return await this.usersRepo.createUser(login, email, hash, createdAt, confirmation, passwordRecovery);
     return await this.createUser(login, email, password, confirmation, passwordRecovery);
   }
 
