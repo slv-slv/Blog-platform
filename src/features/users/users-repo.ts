@@ -53,8 +53,7 @@ export class UsersRepo {
       { $set: { 'passwordRecovery.code': code, 'passwordRecovery.expiration': expiration } },
     );
 
-    if (updateResult.modifiedCount === 0) return false;
-    return true;
+    return updateResult.modifiedCount > 0;
   }
 
   async updatePassword(recoveryCode: string, hash: string) {
