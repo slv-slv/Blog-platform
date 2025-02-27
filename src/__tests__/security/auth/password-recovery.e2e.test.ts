@@ -18,7 +18,7 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-describe('PASSWORD RECOVERY', () => {
+describe('PASSWORD RECOVERY REQUEST', () => {
   const login = 'NewUser';
   const email = 'slvsl@vk.com';
   const password = 'somepassword';

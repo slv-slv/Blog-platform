@@ -133,18 +133,30 @@ export class UsersService {
     // await emailService.sendConfirmationCode(email, code);
   }
 
-  async sendRecoveryCode(email: string): Promise<string | null> {
+  async sendRecoveryCode(email: string): Promise<Result<null>> {
     const code = crypto.randomUUID();
 
     const currentDate = new Date();
     const hours = currentDate.getHours();
     const expiration = new Date(currentDate.setHours(hours + SETTINGS.RECOVERY_CODE_LIFETIME)).toISOString();
 
-    await this.usersRepo.updateRecoveryCode(email, code, expiration);
+    const result = await this.usersRepo.updateRecoveryCode(email, code, expiration);
+
+    if (!result) {
+      return {
+        status: RESULT_STATUS.NOT_FOUND,
+        errorMessage: 'Not found',
+        extensions: [{ message: 'User not found', field: 'id' }],
+        data: null,
+      };
+    }
 
     // await emailService.sendRecoveryCode(email, code);
 
-    return code;
+    return {
+      status: RESULT_STATUS.NO_CONTENT,
+      data: null,
+    };
   }
 
   async confirmUser(code: string): Promise<Result<null>> {

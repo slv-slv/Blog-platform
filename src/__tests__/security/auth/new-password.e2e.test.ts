@@ -20,7 +20,7 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-describe('PASSWORD RECOVERY', () => {
+describe('PASSWORD RECOVERY CONFIRMATION', () => {
   const recoveryCode = crypto.randomUUID();
 
   const pastDate = new Date();

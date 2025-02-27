@@ -47,11 +47,14 @@ export class UsersRepo {
     );
   }
 
-  async updateRecoveryCode(email: string, code: string, expiration: string): Promise<void> {
-    await this.model.updateOne(
+  async updateRecoveryCode(email: string, code: string, expiration: string): Promise<boolean> {
+    const updateResult = await this.model.updateOne(
       { email },
       { $set: { 'passwordRecovery.code': code, 'passwordRecovery.expiration': expiration } },
     );
+
+    if (updateResult.modifiedCount === 0) return false;
+    return true;
   }
 
   async updatePassword(recoveryCode: string, hash: string) {

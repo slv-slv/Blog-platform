@@ -95,13 +95,8 @@ export class AuthController {
 
   async passwordRecovery(req: Request, res: Response) {
     const { email } = req.body;
-
-    if (!(await this.usersQueryRepo.findUser(email))) {
-      res.status(HTTP_STATUS.NO_CONTENT_204).end();
-      return;
-    }
-
     await this.usersService.sendRecoveryCode(email);
+
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
