@@ -8,12 +8,10 @@ import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
 import { JwtRefreshPayload } from '../../../security/auth/auth-types.js';
 import { container } from '../../../ioc/container.js';
-import { SessionsQueryRepo } from '../../../security/sessions/sessions-query-repo.js';
 import { SessionsRepo } from '../../../security/sessions/sessions-repo.js';
 import mongoose from 'mongoose';
 
 const sessionsRepo = container.get(SessionsRepo);
-const sessionsQueryRepo = container.get(SessionsQueryRepo);
 
 beforeAll(async () => {
   await mongoose.connect(mongoUri, { dbName });
@@ -71,13 +69,13 @@ describe('GET-ACTIVE-DEVICES', () => {
   });
 
   it('should return 204 and delete device', async () => {
-    expect(await sessionsQueryRepo.findDevice(deviceId)).not.toBeNull();
+    expect(await sessionsRepo.findDevice(deviceId)).not.toBeNull();
 
     await request(app)
       .delete(`/security/devices/${deviceId}`)
       .set('Cookie', `refreshToken=${token}`)
       .expect(HTTP_STATUS.NO_CONTENT_204);
 
-    expect(await sessionsQueryRepo.findDevice(deviceId)).toBeNull();
+    expect(await sessionsRepo.findDevice(deviceId)).toBeNull();
   });
 });
