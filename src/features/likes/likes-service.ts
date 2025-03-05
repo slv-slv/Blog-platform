@@ -11,7 +11,6 @@ export class LikesService {
   constructor(
     @inject(CommentsRepo) private commentsRepo: CommentsRepo,
     @inject(CommentLikesRepo) private commentLikesRepo: CommentLikesRepo,
-    @inject(CommentLikesQueryRepo) private commentLikesQueryRepo: CommentLikesQueryRepo,
   ) {}
 
   async setLikeStatus(commentId: string, userId: string, likeStatus: LikeStatus): Promise<Result<null>> {
@@ -25,7 +24,7 @@ export class LikesService {
       };
     }
 
-    const currentLikeStatus = await this.commentLikesQueryRepo.getLikeStatus(commentId, userId);
+    const currentLikeStatus = await this.commentLikesRepo.getLikeStatus(commentId, userId);
     if (likeStatus === currentLikeStatus) {
       return {
         status: RESULT_STATUS.NO_CONTENT,
