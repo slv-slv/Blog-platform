@@ -2,8 +2,8 @@ import { WithId } from 'mongodb';
 
 export type CommentLikesType = {
   commentId: string;
-  likes: { userId: string; createdAt: Date }[];
-  dislikes: { userId: string; createdAt: Date }[];
+  likes: { userId: { type: string; required: true }; createdAt: { type: Date; required: true } }[];
+  dislikes: { userId: { type: string; required: true }; createdAt: { type: Date; required: true } }[];
 };
 
 export type CommentLikesDbType = WithId<CommentLikesType>;
