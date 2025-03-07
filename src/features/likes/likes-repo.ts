@@ -26,12 +26,17 @@ export class CommentLikesRepo {
     if (userId === null) return LikeStatus.None;
 
     const comment = await this.model
-      .findOne({ commentId, $or: [{ 'likes.userId': userId }, { 'dislikes.userId': userId }] })
+      .findOne(
+        { commentId },
+        {
+          likes: { $elemMatch: { userId } },
+          dislikes: { $elemMatch: { userId } },
+        },
+      )
       .lean();
 
-    if (!comment) return LikeStatus.None;
-    if (comment.likes.some((like) => like.userId === userId)) return LikeStatus.Like;
-    if (comment.dislikes.some((dislike) => dislike.userId === userId)) return LikeStatus.Dislike;
+    if (comment!.likes.length > 0) return LikeStatus.Like;
+    if (comment!.dislikes.length > 0) return LikeStatus.Dislike;
 
     return LikeStatus.None;
   }
