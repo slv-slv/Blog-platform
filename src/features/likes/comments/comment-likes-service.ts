@@ -1,7 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { CommentLikesRepo } from './comment-likes-repo.js';
-import { CommentLikesQueryRepo } from './comment-likes-query-repo.js';
-import { CommentLikesType, LikeStatus } from './comment-likes-types.js';
+import { CommentLikesType, LikesInfoViewType, LikeStatus } from './comment-likes-types.js';
 import { CommentsRepo } from '../../comments/comments-repo.js';
 import { Result } from '../../../common/types/result-object.js';
 import { RESULT_STATUS } from '../../../common/types/result-status-codes.js';
@@ -64,5 +63,13 @@ export class CommentLikesService {
 
   async deleteLikesInfo(commentId: string): Promise<void> {
     await this.commentLikesRepo.deleteLikesInfo(commentId);
+  }
+
+  getDefaultLikesInfo(): LikesInfoViewType {
+    return {
+      likesCount: 0,
+      dislikesCount: 0,
+      myStatus: LikeStatus.None,
+    };
   }
 }
