@@ -35,8 +35,8 @@ export class CommentLikesRepo {
       )
       .lean();
 
-    if (comment!.likes.length > 0) return LikeStatus.Like;
-    if (comment!.dislikes.length > 0) return LikeStatus.Dislike;
+    if (comment!.likes) return LikeStatus.Like;
+    if (comment!.dislikes) return LikeStatus.Dislike;
 
     return LikeStatus.None;
   }
