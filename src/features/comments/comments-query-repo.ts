@@ -3,7 +3,7 @@ import { CommentDbType, CommentsPaginatedType, CommentViewType } from './comment
 import { PagingParams } from '../../common/types/paging-params.js';
 import { inject, injectable } from 'inversify';
 import { Model } from 'mongoose';
-import { CommentLikesQueryRepo } from '../likes/likes-query-repo.js';
+import { CommentLikesQueryRepo } from '../likes/comments/comment-likes-query-repo.js';
 
 @injectable()
 export class CommentsQueryRepo {

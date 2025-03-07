@@ -1,5 +1,4 @@
-import { Collection, ObjectId } from 'mongodb';
-import { CurrentUserType } from '../users/users-types.js';
+import { ObjectId } from 'mongodb';
 import { CommentDbType, CommentDtoType } from './comments-types.js';
 import { inject, injectable } from 'inversify';
 import { Model } from 'mongoose';
