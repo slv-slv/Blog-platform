@@ -11,11 +11,11 @@ import { UsersRepo } from '../users/users-repo.js';
 @injectable()
 export class CommentsService {
   constructor(
-    @inject(CommentsRepo) private commentsRepo: CommentsRepo,
-    @inject(CommentLikesQueryRepo) private commentLikesQueryRepo: CommentLikesQueryRepo,
     @inject(PostsRepo) private postsRepo: PostsRepo,
+    @inject(CommentsRepo) private commentsRepo: CommentsRepo,
     @inject(UsersRepo) private usersRepo: UsersRepo,
     @inject(CommentLikesService) private likesService: CommentLikesService,
+    @inject(CommentLikesQueryRepo) private commentLikesQueryRepo: CommentLikesQueryRepo,
   ) {}
 
   async createComment(
@@ -51,7 +51,8 @@ export class CommentsService {
     const commentId = newComment.id;
 
     await this.likesService.createLikesInfo(commentId);
-    const likesInfo = await this.commentLikesQueryRepo.getLikesInfo(commentId, userId);
+
+    const likesInfo = this.likesService.getDefaultLikesInfo();
 
     return {
       status: RESULT_STATUS.CREATED,
