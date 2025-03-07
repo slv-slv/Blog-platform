@@ -4,7 +4,7 @@ import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-statu
 import { inject, injectable } from 'inversify';
 import { CommentsQueryRepo } from './comments-query-repo.js';
 import { CommentsService } from './comments-service.js';
-import { CommentLikesService } from '../likes/likes-service.js';
+import { CommentLikesService } from '../likes/comments/comment-likes-service.js';
 import { CommentsRepo } from './comments-repo.js';
 
 @injectable()

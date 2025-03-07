@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
-import { CommentLikesDbType } from './likes-types.js';
-import { SETTINGS } from '../../settings.js';
+import { CommentLikesDbType } from './comment-likes-types.js';
+import { SETTINGS } from '../../../settings.js';
 
 const commentLikesSchema = new Schema<CommentLikesDbType>(
   {

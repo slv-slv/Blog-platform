@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { Model } from 'mongoose';
-import { CommentLikesDbType, CommentLikesType, LikeStatus } from './likes-types.js';
+import { CommentLikesDbType, CommentLikesType, LikeStatus } from './comment-likes-types.js';
 
 @injectable()
 export class CommentLikesRepo {
