@@ -7,7 +7,7 @@ import { Result } from '../../common/types/result-object.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
 
 @injectable()
-export class LikesService {
+export class CommentLikesService {
   constructor(
     @inject(CommentsRepo) private commentsRepo: CommentsRepo,
     @inject(CommentLikesRepo) private commentLikesRepo: CommentLikesRepo,

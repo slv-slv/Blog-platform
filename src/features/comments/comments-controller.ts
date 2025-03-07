@@ -4,7 +4,7 @@ import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-statu
 import { inject, injectable } from 'inversify';
 import { CommentsQueryRepo } from './comments-query-repo.js';
 import { CommentsService } from './comments-service.js';
-import { LikesService } from '../likes/likes-service.js';
+import { CommentLikesService } from '../likes/likes-service.js';
 import { CommentsRepo } from './comments-repo.js';
 
 @injectable()
@@ -13,7 +13,7 @@ export class CommentsController {
     @inject(CommentsQueryRepo) private commentsQueryRepo: CommentsQueryRepo,
     @inject(CommentsRepo) private commentsRepo: CommentsRepo,
     @inject(CommentsService) private commentsService: CommentsService,
-    @inject(LikesService) private likesService: LikesService,
+    @inject(CommentLikesService) private likesService: CommentLikesService,
   ) {}
 
   async findComment(req: Request, res: Response) {

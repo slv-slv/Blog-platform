@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { Result } from '../../common/types/result-object.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { CommentsRepo } from './comments-repo.js';
-import { LikesService } from '../likes/likes-service.js';
+import { CommentLikesService } from '../likes/likes-service.js';
 import { CommentLikesQueryRepo } from '../likes/likes-query-repo.js';
 import { CommentViewType } from './comments-types.js';
 import { PostsRepo } from '../posts/posts-repo.js';
@@ -15,7 +15,7 @@ export class CommentsService {
     @inject(CommentLikesQueryRepo) private commentLikesQueryRepo: CommentLikesQueryRepo,
     @inject(PostsRepo) private postsRepo: PostsRepo,
     @inject(UsersRepo) private usersRepo: UsersRepo,
-    @inject(LikesService) private likesService: LikesService,
+    @inject(CommentLikesService) private likesService: CommentLikesService,
   ) {}
 
   async createComment(
