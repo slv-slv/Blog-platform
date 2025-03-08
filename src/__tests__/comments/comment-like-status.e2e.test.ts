@@ -1,14 +1,14 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import { dbName, mongoUri } from '../../infrastructure/db/db.js';
 import { ObjectId } from 'mongodb';
+import mongoose from 'mongoose';
+import { dbName, mongoUri } from '../../infrastructure/db/db.js';
 import { SETTINGS } from '../../settings.js';
 import { app } from '../../app.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { container } from '../../ioc/container.js';
 import { UsersService } from '../../features/users/users-service.js';
-import mongoose from 'mongoose';
 import { CommentsService } from '../../features/comments/comments-service.js';
 import { BlogsService } from '../../features/blogs/blogs-service.js';
 import { PostsService } from '../../features/posts/posts-service.js';
@@ -29,7 +29,7 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-describe('LIKE STATUS', () => {
+describe('COMMENT LIKE STATUS', () => {
   const login = 'NewUser';
   const email = 'example@gmail.com';
   const password = 'somepassword';
@@ -39,8 +39,8 @@ describe('LIKE STATUS', () => {
   let commentId: string;
 
   it('should return 401 if no access token has been sent', async () => {
-    const insertedUser = await usersService.createUser(login, email, password);
-    userId = insertedUser.data!.id;
+    const user = await usersService.createUser(login, email, password);
+    userId = user.data!.id;
 
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
@@ -71,9 +71,8 @@ describe('LIKE STATUS', () => {
   });
 
   it('should return 400 if body has incorrect values', async () => {
-    const notExistingId = new ObjectId().toString();
     await request(app)
-      .put(`/comments/${notExistingId}/like-status`)
+      .put(`/comments/${commentId}/like-status`)
       .auth(accessToken, { type: 'bearer' })
       .send({ likeStatus: 'SuperLike' })
       .expect(HTTP_STATUS.BAD_REQUEST_400);
@@ -117,7 +116,7 @@ describe('LIKE STATUS', () => {
       .send({ likeStatus: 'Like' })
       .expect(HTTP_STATUS.NO_CONTENT_204);
 
-    const comment = await commentsQueryRepo.findComment(commentId, anotherUserId);
+    const comment = await commentsQueryRepo.findComment(commentId, userId);
 
     expect(comment?.likesInfo.likesCount).toBe(2);
     expect(comment?.likesInfo.dislikesCount).toBe(0);
