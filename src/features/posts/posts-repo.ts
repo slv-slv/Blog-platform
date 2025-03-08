@@ -1,4 +1,4 @@
-import { PostDbType, PostType } from './posts-types.js';
+import { PostDbType, PostDtoType } from './posts-types.js';
 import { inject, injectable } from 'inversify';
 import { Model } from 'mongoose';
 import { BlogsRepo } from '../blogs/blogs-repo.js';
@@ -11,7 +11,7 @@ export class PostsRepo {
     @inject(BlogsRepo) private blogsRepo: BlogsRepo,
   ) {}
 
-  async findPost(id: string): Promise<PostType | null> {
+  async findPost(id: string): Promise<PostDtoType | null> {
     if (!ObjectId.isValid(id)) {
       return null;
     }
@@ -29,7 +29,7 @@ export class PostsRepo {
     content: string,
     blogId: string,
     createdAt: string,
-  ): Promise<PostType | null> {
+  ): Promise<PostDtoType | null> {
     const _id = new ObjectId();
 
     const blog = await this.blogsRepo.findBlog(blogId);

@@ -1,6 +1,7 @@
 import { WithId } from 'mongodb';
+import { ExtendedLikesInfoViewType } from '../likes/types/likes-types.js';
 
-export type PostType = {
+export type PostDtoType = {
   id: string;
   title: string;
   shortDescription: string;
@@ -8,6 +9,17 @@ export type PostType = {
   blogId: string;
   blogName: string;
   createdAt: string;
+};
+
+export type PostViewType = {
+  id: string;
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
+  blogName: string;
+  createdAt: string;
+  likesInfo: ExtendedLikesInfoViewType;
 };
 
 export type PostDbType = WithId<{
@@ -34,5 +46,5 @@ export type PostsPaginatedType = {
   page: number;
   pageSize: number;
   totalCount: number;
-  items: PostType[];
+  items: PostViewType[];
 };
