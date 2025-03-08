@@ -143,7 +143,6 @@ describe('POST LIKE STATUS', () => {
       .expect(HTTP_STATUS.NO_CONTENT_204);
 
     const post = await postsQueryRepo.findPost(postId, userId);
-    console.log(JSON.stringify(post));
 
     expect(post?.likesInfo.likesCount).toBe(4);
     expect(post?.likesInfo.dislikesCount).toBe(0);
