@@ -29,13 +29,15 @@ export class BlogsController {
   async getPostsByBlogId(req: Request, res: Response) {
     const pagingParams = getPagingParams(req);
     const blogId = req.params.blogId;
+    const userId = res.locals.userId;
+
     const blog = await this.blogsRepo.findBlog(blogId);
     if (!blog) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Blog not found' });
       return;
     }
 
-    const posts = await this.postsQueryRepo.getPosts(pagingParams, blogId);
+    const posts = await this.postsQueryRepo.getPosts(userId, pagingParams, blogId);
     res.status(HTTP_STATUS.OK_200).json(posts);
   }
 

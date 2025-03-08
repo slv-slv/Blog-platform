@@ -18,6 +18,7 @@ export const SETTINGS = {
     USERS: 'users',
     COMMENTS: 'comments',
     COMMENT_LIKES: 'commentLikes',
+    POST_LIKES: 'postLikes',
     SESSIONS: 'sessions',
     RATE_LIMITER: 'rateLimiter',
   },

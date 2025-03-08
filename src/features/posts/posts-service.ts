@@ -1,19 +1,23 @@
 import { inject, injectable } from 'inversify';
-import { PostType } from './posts-types.js';
+import { PostViewType } from './posts-types.js';
 import { PostsRepo } from './posts-repo.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { Result } from '../../common/types/result-object.js';
+import { PostLikesService } from '../likes/posts/post-likes-service.js';
 
 @injectable()
 export class PostsService {
-  constructor(@inject(PostsRepo) private postsRepo: PostsRepo) {}
+  constructor(
+    @inject(PostsRepo) private postsRepo: PostsRepo,
+    @inject(PostLikesService) private postLikesService: PostLikesService,
+  ) {}
 
   async createPost(
     title: string,
     shortDescription: string,
     content: string,
     blogId: string,
-  ): Promise<Result<PostType | null>> {
+  ): Promise<Result<PostViewType | null>> {
     const createdAt = new Date().toISOString();
     const newPost = await this.postsRepo.createPost(title, shortDescription, content, blogId, createdAt);
     if (!newPost) {
@@ -25,9 +29,15 @@ export class PostsService {
       };
     }
 
+    const postId = newPost.id;
+
+    await this.postLikesService.createLikesInfo(postId);
+
+    const likesInfo = this.postLikesService.getDefaultLikesInfo();
+
     return {
       status: RESULT_STATUS.CREATED,
-      data: newPost,
+      data: { ...newPost, likesInfo },
     };
   }
 
@@ -63,6 +73,8 @@ export class PostsService {
         data: null,
       };
     }
+
+    await this.postLikesService.deleteLikesInfo(id);
 
     return {
       status: RESULT_STATUS.NO_CONTENT,

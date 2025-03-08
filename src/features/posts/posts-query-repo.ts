@@ -1,14 +1,33 @@
-import { PostDbType, PostsPaginatedType, PostType } from './posts-types.js';
+import { PostDbType, PostsPaginatedType, PostViewType } from './posts-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { inject, injectable } from 'inversify';
-import { Collection, ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
+import { PostLikesQueryRepo } from '../likes/posts/post-likes-query-repo.js';
+import { ObjectId } from 'mongodb';
 
 @injectable()
 export class PostsQueryRepo {
-  constructor(@inject('PostModel') private model: Model<PostDbType>) {}
+  constructor(
+    @inject('PostModel') private model: Model<PostDbType>,
+    @inject(PostLikesQueryRepo) private postLikesQueryRepo: PostLikesQueryRepo,
+  ) {}
 
-  async getPosts(pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedType> {
+  async findPost(id: string, userId: string): Promise<PostViewType | null> {
+    if (!ObjectId.isValid(id)) {
+      return null;
+    }
+    const _id = new ObjectId(id);
+    const post = await this.model.findOne({ _id }, { _id: 0 }).lean();
+    if (!post) {
+      return null;
+    }
+
+    const likesInfo = await this.postLikesQueryRepo.getLikesInfo(id, userId);
+
+    return { id, ...post, likesInfo };
+  }
+
+  async getPosts(userId: string, pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedType> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const filter = blogId ? { blogId } : {};
@@ -23,17 +42,20 @@ export class PostsQueryRepo {
       .limit(pageSize)
       .lean();
 
-    const posts = postsWithObjectId.map((post) => {
-      return {
-        id: post._id.toString(),
-        title: post.title,
-        shortDescription: post.shortDescription,
-        content: post.content,
-        blogId: post.blogId,
-        blogName: post.blogName,
-        createdAt: post.createdAt,
-      };
-    });
+    const posts = await Promise.all(
+      postsWithObjectId.map(async (post) => {
+        return {
+          id: post._id.toString(),
+          title: post.title,
+          shortDescription: post.shortDescription,
+          content: post.content,
+          blogId: post.blogId,
+          blogName: post.blogName,
+          createdAt: post.createdAt,
+          likesInfo: await this.postLikesQueryRepo.getLikesInfo(post._id.toString(), userId),
+        };
+      }),
+    );
 
     return {
       pagesCount,

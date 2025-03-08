@@ -8,6 +8,7 @@ import { PostsQueryRepo } from './posts-query-repo.js';
 import { PostsService } from './posts-service.js';
 import { CommentsQueryRepo } from '../comments/comments-query-repo.js';
 import { CommentsService } from '../comments/comments-service.js';
+import { PostLikesService } from '../likes/posts/post-likes-service.js';
 
 @injectable()
 export class PostsController {
@@ -15,19 +16,25 @@ export class PostsController {
     @inject(PostsRepo) private postsRepo: PostsRepo,
     @inject(PostsQueryRepo) private postsQueryRepo: PostsQueryRepo,
     @inject(PostsService) private postsService: PostsService,
+    @inject(PostLikesService) private postLikesService: PostLikesService,
     @inject(CommentsQueryRepo) private commentsQueryRepo: CommentsQueryRepo,
     @inject(CommentsService) private commentsService: CommentsService,
   ) {}
 
   async getAllPosts(req: Request, res: Response) {
     const pagingParams = getPagingParams(req);
-    const posts = await this.postsQueryRepo.getPosts(pagingParams);
+    const userId = res.locals.userId;
+
+    const posts = await this.postsQueryRepo.getPosts(userId, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(posts);
   }
 
   async findPost(req: Request, res: Response) {
     const id = req.params.id;
-    const post = await this.postsRepo.findPost(id);
+    const userId = res.locals.userId;
+
+    const post = await this.postsQueryRepo.findPost(id, userId);
+
     if (!post) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Post not found' });
       return;
@@ -67,7 +74,8 @@ export class PostsController {
 
   async getCommentsForPost(req: Request, res: Response) {
     const postId = req.params.postId;
-    const userId = res.locals.userId ?? null;
+    const userId = res.locals.userId;
+
     const post = await this.postsRepo.findPost(postId);
     if (!post) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Post not found' });
@@ -90,5 +98,19 @@ export class PostsController {
     }
 
     res.status(HTTP_STATUS.CREATED_201).json(result.data);
+  }
+
+  async setLikeStatus(req: Request, res: Response) {
+    const postId = req.params.postId;
+    const userId = res.locals.userId;
+    const likeStatus = req.body.likeStatus;
+
+    const result = await this.postLikesService.setLikeStatus(postId, userId, likeStatus);
+
+    if (result.status !== RESULT_STATUS.NO_CONTENT) {
+      res.status(httpCodeByResult(result.status)).json(result.extensions);
+    }
+
+    res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 }

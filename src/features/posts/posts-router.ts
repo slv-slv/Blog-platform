@@ -8,12 +8,14 @@ import { checkAccessToken } from '../../security/middleware/check-access-token.j
 import { container } from '../../ioc/container.js';
 import { PostsController } from './posts-controller.js';
 import { getUserId } from '../../security/middleware/get-user-id.js';
+import { likeStatusValidator } from '../likes/validation/like-status-validator.js';
 
 export const postsRouter = Router();
 const postsController = container.get(PostsController);
 
 postsRouter.get(
   '/',
+  getUserId,
   pagingValidator.postsSortBy,
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
@@ -21,7 +23,7 @@ postsRouter.get(
   postsController.getAllPosts.bind(postsController),
 );
 
-postsRouter.get('/:id', postsController.findPost.bind(postsController));
+postsRouter.get('/:id', getUserId, postsController.findPost.bind(postsController));
 
 postsRouter.post(
   '/',
@@ -63,4 +65,12 @@ postsRouter.post(
   commentsValidator.content,
   getValidationResult,
   postsController.createComment.bind(postsController),
+);
+
+postsRouter.put(
+  '/:postId/like-status',
+  checkAccessToken,
+  likeStatusValidator.likeStatus,
+  getValidationResult,
+  postsController.setLikeStatus.bind(postsController),
 );

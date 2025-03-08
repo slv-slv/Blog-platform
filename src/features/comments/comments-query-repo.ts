@@ -12,6 +12,21 @@ export class CommentsQueryRepo {
     @inject(CommentLikesQueryRepo) private commentLikesQueryRepo: CommentLikesQueryRepo,
   ) {}
 
+  async findComment(id: string, userId: string): Promise<CommentViewType | null> {
+    if (!ObjectId.isValid(id)) {
+      return null;
+    }
+    const _id = new ObjectId(id);
+    const comment = await this.model.findOne({ _id }, { _id: 0, postId: 0 }).lean();
+    if (!comment) {
+      return null;
+    }
+
+    const likesInfo = await this.commentLikesQueryRepo.getLikesInfo(id, userId);
+
+    return { id, ...comment, likesInfo };
+  }
+
   async getCommentsForPost(
     postId: string,
     userId: string,
@@ -50,20 +65,5 @@ export class CommentsQueryRepo {
       totalCount,
       items: comments,
     };
-  }
-
-  async findComment(id: string, userId: string): Promise<CommentViewType | null> {
-    if (!ObjectId.isValid(id)) {
-      return null;
-    }
-    const _id = new ObjectId(id);
-    const comment = await this.model.findOne({ _id }, { _id: 0, postId: 0 }).lean();
-    if (!comment) {
-      return null;
-    }
-
-    const likesInfo = await this.commentLikesQueryRepo.getLikesInfo(id, userId);
-
-    return { id, ...comment, likesInfo };
   }
 }

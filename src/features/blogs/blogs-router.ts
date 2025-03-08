@@ -6,6 +6,7 @@ import { getValidationResult } from '../../common/middleware/get-validation-resu
 import { basicAuth } from '../../security/middleware/basic-auth.js';
 import { container } from '../../ioc/container.js';
 import { BlogsController } from './blogs-controller.js';
+import { getUserId } from '../../security/middleware/get-user-id.js';
 
 export const blogsRouter = Router();
 const blogsController = container.get(BlogsController);
@@ -46,6 +47,7 @@ blogsRouter.delete('/:id', basicAuth, blogsController.deleteBlog.bind(blogsContr
 
 blogsRouter.get(
   '/:blogId/posts',
+  getUserId,
   pagingValidator.postsSortBy,
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
