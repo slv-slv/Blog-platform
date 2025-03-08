@@ -33,11 +33,11 @@ export class PostsService {
 
     await this.postLikesService.createLikesInfo(postId);
 
-    const likesInfo = this.postLikesService.getDefaultLikesInfo();
+    const extendedLikesInfo = this.postLikesService.getDefaultLikesInfo();
 
     return {
       status: RESULT_STATUS.CREATED,
-      data: { ...newPost, likesInfo },
+      data: { ...newPost, extendedLikesInfo },
     };
   }
 

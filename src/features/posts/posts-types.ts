@@ -19,7 +19,7 @@ export type PostViewType = {
   blogId: string;
   blogName: string;
   createdAt: string;
-  likesInfo: ExtendedLikesInfoViewType;
+  extendedLikesInfo: ExtendedLikesInfoViewType;
 };
 
 export type PostDbType = WithId<{

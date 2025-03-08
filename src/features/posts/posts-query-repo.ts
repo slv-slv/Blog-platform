@@ -22,9 +22,9 @@ export class PostsQueryRepo {
       return null;
     }
 
-    const likesInfo = await this.postLikesQueryRepo.getLikesInfo(id, userId);
+    const extendedLikesInfo = await this.postLikesQueryRepo.getLikesInfo(id, userId);
 
-    return { id, ...post, likesInfo };
+    return { id, ...post, extendedLikesInfo };
   }
 
   async getPosts(userId: string, pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedType> {
@@ -52,7 +52,7 @@ export class PostsQueryRepo {
           blogId: post.blogId,
           blogName: post.blogName,
           createdAt: post.createdAt,
-          likesInfo: await this.postLikesQueryRepo.getLikesInfo(post._id.toString(), userId),
+          extendedLikesInfo: await this.postLikesQueryRepo.getLikesInfo(post._id.toString(), userId),
         };
       }),
     );

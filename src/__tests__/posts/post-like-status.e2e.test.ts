@@ -82,8 +82,8 @@ describe('POST LIKE STATUS', () => {
 
     const post = await postsQueryRepo.findPost(postId, userId);
 
-    expect(post?.likesInfo.likesCount).toBe(1);
-    expect(post?.likesInfo.myStatus).toBe('Like');
+    expect(post?.extendedLikesInfo.likesCount).toBe(1);
+    expect(post?.extendedLikesInfo.myStatus).toBe('Like');
   });
 
   it('should not increase the number of likes if the like has already been set', async () => {
@@ -95,8 +95,8 @@ describe('POST LIKE STATUS', () => {
 
     const post = await postsQueryRepo.findPost(postId, userId);
 
-    expect(post?.likesInfo.likesCount).toBe(1);
-    expect(post?.likesInfo.myStatus).toBe('Like');
+    expect(post?.extendedLikesInfo.likesCount).toBe(1);
+    expect(post?.extendedLikesInfo.myStatus).toBe('Like');
   });
 
   it('should increase the number of likes when another user likes', async () => {
@@ -113,9 +113,9 @@ describe('POST LIKE STATUS', () => {
 
     const post = await postsQueryRepo.findPost(postId, userId);
 
-    expect(post?.likesInfo.likesCount).toBe(2);
-    expect(post?.likesInfo.dislikesCount).toBe(0);
-    expect(post?.likesInfo.myStatus).toBe('Like');
+    expect(post?.extendedLikesInfo.likesCount).toBe(2);
+    expect(post?.extendedLikesInfo.dislikesCount).toBe(0);
+    expect(post?.extendedLikesInfo.myStatus).toBe('Like');
   });
 
   it('should display the last 3 likes if 4 likes are set.', async () => {
@@ -144,9 +144,9 @@ describe('POST LIKE STATUS', () => {
 
     const post = await postsQueryRepo.findPost(postId, userId);
 
-    expect(post?.likesInfo.likesCount).toBe(4);
-    expect(post?.likesInfo.dislikesCount).toBe(0);
-    expect(post?.likesInfo.newestLikes.length).toBe(3);
+    expect(post?.extendedLikesInfo.likesCount).toBe(4);
+    expect(post?.extendedLikesInfo.dislikesCount).toBe(0);
+    expect(post?.extendedLikesInfo.newestLikes.length).toBe(3);
   });
 
   it('should change status from like to dislike', async () => {
@@ -158,14 +158,14 @@ describe('POST LIKE STATUS', () => {
 
     const post = await postsQueryRepo.findPost(postId, userId);
 
-    expect(post?.likesInfo.likesCount).toBe(3);
-    expect(post?.likesInfo.dislikesCount).toBe(1);
-    expect(post?.likesInfo.myStatus).toBe('Dislike');
+    expect(post?.extendedLikesInfo.likesCount).toBe(3);
+    expect(post?.extendedLikesInfo.dislikesCount).toBe(1);
+    expect(post?.extendedLikesInfo.myStatus).toBe('Dislike');
   });
 
   it('should show status "None" to unauthorized user', async () => {
     const response = await request(app).get(`/posts/${postId}`);
     const post = response.body;
-    expect(post?.likesInfo.myStatus).toBe('None');
+    expect(post?.extendedLikesInfo.myStatus).toBe('None');
   });
 });
