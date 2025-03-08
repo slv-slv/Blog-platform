@@ -5,21 +5,19 @@ import { inject, injectable } from 'inversify';
 import { CommentsQueryRepo } from './comments-query-repo.js';
 import { CommentsService } from './comments-service.js';
 import { CommentLikesService } from '../likes/comments/comment-likes-service.js';
-import { CommentsRepo } from './comments-repo.js';
 
 @injectable()
 export class CommentsController {
   constructor(
     @inject(CommentsQueryRepo) private commentsQueryRepo: CommentsQueryRepo,
-    @inject(CommentsRepo) private commentsRepo: CommentsRepo,
     @inject(CommentsService) private commentsService: CommentsService,
-    @inject(CommentLikesService) private likesService: CommentLikesService,
+    @inject(CommentLikesService) private commentLikesService: CommentLikesService,
   ) {}
 
   async findComment(req: Request, res: Response) {
     const id = req.params.id;
     const userId = res.locals.userId;
-    console.log(userId);
+
     const comment = await this.commentsQueryRepo.findComment(id, userId);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
@@ -60,7 +58,7 @@ export class CommentsController {
     const userId = res.locals.userId;
     const likeStatus = req.body.likeStatus;
 
-    const result = await this.likesService.setLikeStatus(commentId, userId, likeStatus);
+    const result = await this.commentLikesService.setLikeStatus(commentId, userId, likeStatus);
 
     if (result.status !== RESULT_STATUS.NO_CONTENT) {
       res.status(httpCodeByResult(result.status)).json(result.extensions);

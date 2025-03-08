@@ -14,7 +14,7 @@ export class CommentsService {
     @inject(PostsRepo) private postsRepo: PostsRepo,
     @inject(CommentsRepo) private commentsRepo: CommentsRepo,
     @inject(UsersRepo) private usersRepo: UsersRepo,
-    @inject(CommentLikesService) private likesService: CommentLikesService,
+    @inject(CommentLikesService) private commentLikesService: CommentLikesService,
     @inject(CommentLikesQueryRepo) private commentLikesQueryRepo: CommentLikesQueryRepo,
   ) {}
 
@@ -50,9 +50,9 @@ export class CommentsService {
     const newComment = await this.commentsRepo.createComment(postId, content, createdAt, commentatorInfo);
     const commentId = newComment.id;
 
-    await this.likesService.createLikesInfo(commentId);
+    await this.commentLikesService.createLikesInfo(commentId);
 
-    const likesInfo = this.likesService.getDefaultLikesInfo();
+    const likesInfo = this.commentLikesService.getDefaultLikesInfo();
 
     return {
       status: RESULT_STATUS.CREATED,
@@ -110,7 +110,7 @@ export class CommentsService {
     }
 
     await this.commentsRepo.deleteComment(commentId);
-    await this.likesService.deleteLikesInfo(commentId);
+    await this.commentLikesService.deleteLikesInfo(commentId);
 
     return {
       status: RESULT_STATUS.NO_CONTENT,
