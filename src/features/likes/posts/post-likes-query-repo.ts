@@ -4,6 +4,7 @@ import { PostLikesDbType } from './post-likes-types.js';
 import { ExtendedLikesInfoViewType } from '../types/likes-types.js';
 import { PostLikesRepo } from './post-likes-repo.js';
 import { UsersQueryRepo } from '../../users/users-query-repo.js';
+import { SETTINGS } from '../../../settings.js';
 
 @injectable()
 export class PostLikesQueryRepo {
@@ -18,13 +19,13 @@ export class PostLikesQueryRepo {
     const dislikesCount = await this.postLikesRepo.getDislikesCount(postId);
     const myStatus = await this.postLikesRepo.getLikeStatus(postId, userId);
 
-    const likesNumber = 3;
+    const newestLikesNumber = SETTINGS.NEWEST_LIKES_NUMBER;
 
     const result = await this.model.aggregate([
       { $match: { postId } },
       { $unwind: '$likes' },
       { $sort: { 'likes.createdAt': -1 } },
-      { $limit: likesNumber },
+      { $limit: newestLikesNumber },
       {
         $group: {
           _id: '$_id',
