@@ -1,9 +1,10 @@
 import { inject, injectable } from 'inversify';
 import { CommentLikesRepo } from './comment-likes-repo.js';
-import { CommentLikesType, LikesInfoViewType, LikeStatus } from './comment-likes-types.js';
+import { CommentLikesType } from './comment-likes-types.js';
 import { CommentsRepo } from '../../comments/comments-repo.js';
 import { Result } from '../../../common/types/result-object.js';
 import { RESULT_STATUS } from '../../../common/types/result-status-codes.js';
+import { LikesInfoViewType, LikeStatus } from '../types/likes-types.js';
 
 @injectable()
 export class CommentLikesService {
