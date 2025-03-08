@@ -1,5 +1,5 @@
 import { WithId } from 'mongodb';
-import { LikesInfoViewType } from '../likes/comments/comment-likes-types.js';
+import { LikesInfoViewType } from '../likes/types/likes-types.js';
 
 export type CommentDtoType = {
   id: string;

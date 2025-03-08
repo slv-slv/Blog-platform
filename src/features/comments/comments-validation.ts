@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { LikeStatus } from '../likes/comments/comment-likes-types.js';
+import { LikeStatus } from '../likes/types/likes-types.js';
 
 export const commentsValidator = {
   content: body('content')
