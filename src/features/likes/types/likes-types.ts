@@ -4,7 +4,7 @@ export type LikesInfoViewType = {
   myStatus: LikeStatus;
 };
 
-export type extendedLikesInfoViewType = {
+export type ExtendedLikesInfoViewType = {
   likesCount: number;
   dislikesCount: number;
   myStatus: LikeStatus;
