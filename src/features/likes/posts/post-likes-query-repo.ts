@@ -19,7 +19,8 @@ export class PostLikesQueryRepo {
     const myStatus = await this.postLikesRepo.getLikeStatus(postId, userId);
 
     const likesNumber = 3;
-    const post = await this.model.aggregate([
+
+    const result = await this.model.aggregate([
       { $match: { postId } },
       { $unwind: '$likes' },
       { $sort: { 'likes.createdAt': -1 } },
@@ -38,18 +39,21 @@ export class PostLikesQueryRepo {
       },
     ]);
 
-    const newestLikes =
-      (await Promise.all(
-        post[0]?.likes.map(async (like: { userId: string; createdAt: Date }) => {
-          const addedAt = like.createdAt.toISOString();
-          const userId = like.userId;
+    const post = result[0];
 
-          const user = await this.usersQueryRepo.getCurrentUser(userId);
-          const login = user?.login;
+    const newestLikes = post
+      ? await Promise.all(
+          post.likes.map(async (like: { userId: string; createdAt: Date }) => {
+            const addedAt = like.createdAt.toISOString();
+            const userId = like.userId;
 
-          return { addedAt, userId, login };
-        }),
-      )) || [];
+            const user = await this.usersQueryRepo.getCurrentUser(userId);
+            const login = user?.login;
+
+            return { addedAt, userId, login };
+          }),
+        )
+      : [];
 
     return { likesCount, dislikesCount, myStatus, newestLikes };
   }
