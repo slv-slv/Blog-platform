@@ -8,17 +8,20 @@ export const getUserId = async (req: Request, res: Response, next: NextFunction)
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
+    res.locals.userId = null;
     return next();
   }
 
   const [authMethod, token] = authHeader.split(' ');
 
   if (authMethod !== 'Bearer' || !token) {
+    res.locals.userId = null;
     return next();
   }
 
   const payload = authService.verifyJwt(token);
   if (!payload) {
+    res.locals.userId = null;
     return next();
   }
 

@@ -18,7 +18,8 @@ export class CommentsController {
 
   async findComment(req: Request, res: Response) {
     const id = req.params.id;
-    const userId = res.locals.userId ?? null;
+    const userId = res.locals.userId;
+    console.log(userId);
     const comment = await this.commentsQueryRepo.findComment(id, userId);
     if (!comment) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Comment not found' });
