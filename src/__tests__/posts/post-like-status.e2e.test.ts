@@ -147,6 +147,9 @@ describe('POST LIKE STATUS', () => {
     expect(post?.extendedLikesInfo.likesCount).toBe(4);
     expect(post?.extendedLikesInfo.dislikesCount).toBe(0);
     expect(post?.extendedLikesInfo.newestLikes.length).toBe(3);
+
+    const addedAtArray = post?.extendedLikesInfo.newestLikes.map((like) => new Date(like.addedAt).getTime());
+    expect(addedAtArray).toEqual(addedAtArray?.sort((a: number, b: number) => b - a));
   });
 
   it('should change status from like to dislike', async () => {
