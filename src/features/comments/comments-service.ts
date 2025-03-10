@@ -3,7 +3,6 @@ import { Result } from '../../common/types/result-object.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { CommentsRepo } from './comments-repo.js';
 import { CommentLikesService } from '../likes/comments/comment-likes-service.js';
-import { CommentLikesQueryRepo } from '../likes/comments/comment-likes-query-repo.js';
 import { CommentViewType } from './comments-types.js';
 import { PostsRepo } from '../posts/posts-repo.js';
 import { UsersRepo } from '../users/users-repo.js';
@@ -15,7 +14,6 @@ export class CommentsService {
     @inject(CommentsRepo) private commentsRepo: CommentsRepo,
     @inject(UsersRepo) private usersRepo: UsersRepo,
     @inject(CommentLikesService) private commentLikesService: CommentLikesService,
-    @inject(CommentLikesQueryRepo) private commentLikesQueryRepo: CommentLikesQueryRepo,
   ) {}
 
   async createComment(
