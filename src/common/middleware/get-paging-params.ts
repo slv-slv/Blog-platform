@@ -3,7 +3,7 @@ import { PagingParams } from '../types/paging-params.js';
 import { SETTINGS } from '../../settings.js';
 
 export const getPagingParams = (req: Request, res: Response, next: NextFunction) => {
-  const sortBy = req.query.sortBy ? req.query.sortBy : SETTINGS.PAGING_DEFAULT_PARAMS.sortBy;
+  const sortBy = req.query.sortBy ?? SETTINGS.PAGING_DEFAULT_PARAMS.sortBy;
   const sortDirection = req.query.sortDirection
     ? req.query.sortDirection
     : SETTINGS.PAGING_DEFAULT_PARAMS.sortDirection;
