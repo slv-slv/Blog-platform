@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { inject, injectable } from 'inversify';
 import { BlogsQueryRepo } from './blogs-query-repo.js';
@@ -21,13 +20,14 @@ export class BlogsController {
 
   async getAllBlogs(req: Request, res: Response) {
     const searchNameTerm = (req.query.searchNameTerm as string) ?? null;
-    const pagingParams = getPagingParams(req);
+    const pagingParams = res.locals.pagingParams;
+
     const blogs = await this.blogsQueryRepo.getAllBlogs(searchNameTerm, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(blogs);
   }
 
   async getPostsByBlogId(req: Request, res: Response) {
-    const pagingParams = getPagingParams(req);
+    const pagingParams = res.locals.pagingParams;
     const blogId = req.params.blogId;
     const userId = res.locals.userId;
 

@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { httpCodeByResult, RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { inject, injectable } from 'inversify';
@@ -22,7 +21,7 @@ export class PostsController {
   ) {}
 
   async getAllPosts(req: Request, res: Response) {
-    const pagingParams = getPagingParams(req);
+    const pagingParams = res.locals.pagingParams;
     const userId = res.locals.userId;
 
     const posts = await this.postsQueryRepo.getPosts(userId, pagingParams);
@@ -81,7 +80,7 @@ export class PostsController {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Post not found' });
       return;
     }
-    const pagingParams = getPagingParams(req);
+    const pagingParams = res.locals.pagingParams;
     const comments = await this.commentsQueryRepo.getCommentsForPost(postId, userId, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(comments);
   }

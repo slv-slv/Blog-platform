@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getPagingParams } from '../../common/utils/get-paging-params.js';
 import { HTTP_STATUS } from '../../common/types/http-status-codes.js';
 import { inject, injectable } from 'inversify';
 import { UsersQueryRepo } from './users-query-repo.js';
@@ -16,7 +15,8 @@ export class UsersController {
   async getAllUsers(req: Request, res: Response) {
     const searchLoginTerm = (req.query.searchLoginTerm as string) ?? null;
     const searchEmailTerm = (req.query.searchEmailTerm as string) ?? null;
-    const pagingParams = getPagingParams(req);
+    const pagingParams = res.locals.pagingParams;
+
     const users = await this.usersQueryRepo.getAllUsers(searchLoginTerm, searchEmailTerm, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(users);
   }

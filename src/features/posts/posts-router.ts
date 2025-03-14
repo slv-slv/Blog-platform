@@ -9,6 +9,7 @@ import { container } from '../../ioc/container.js';
 import { PostsController } from './posts-controller.js';
 import { getUserId } from '../../security/middleware/get-user-id.js';
 import { likeStatusValidator } from '../likes/validation/like-status-validator.js';
+import { getPagingParams } from '../../common/middleware/get-paging-params.js';
 
 export const postsRouter = Router();
 const postsController = container.get(PostsController);
@@ -20,6 +21,7 @@ postsRouter.get(
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
+  getPagingParams,
   postsController.getAllPosts.bind(postsController),
 );
 
@@ -56,6 +58,7 @@ postsRouter.get(
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
+  getPagingParams,
   postsController.getCommentsForPost.bind(postsController),
 );
 

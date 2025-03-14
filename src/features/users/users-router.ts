@@ -5,6 +5,7 @@ import { getValidationResult } from '../../common/middleware/get-validation-resu
 import { basicAuth } from '../../security/middleware/basic-auth.js';
 import { container } from '../../ioc/container.js';
 import { UsersController } from './users-controller.js';
+import { getPagingParams } from '../../common/middleware/get-paging-params.js';
 
 export const usersRouter = Router();
 const usersController = container.get(UsersController);
@@ -18,6 +19,7 @@ usersRouter.get(
   pagingValidator.pageSize,
   usersValidator.searchLoginTerm,
   usersValidator.searchEmailTerm,
+  getPagingParams,
   usersController.getAllUsers.bind(usersController),
 );
 

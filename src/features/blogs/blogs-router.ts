@@ -7,6 +7,7 @@ import { basicAuth } from '../../security/middleware/basic-auth.js';
 import { container } from '../../ioc/container.js';
 import { BlogsController } from './blogs-controller.js';
 import { getUserId } from '../../security/middleware/get-user-id.js';
+import { getPagingParams } from '../../common/middleware/get-paging-params.js';
 
 export const blogsRouter = Router();
 const blogsController = container.get(BlogsController);
@@ -18,6 +19,7 @@ blogsRouter.get(
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
+  getPagingParams,
   blogsController.getAllBlogs.bind(blogsController),
 );
 
@@ -52,6 +54,7 @@ blogsRouter.get(
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
+  getPagingParams,
   blogsController.getPostsByBlogId.bind(blogsController),
 );
 
