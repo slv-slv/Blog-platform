@@ -6,7 +6,6 @@ import { postsRouter } from './features/posts/posts-router.js';
 import { usersRouter } from './features/users/users-router.js';
 import { commentsRouter } from './features/comments/comments-router.js';
 import { authRouter } from './security/auth/auth-router.js';
-import { SETTINGS } from './settings.js';
 import { securityRouter } from './security/sessions/sessions-router.js';
 import mongoose from 'mongoose';
 

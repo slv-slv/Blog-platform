@@ -32,8 +32,8 @@ export class BlogsService {
   }
 
   async deleteBlog(id: string): Promise<Result<null>> {
-    const updateResult = await this.blogsRepo.deleteBlog(id);
-    if (!updateResult) {
+    const deleteResult = await this.blogsRepo.deleteBlog(id);
+    if (!deleteResult) {
       return {
         status: RESULT_STATUS.NOT_FOUND,
         errorMessage: 'Not found',
