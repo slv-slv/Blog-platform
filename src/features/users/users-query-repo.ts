@@ -51,7 +51,6 @@ export class UsersQueryRepo {
         login: user.login,
         email: user.email,
         createdAt: user.createdAt,
-        confirmation: user.confirmation,
       };
     });
 
