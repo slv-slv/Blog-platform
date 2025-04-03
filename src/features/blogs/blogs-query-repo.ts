@@ -1,7 +1,6 @@
-import { BlogDbType, BlogsPaginatedType, BlogType } from './blogs-types.js';
+import { BlogDbType, BlogsPaginatedType } from './blogs-types.js';
 import { PagingParams } from '../../common/types/paging-params.js';
 import { inject, injectable } from 'inversify';
-import { Collection, ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 
 @injectable()

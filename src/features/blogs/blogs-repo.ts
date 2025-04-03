@@ -1,6 +1,6 @@
 import { BlogDbType, BlogType } from './blogs-types.js';
 import { inject, injectable } from 'inversify';
-import { Collection, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 
 @injectable()
