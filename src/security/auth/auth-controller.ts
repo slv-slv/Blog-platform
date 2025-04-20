@@ -61,7 +61,8 @@ export class AuthController {
     // console.log('Сервер отправил токен: ' + JSON.stringify(authService.verifyJwt(refreshToken)));
 
     const cookieExpiration = new Date();
-    cookieExpiration.setFullYear(new Date().getFullYear() + 1);
+    const years = cookieExpiration.getFullYear();
+    cookieExpiration.setFullYear(years + 1);
 
     res
       .status(HTTP_STATUS.OK_200)
