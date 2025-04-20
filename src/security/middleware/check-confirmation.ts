@@ -8,7 +8,7 @@ const usersService = container.get(UsersService);
 export const checkConfirmation = async (req: Request, res: Response, next: NextFunction) => {
   const { loginOrEmail } = req.body;
   if (!(await usersService.isConfirmed(loginOrEmail))) {
-    res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Email not confirmed' });
+    res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'Email has not been confirmed' });
     return;
   }
 
