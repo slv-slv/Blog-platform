@@ -32,7 +32,7 @@ export class AuthController {
   async registrationEmailResending(req: Request, res: Response) {
     const { email } = req.body;
 
-    const result = await this.usersService.sendConfirmationCode(email);
+    const result = await this.usersService.resendConfirmationCode(email);
 
     if (result.status !== RESULT_STATUS.NO_CONTENT) {
       res.status(httpCodeByResult(result.status)).json({ errorsMessages: result.extensions });

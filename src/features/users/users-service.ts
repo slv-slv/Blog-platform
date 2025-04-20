@@ -87,7 +87,7 @@ export class UsersService {
     return await this.createUser(login, email, password, confirmation, passwordRecovery);
   }
 
-  async sendConfirmationCode(email: string): Promise<Result<null>> {
+  async resendConfirmationCode(email: string): Promise<Result<null>> {
     if (!(await this.usersRepo.findUser(email))) {
       return {
         status: RESULT_STATUS.BAD_REQUEST,
