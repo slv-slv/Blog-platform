@@ -17,7 +17,7 @@ export class CommentsQueryRepo {
       return null;
     }
     const _id = new ObjectId(id);
-    const comment = await this.model.findOne({ _id }, { _id: 0, postId: 0 }).lean();
+    const comment = await this.model.findOne({ _id }, { _id: 0, postId: 0, 'commentatorInfo._id': 0 }).lean();
     if (!comment) {
       return null;
     }
@@ -38,7 +38,7 @@ export class CommentsQueryRepo {
     const pagesCount = Math.ceil(totalCount / pageSize);
 
     const commentsWithObjectId = await this.model
-      .find({ postId }, { postId: 0 })
+      .find({ postId }, { postId: 0, 'commentatorInfo._id': 0 })
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
