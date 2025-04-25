@@ -43,7 +43,7 @@ describe('LOGOUT', () => {
       .set('Cookie', `refreshToken=${token}`)
       .expect(HTTP_STATUS.NO_CONTENT_204);
 
-    const session = await sessionsQueryRepo.checkSession(userId, deviceId, iat);
+    const session = await sessionsQueryRepo.isSessionActive(userId, deviceId, iat);
     expect(session).toBeNull;
   });
 });

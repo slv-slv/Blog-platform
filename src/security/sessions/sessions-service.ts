@@ -23,7 +23,7 @@ export class SessionsService {
   }
 
   async checkSession(userId: string, deviceId: string, iat: number): Promise<Result<null>> {
-    const isSessionActive = await this.sessionsQueryRepo.checkSession(userId, deviceId, iat);
+    const isSessionActive = await this.sessionsQueryRepo.isSessionActive(userId, deviceId, iat);
 
     if (!isSessionActive) {
       return {

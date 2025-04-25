@@ -7,7 +7,7 @@ import { Model } from 'mongoose';
 export class SessionsQueryRepo {
   constructor(@inject('SessionModel') private model: Model<SessionDbType>) {}
 
-  async checkSession(userId: string, deviceId: string, iat: number): Promise<boolean> {
+  async isSessionActive(userId: string, deviceId: string, iat: number): Promise<boolean> {
     const session = await this.model
       .findOne({ userId, devices: { $elemMatch: { id: deviceId, iat } } })
       .lean();

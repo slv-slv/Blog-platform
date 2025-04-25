@@ -119,7 +119,7 @@ describe('LOGIN', () => {
     const payload = jwt.verify(refreshToken, SETTINGS.JWT_PRIVATE_KEY!);
     const { userId, deviceId, iat } = payload as JwtRefreshPayload;
 
-    const session = await sessionsQueryRepo.checkSession(userId, deviceId, iat);
+    const session = await sessionsQueryRepo.isSessionActive(userId, deviceId, iat);
     expect(session).not.toBeNull;
   });
 });
