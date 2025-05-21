@@ -52,15 +52,15 @@ export class CommentLikesService {
     };
   }
 
-  async createLikesInfo(commentId: string): Promise<void> {
-    const likesInfo: CommentLikesType = {
-      commentId,
-      likes: [],
-      dislikes: [],
-    };
+  // async createLikesInfo(commentId: string): Promise<void> {
+  //   const likesInfo: CommentLikesType = {
+  //     commentId,
+  //     likes: [],
+  //     dislikes: [],
+  //   };
 
-    await this.commentLikesRepo.createLikesInfo(likesInfo);
-  }
+  //   await this.commentLikesRepo.createLikesInfo(likesInfo);
+  // }
 
   async deleteLikesInfo(commentId: string): Promise<void> {
     await this.commentLikesRepo.deleteLikesInfo(commentId);

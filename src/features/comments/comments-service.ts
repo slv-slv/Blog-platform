@@ -48,7 +48,7 @@ export class CommentsService {
     const newComment = await this.commentsRepo.createComment(postId, content, createdAt, commentatorInfo);
     const commentId = newComment.id;
 
-    await this.commentLikesService.createLikesInfo(commentId);
+    // await this.commentLikesService.createLikesInfo(commentId);
 
     const likesInfo = this.commentLikesService.getDefaultLikesInfo();
 
