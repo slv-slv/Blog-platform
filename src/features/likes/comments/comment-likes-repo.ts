@@ -29,7 +29,7 @@ export class CommentLikesRepo {
     return result[0].dislikesCount;
   }
 
-  async getLikeStatus(commentId: string, userId: string): Promise<LikeStatus> {
+  async getLikeStatus(commentId: string, userId: string | null): Promise<LikeStatus> {
     if (userId === null) return LikeStatus.None;
 
     const comment = await this.model

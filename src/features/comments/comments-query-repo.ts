@@ -12,7 +12,7 @@ export class CommentsQueryRepo {
     @inject(CommentLikesQueryRepo) private commentLikesQueryRepo: CommentLikesQueryRepo,
   ) {}
 
-  async findComment(id: string, userId: string): Promise<CommentViewType | null> {
+  async findComment(id: string, userId: string | null): Promise<CommentViewType | null> {
     if (!ObjectId.isValid(id)) {
       return null;
     }
@@ -29,7 +29,7 @@ export class CommentsQueryRepo {
 
   async getCommentsForPost(
     postId: string,
-    userId: string,
+    userId: string | null,
     pagingParams: PagingParams,
   ): Promise<CommentsPaginatedType> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;

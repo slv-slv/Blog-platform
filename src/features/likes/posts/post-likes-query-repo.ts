@@ -14,7 +14,7 @@ export class PostLikesQueryRepo {
     @inject(UsersQueryRepo) private usersQueryRepo: UsersQueryRepo,
   ) {}
 
-  async getLikesInfo(postId: string, userId: string): Promise<ExtendedLikesInfoViewType> {
+  async getLikesInfo(postId: string, userId: string | null): Promise<ExtendedLikesInfoViewType> {
     const likesCount = await this.postLikesRepo.getLikesCount(postId);
     const dislikesCount = await this.postLikesRepo.getDislikesCount(postId);
     const myStatus = await this.postLikesRepo.getLikeStatus(postId, userId);

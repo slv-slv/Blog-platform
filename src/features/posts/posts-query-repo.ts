@@ -12,7 +12,7 @@ export class PostsQueryRepo {
     @inject(PostLikesQueryRepo) private postLikesQueryRepo: PostLikesQueryRepo,
   ) {}
 
-  async findPost(id: string, userId: string): Promise<PostViewType | null> {
+  async findPost(id: string, userId: string | null): Promise<PostViewType | null> {
     if (!ObjectId.isValid(id)) {
       return null;
     }
@@ -27,7 +27,11 @@ export class PostsQueryRepo {
     return { id, ...post, extendedLikesInfo };
   }
 
-  async getPosts(userId: string, pagingParams: PagingParams, blogId?: string): Promise<PostsPaginatedType> {
+  async getPosts(
+    userId: string | null,
+    pagingParams: PagingParams,
+    blogId?: string,
+  ): Promise<PostsPaginatedType> {
     const { sortBy, sortDirection, pageNumber, pageSize } = pagingParams;
 
     const filter = blogId ? { blogId } : {};

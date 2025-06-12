@@ -23,7 +23,7 @@ export class PostLikesRepo {
     return result[0]?.dislikesCount ?? 0;
   }
 
-  async getLikeStatus(postId: string, userId: string): Promise<LikeStatus> {
+  async getLikeStatus(postId: string, userId: string | null): Promise<LikeStatus> {
     if (userId === null) return LikeStatus.None;
 
     const post = await this.model
