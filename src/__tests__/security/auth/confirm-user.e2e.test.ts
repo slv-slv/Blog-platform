@@ -2,7 +2,6 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import { dbName, mongoUri } from '../../../infrastructure/db/db.js';
 import { app } from '../../../app.js';
-import { CONFIRMATION_STATUS } from '../../../features/users/users-types.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
 import { container } from '../../../ioc/container.js';
 import { UsersRepo } from '../../../features/users/users-repo.js';
@@ -32,7 +31,7 @@ describe('CONFIRM USER', () => {
   const hash = 'somehash';
   const createdAt = new Date().toISOString();
   const confirmation = {
-    status: CONFIRMATION_STATUS.NOT_CONFIRMED,
+    isConfirmed: false,
     code: '0d56a34c-9eaf-473f-842c-309ab6c2c9df',
     expiration: pastDate.toISOString(),
   };
@@ -67,7 +66,7 @@ describe('CONFIRM USER', () => {
 
     const confirmedUser = await UserModel.findOne({ email }).lean();
 
-    expect(confirmedUser!.confirmation.status).toBe(CONFIRMATION_STATUS.CONFIRMED);
+    expect(confirmedUser!.confirmation.isConfirmed).toBeTruthy;
     expect(confirmedUser!.confirmation.expiration).toBeNull;
   });
 

@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import setCookie from 'set-cookie-parser';
 import { dbName, mongoUri } from '../../../infrastructure/db/db.js';
 import { SETTINGS } from '../../../settings.js';
-import { CONFIRMATION_STATUS } from '../../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
@@ -76,7 +75,7 @@ describe('LOGIN', () => {
       { _id: new ObjectId(userId) },
       {
         $set: {
-          'confirmation.status': CONFIRMATION_STATUS.NOT_CONFIRMED,
+          'confirmation.isConfirmed': false,
           'confirmation.expiration': new Date().toISOString(),
         },
       },
@@ -91,7 +90,7 @@ describe('LOGIN', () => {
   it('should return valid access token for confirmed user', async () => {
     await UserModel.updateOne(
       { _id: new ObjectId(userId) },
-      { $set: { 'confirmation.status': CONFIRMATION_STATUS.CONFIRMED, 'confirmation.expiration': null } },
+      { $set: { 'confirmation.isConfirmed': true, 'confirmation.expiration': null } },
     );
 
     const response = await request(app)

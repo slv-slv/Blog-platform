@@ -1,7 +1,7 @@
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import { dbName, mongoUri } from '../../../infrastructure/db/db.js';
-import { CONFIRMATION_STATUS, UserDbType } from '../../../features/users/users-types.js';
+import { UserDbType } from '../../../features/users/users-types.js';
 import { ObjectId } from 'mongodb';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
@@ -25,7 +25,7 @@ describe('RESEND CONFIRMATION', () => {
     hash: 'somehash',
     createdAt: '2025-01-28T23:06:37.379Z',
     confirmation: {
-      status: CONFIRMATION_STATUS.CONFIRMED,
+      isConfirmed: true,
       code: 'somecode',
       expiration: null,
     },
@@ -49,10 +49,7 @@ describe('RESEND CONFIRMATION', () => {
   });
 
   it('should resend code for not confirmed user', async () => {
-    await UserModel.updateOne(
-      { email: newUser.email },
-      { $set: { 'confirmation.status': CONFIRMATION_STATUS.NOT_CONFIRMED } },
-    );
+    await UserModel.updateOne({ email: newUser.email }, { $set: { 'confirmation.isConfirmed': false } });
 
     await request(app)
       .post('/auth/registration-email-resending')

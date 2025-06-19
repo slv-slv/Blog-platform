@@ -3,7 +3,6 @@ import request from 'supertest';
 import { dbName, mongoUri } from '../../../infrastructure/db/db.js';
 import { app } from '../../../app.js';
 import { HTTP_STATUS } from '../../../common/types/http-status-codes.js';
-import { CONFIRMATION_STATUS } from '../../../features/users/users-types.js';
 import { UsersRepo } from '../../../features/users/users-repo.js';
 import { container } from '../../../ioc/container.js';
 import mongoose from 'mongoose';
@@ -34,7 +33,7 @@ describe('PASSWORD RECOVERY CONFIRMATION', () => {
   const hash = 'somehash';
   const createdAt = new Date().toISOString();
   const confirmation = {
-    status: CONFIRMATION_STATUS.NOT_CONFIRMED,
+    isConfirmed: false,
     code: null,
     expiration: null,
   };

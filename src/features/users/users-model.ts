@@ -1,9 +1,9 @@
 import mongoose, { Schema } from 'mongoose';
-import { CONFIRMATION_STATUS, ConfirmationInfo, PasswordRecoveryInfo, UserDbType } from './users-types.js';
+import { ConfirmationInfo, PasswordRecoveryInfo, UserDbType } from './users-types.js';
 import { SETTINGS } from '../../settings.js';
 
 const confirmationInfoSchema = new Schema<ConfirmationInfo>({
-  status: { type: String, enum: Object.values(CONFIRMATION_STATUS), required: true },
+  isConfirmed: { type: Boolean, required: true },
   code: { type: String, default: null },
   expiration: { type: String, default: null },
 });

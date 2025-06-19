@@ -1,11 +1,5 @@
 import { Collection, ObjectId } from 'mongodb';
-import {
-  ConfirmationInfo,
-  CONFIRMATION_STATUS,
-  UserDbType,
-  UserType,
-  PasswordRecoveryInfo,
-} from './users-types.js';
+import { ConfirmationInfo, UserDbType, UserType, PasswordRecoveryInfo } from './users-types.js';
 import { inject, injectable } from 'inversify';
 import { Model } from 'mongoose';
 
@@ -66,7 +60,7 @@ export class UsersRepo {
   async confirmUser(code: string): Promise<void> {
     await this.model.updateOne(
       { 'confirmation.code': code },
-      { $set: { 'confirmation.status': CONFIRMATION_STATUS.CONFIRMED, 'confirmation.expiration': null } },
+      { $set: { 'confirmation.isConfirmed': true, 'confirmation.expiration': null } },
     );
     // return updateResult.modifiedCount > 0; // Будет false если пользователь не найден или уже подтвержден
   }

@@ -38,15 +38,10 @@ export type UsersPaginatedType = {
 };
 
 export type ConfirmationInfo = {
-  status: CONFIRMATION_STATUS;
+  isConfirmed: boolean;
   code: string | null;
   expiration: string | null;
 };
-
-export enum CONFIRMATION_STATUS {
-  CONFIRMED = 'CONFIRMED',
-  NOT_CONFIRMED = 'NOT_CONFIRMED',
-}
 
 export type PasswordRecoveryInfo = {
   code: string | null;

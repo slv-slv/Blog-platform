@@ -1,4 +1,4 @@
-import { CONFIRMATION_STATUS, ConfirmationInfo, PasswordRecoveryInfo, UserType } from './users-types.js';
+import { ConfirmationInfo, PasswordRecoveryInfo, UserType } from './users-types.js';
 import { RESULT_STATUS } from '../../common/types/result-status-codes.js';
 import { Result } from '../../common/types/result-object.js';
 import crypto from 'crypto';
@@ -23,7 +23,7 @@ export class UsersService {
     email: string,
     password: string,
     confirmation: ConfirmationInfo = {
-      status: CONFIRMATION_STATUS.CONFIRMED,
+      isConfirmed: true,
       code: null,
       expiration: null,
     },
@@ -75,7 +75,7 @@ export class UsersService {
     ).toISOString();
 
     const confirmation = {
-      status: CONFIRMATION_STATUS.NOT_CONFIRMED,
+      isConfirmed: false,
       code,
       expiration,
     };
@@ -151,7 +151,7 @@ export class UsersService {
       };
     }
 
-    if (confirmationInfo.status === CONFIRMATION_STATUS.CONFIRMED) {
+    if (confirmationInfo.isConfirmed) {
       return {
         status: RESULT_STATUS.BAD_REQUEST,
         errorMessage: 'Bad Request',
