@@ -1,6 +1,4 @@
-import dotenv from 'dotenv';
 import { PagingParams } from './common/types/paging-params.js';
-dotenv.config();
 
 export const SETTINGS = {
   PORT: process.env.PORT || 3004,

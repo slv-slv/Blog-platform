@@ -4,15 +4,14 @@
   "main": "dist/index.js",
   "scripts": {
     "watch": "tsc -w",
-    "go": "node --watch --inspect dist/index.js",
+    "go": "node --env-file=.env --watch --inspect dist/index.js",
     "jest": "NODE_OPTIONS=--experimental-vm-modules jest -i",
-    "test": "vitest run"
+    "test": "node --env-file=.env node_modules/vitest/vitest.mjs run"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
     "express": "^4.22.1",
     "express-validator": "^7.3.1",
     "inversify": "^6.2.2",
