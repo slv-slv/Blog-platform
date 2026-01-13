@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { SETTINGS } from '../../settings.js';
 import { JwtAcessPayload, JwtPairType, JwtRefreshPayload } from './auth-types.js';
@@ -19,7 +19,7 @@ export class AuthService {
     if (!hash) {
       return false;
     }
-    return await bcrypt.compare(password, hash);
+    return bcrypt.compareSync(password, hash);
   }
 
   async generateJwtPair(userId: string, deviceId: string): Promise<JwtPairType> {
