@@ -1,5 +1,5 @@
 import express from 'express';
-import { Request, Response } from 'express';
+import type { Express, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import { blogsRouter } from './features/blogs/blogs-router.js';
 import { postsRouter } from './features/posts/posts-router.js';
@@ -9,7 +9,7 @@ import { authRouter } from './security/auth/auth-router.js';
 import { securityRouter } from './security/sessions/sessions-router.js';
 import mongoose from 'mongoose';
 
-export const app = express();
+export const app: Express = express();
 
 app.use(express.json());
 app.use(cookieParser());

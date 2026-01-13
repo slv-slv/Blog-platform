@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Router as RouterType } from 'express';
 import { commentsValidator } from './comments-validation.js';
 import { getValidationResult } from '../../common/middleware/get-validation-result.js';
 import { checkAccessToken } from '../../security/middleware/check-access-token.js';
@@ -7,7 +8,7 @@ import { CommentsController } from './comments-controller.js';
 import { getUserId } from '../../security/middleware/get-user-id.js';
 import { likeStatusValidator } from '../likes/validation/like-status-validator.js';
 
-export const commentsRouter = Router();
+export const commentsRouter: RouterType = Router();
 const commentsController = container.get(CommentsController);
 
 commentsRouter.get('/:id', getUserId, commentsController.findComment.bind(commentsController));

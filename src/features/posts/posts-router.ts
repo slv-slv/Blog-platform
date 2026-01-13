@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Router as RouterType } from 'express';
 import { postsValidator } from './posts-validation.js';
 import { pagingValidator } from '../../common/validation/paging-params-validation.js';
 import { commentsValidator } from '../comments/comments-validation.js';
@@ -11,7 +12,7 @@ import { getUserId } from '../../security/middleware/get-user-id.js';
 import { likeStatusValidator } from '../likes/validation/like-status-validator.js';
 import { getPagingParams } from '../../common/middleware/get-paging-params.js';
 
-export const postsRouter = Router();
+export const postsRouter: RouterType = Router();
 const postsController = container.get(PostsController);
 
 postsRouter.get(

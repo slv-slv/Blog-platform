@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Router as RouterType } from 'express';
 import { pagingValidator } from '../../common/validation/paging-params-validation.js';
 import { usersValidator } from './users-validation.js';
 import { getValidationResult } from '../../common/middleware/get-validation-result.js';
@@ -7,7 +8,7 @@ import { container } from '../../ioc/container.js';
 import { UsersController } from './users-controller.js';
 import { getPagingParams } from '../../common/middleware/get-paging-params.js';
 
-export const usersRouter = Router();
+export const usersRouter: RouterType = Router();
 const usersController = container.get(UsersController);
 
 usersRouter.get(

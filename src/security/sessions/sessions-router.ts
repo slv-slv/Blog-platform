@@ -1,10 +1,11 @@
 import { Router } from 'express';
+import type { Router as RouterType } from 'express';
 import { checkRefreshToken } from '../middleware/check-refresh-token.js';
 import { checkSession } from '../middleware/check-session.js';
 import { container } from '../../ioc/container.js';
 import { SessionsController } from './sessions-controller.js';
 
-export const securityRouter = Router();
+export const securityRouter: RouterType = Router();
 const sessionsController = container.get(SessionsController);
 
 securityRouter.get(

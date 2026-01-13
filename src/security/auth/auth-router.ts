@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Router as RouterType } from 'express';
 import { authValidator } from './auth-validation.js';
 import { usersValidator } from '../../features/users/users-validation.js';
 import { getValidationResult } from '../../common/middleware/get-validation-result.js';
@@ -14,7 +15,7 @@ import { rateLimiter } from '../rate-limiter/rate-limiter-middleware.js';
 import { container } from '../../ioc/container.js';
 import { AuthController } from './auth-controller.js';
 
-export const authRouter = Router();
+export const authRouter: RouterType = Router();
 const authController = container.get(AuthController);
 
 // authRouter.use(rateLimiter);
