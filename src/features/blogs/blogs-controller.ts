@@ -20,16 +20,16 @@ export class BlogsController {
 
   async getAllBlogs(req: Request, res: Response) {
     const searchNameTerm = (req.query.searchNameTerm as string) ?? null;
-    const pagingParams = res.locals.pagingParams;
+    const pagingParams = req.pagingParams;
 
     const blogs = await this.blogsQueryRepo.getAllBlogs(searchNameTerm, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(blogs);
   }
 
   async getPostsByBlogId(req: Request, res: Response) {
-    const pagingParams = res.locals.pagingParams;
-    const blogId = req.params.blogId;
-    const userId = res.locals.userId;
+    const pagingParams = req.pagingParams;
+    const blogId = req.params.blogId as string;
+    const userId = req.userId;
 
     const blog = await this.blogsRepo.findBlog(blogId);
     if (!blog) {
@@ -42,7 +42,7 @@ export class BlogsController {
   }
 
   async findBlog(req: Request, res: Response) {
-    const id = req.params.id;
+    const id = req.params.id as string;
     const blog = await this.blogsRepo.findBlog(id);
     if (!blog) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Blog not found' });
@@ -58,7 +58,7 @@ export class BlogsController {
   }
 
   async createPostForBlog(req: Request, res: Response) {
-    const blogId = req.params.blogId;
+    const blogId = req.params.blogId as string;
     const { title, shortDescription, content } = req.body;
 
     const result = await this.postsService.createPost(title, shortDescription, content, blogId);
@@ -72,7 +72,7 @@ export class BlogsController {
   }
 
   async updateBlog(req: Request, res: Response) {
-    const id = req.params.id;
+    const id = req.params.id as string;
     const { name, description, websiteUrl } = req.body;
     const result = await this.blogsService.updateBlog(id, name, description, websiteUrl);
     if (result.status !== RESULT_STATUS.NO_CONTENT) {
@@ -84,7 +84,7 @@ export class BlogsController {
   }
 
   async deleteBlog(req: Request, res: Response) {
-    const id = req.params.id;
+    const id = req.params.id as string;
     const result = await this.blogsService.deleteBlog(id);
     if (result.status !== RESULT_STATUS.NO_CONTENT) {
       res.status(httpCodeByResult(result.status)).json(result.extensions);

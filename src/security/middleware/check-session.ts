@@ -6,9 +6,9 @@ import { SessionsService } from '../sessions/sessions-service.js';
 const sessionsService = container.get(SessionsService);
 
 export const checkSession = async (req: Request, res: Response, next: NextFunction) => {
-  const userId = res.locals.userId;
-  const deviceId = res.locals.deviceId;
-  const iat = res.locals.iat;
+  const userId = req.userId!;
+  const deviceId = req.deviceId!;
+  const iat = req.iat!;
 
   const result = await sessionsService.checkSession(userId, deviceId, iat);
 

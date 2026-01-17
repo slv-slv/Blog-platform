@@ -15,8 +15,8 @@ export class CommentsController {
   ) {}
 
   async findComment(req: Request, res: Response) {
-    const id = req.params.id;
-    const userId = res.locals.userId;
+    const id = req.params.id as string;
+    const userId = req.userId;
 
     const comment = await this.commentsQueryRepo.findComment(id, userId);
     if (!comment) {
@@ -27,9 +27,9 @@ export class CommentsController {
   }
 
   async updateComment(req: Request, res: Response) {
-    const commentId = req.params.commentId;
+    const commentId = req.params.commentId as string;
     const content = req.body.content;
-    const userId = res.locals.userId;
+    const userId = req.userId!;
 
     const result = await this.commentsService.updateComment(commentId, content, userId);
     if (result.status !== RESULT_STATUS.NO_CONTENT) {
@@ -41,8 +41,8 @@ export class CommentsController {
   }
 
   async deleteComment(req: Request, res: Response) {
-    const commentId = req.params.commentId;
-    const userId = res.locals.userId;
+    const commentId = req.params.commentId as string;
+    const userId = req.userId!;
 
     const result = await this.commentsService.deleteComment(commentId, userId);
     if (result.status !== RESULT_STATUS.NO_CONTENT) {
@@ -54,8 +54,8 @@ export class CommentsController {
   }
 
   async setLikeStatus(req: Request, res: Response) {
-    const commentId = req.params.commentId;
-    const userId = res.locals.userId;
+    const commentId = req.params.commentId as string;
+    const userId = req.userId!;
     const likeStatus = req.body.likeStatus;
 
     const result = await this.commentLikesService.setLikeStatus(commentId, userId, likeStatus);

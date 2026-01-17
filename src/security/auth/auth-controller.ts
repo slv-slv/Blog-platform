@@ -76,8 +76,8 @@ export class AuthController {
   }
 
   async logout(req: Request, res: Response) {
-    // const userId = res.locals.userId;
-    const deviceId = res.locals.deviceId;
+    // const userId = req.userId;
+    const deviceId = req.deviceId!;
 
     await this.sessionsService.deleteDevice(deviceId);
 
@@ -85,7 +85,7 @@ export class AuthController {
   }
 
   async me(req: Request, res: Response) {
-    const userId = res.locals.userId;
+    const userId = req.userId!;
     const user = await this.usersQueryRepo.getCurrentUser(userId);
     if (!user) {
       res.status(HTTP_STATUS.UNAUTHORIZED_401).json({ error: 'User not found' });

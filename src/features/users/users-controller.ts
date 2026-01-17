@@ -15,7 +15,7 @@ export class UsersController {
   async getAllUsers(req: Request, res: Response) {
     const searchLoginTerm = (req.query.searchLoginTerm as string) ?? null;
     const searchEmailTerm = (req.query.searchEmailTerm as string) ?? null;
-    const pagingParams = res.locals.pagingParams;
+    const pagingParams = req.pagingParams;
 
     const users = await this.usersQueryRepo.getAllUsers(searchLoginTerm, searchEmailTerm, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(users);
@@ -34,7 +34,7 @@ export class UsersController {
   }
 
   async deleteUser(req: Request, res: Response) {
-    const id = req.params.id;
+    const id = req.params.id as string;
     const result = await this.usersService.deleteUser(id);
 
     if (result.status !== RESULT_STATUS.NO_CONTENT) {

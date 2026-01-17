@@ -17,7 +17,7 @@ export const checkCredentials = async (req: Request, res: Response, next: NextFu
   }
 
   const user = await usersQueryRepo.findUser(req.body.loginOrEmail);
-  res.locals.userId = user!.id; // для выпуска пары токенов дальше по цепочке middleware
+  req.userId = user!.id; // для выпуска пары токенов дальше по цепочке middleware
 
   next();
 };

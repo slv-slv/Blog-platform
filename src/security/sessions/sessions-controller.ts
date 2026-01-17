@@ -14,22 +14,22 @@ export class SessionsController {
   ) {}
 
   async getDevices(req: Request, res: Response) {
-    const userId = res.locals.userId;
+    const userId = req.userId!;
 
     const devices = await this.sessionsQueryRepo.getActiveDevices(userId);
     res.status(HTTP_STATUS.OK_200).json(devices);
   }
 
   async deleteOtherDevices(req: Request, res: Response) {
-    const deviceId = res.locals.deviceId;
+    const deviceId = req.deviceId!;
 
     await this.sessionsService.deleteOtherDevices(deviceId);
     res.status(HTTP_STATUS.NO_CONTENT_204).end();
   }
 
   async deleteDevice(req: Request, res: Response) {
-    const userId = res.locals.userId;
-    const deviceId = req.params.deviceId;
+    const userId = req.userId!;
+    const deviceId = req.params.deviceId as string;
 
     if (!(await this.sessionsRepo.findDevice(deviceId))) {
       res.status(HTTP_STATUS.NOT_FOUND_404).end();

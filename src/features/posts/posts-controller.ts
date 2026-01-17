@@ -21,16 +21,16 @@ export class PostsController {
   ) {}
 
   async getAllPosts(req: Request, res: Response) {
-    const pagingParams = res.locals.pagingParams;
-    const userId = res.locals.userId;
+    const pagingParams = req.pagingParams;
+    const userId = req.userId;
 
     const posts = await this.postsQueryRepo.getPosts(userId, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(posts);
   }
 
   async findPost(req: Request, res: Response) {
-    const id = req.params.id;
-    const userId = res.locals.userId;
+    const id = req.params.id as string;
+    const userId = req.userId;
 
     const post = await this.postsQueryRepo.findPost(id, userId);
 
@@ -49,7 +49,7 @@ export class PostsController {
   }
 
   async updatePost(req: Request, res: Response) {
-    const id = req.params.id;
+    const id = req.params.id as string;
     const { title, shortDescription, content } = req.body;
     const result = await this.postsService.updatePost(id, title, shortDescription, content);
     if (result.status !== RESULT_STATUS.NO_CONTENT) {
@@ -61,7 +61,7 @@ export class PostsController {
   }
 
   async deletePost(req: Request, res: Response) {
-    const id = req.params.id;
+    const id = req.params.id as string;
     const result = await this.postsService.deletePost(id);
     if (result.status !== RESULT_STATUS.NO_CONTENT) {
       res.status(httpCodeByResult(result.status)).json(result.extensions);
@@ -72,23 +72,23 @@ export class PostsController {
   }
 
   async getCommentsForPost(req: Request, res: Response) {
-    const postId = req.params.postId;
-    const userId = res.locals.userId;
+    const postId = req.params.postId as string;
+    const userId = req.userId;
 
     const post = await this.postsRepo.findPost(postId);
     if (!post) {
       res.status(HTTP_STATUS.NOT_FOUND_404).json({ error: 'Post not found' });
       return;
     }
-    const pagingParams = res.locals.pagingParams;
+    const pagingParams = req.pagingParams;
     const comments = await this.commentsQueryRepo.getCommentsForPost(postId, userId, pagingParams);
     res.status(HTTP_STATUS.OK_200).json(comments);
   }
 
   async createComment(req: Request, res: Response) {
-    const postId = req.params.postId;
+    const postId = req.params.postId as string;
     const content = req.body.content;
-    const userId = res.locals.userId;
+    const userId = req.userId!;
 
     const result = await this.commentsService.createComment(postId, content, userId);
     if (result.status !== RESULT_STATUS.CREATED) {
@@ -100,8 +100,8 @@ export class PostsController {
   }
 
   async setLikeStatus(req: Request, res: Response) {
-    const postId = req.params.postId;
-    const userId = res.locals.userId;
+    const postId = req.params.postId as string;
+    const userId = req.userId!;
     const likeStatus = req.body.likeStatus;
 
     const result = await this.postLikesService.setLikeStatus(postId, userId, likeStatus);
