@@ -42,7 +42,7 @@ describe('POST LIKE STATUS', () => {
 
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
-    accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+    accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
     const blog = await blogsService.createBlog('blog name', 'blog description', 'https://www.example.com');
     const blogId = blog.id;
@@ -103,7 +103,7 @@ describe('POST LIKE STATUS', () => {
     const anotherUserId = new ObjectId().toString();
     const payload = { userId: anotherUserId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
-    const anotherAccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+    const anotherAccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
     await request(app)
       .put(`/posts/${postId}/like-status`)
@@ -124,11 +124,11 @@ describe('POST LIKE STATUS', () => {
 
     let payload = { userId: user3Id };
     let secret = SETTINGS.JWT_PRIVATE_KEY!;
-    const user3AccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+    const user3AccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
     payload = { userId: user4Id };
     secret = SETTINGS.JWT_PRIVATE_KEY!;
-    const user4AccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+    const user4AccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
     await request(app)
       .put(`/posts/${postId}/like-status`)

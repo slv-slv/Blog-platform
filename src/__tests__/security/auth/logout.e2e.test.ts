@@ -30,7 +30,7 @@ describe('LOGOUT', () => {
 
   const payload = { userId };
   const secret = SETTINGS.JWT_PRIVATE_KEY!;
-  const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '20 s' });
+  const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '20s' });
   const { iat, exp } = jwt.decode(token) as JwtRefreshPayload;
 
   it('should return 204 and delete session if a valid token is sent ', async () => {

@@ -39,7 +39,7 @@ describe('CREATE COMMENT', () => {
 
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
-    accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+    accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
     const blog = await blogsService.createBlog('blog name', 'blog description', 'https://www.example.com');
     const blogId = blog.id;
@@ -75,7 +75,7 @@ describe('CREATE COMMENT', () => {
 
   //   const payload = { anotherUserId };
   //   const secret = SETTINGS.JWT_PRIVATE_KEY!;
-  //   const anotherUserToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+  //   const anotherUserToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
   //   await request(app)
   //     .post(`/posts/${postId}/comments`)

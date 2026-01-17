@@ -43,13 +43,13 @@ describe('GET CURRENT USER', () => {
   it('should return 401 status code for not existing user', async () => {
     const payload = { userId: new ObjectId().toString() };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
-    const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+    const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
     await request(app).get('/auth/me').auth(token, { type: 'bearer' }).expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
   it('should return existing user if valid token sent', async () => {
-    token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+    token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
     const response = await request(app)
       .get('/auth/me')
       .auth(token, { type: 'bearer' })

@@ -44,7 +44,7 @@ describe('GET COMMENT', () => {
 
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
-    accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+    accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
     const blog = await blogsService.createBlog('blog title', 'blog description', 'example@google.ru');
     const blogId = blog.id;

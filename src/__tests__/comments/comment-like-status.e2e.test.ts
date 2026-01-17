@@ -44,7 +44,7 @@ describe('COMMENT LIKE STATUS', () => {
 
     const payload = { userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
-    accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+    accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
     const blog = await blogsService.createBlog('blog name', 'blog description', 'https://www.example.com');
     const blogId = blog.id;
@@ -108,7 +108,7 @@ describe('COMMENT LIKE STATUS', () => {
     const anotherUserId = new ObjectId().toString();
     const payload = { userId: anotherUserId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
-    const anotherAccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15 m' });
+    const anotherAccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
     await request(app)
       .put(`/comments/${commentId}/like-status`)

@@ -28,7 +28,7 @@ describe('GET-ACTIVE-DEVICES', () => {
 
   const payload = { userId, deviceId };
   const secret = SETTINGS.JWT_PRIVATE_KEY!;
-  const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '20 s' });
+  const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '20s' });
   const { iat, exp } = jwt.decode(token) as JwtRefreshPayload;
 
   const anotherUserId = new ObjectId().toString();

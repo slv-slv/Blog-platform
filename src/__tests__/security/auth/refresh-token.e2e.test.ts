@@ -28,7 +28,7 @@ describe('REFRESH-TOKEN', () => {
 
   const payload = { userId, deviceId: crypto.randomUUID() };
   const secret = SETTINGS.JWT_PRIVATE_KEY!;
-  const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '20 s' });
+  const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '20s' });
 
   it('should return 401 if no token sent', async () => {
     await request(app).post('/auth/refresh-token').expect(HTTP_STATUS.UNAUTHORIZED_401);
@@ -48,7 +48,7 @@ describe('REFRESH-TOKEN', () => {
     const ip = '192.168.0.1';
     await sessionsRepo.createSession(userId, deviceId, deviceName, ip, iat, exp);
 
-    const fakeToken = jwt.sign(payload, 'somefakesecretkey', { algorithm: 'HS256', expiresIn: '15 m' });
+    const fakeToken = jwt.sign(payload, 'somefakesecretkey', { algorithm: 'HS256', expiresIn: '15m' });
 
     await request(app)
       .post('/auth/refresh-token')
