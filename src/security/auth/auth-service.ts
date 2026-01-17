@@ -19,18 +19,19 @@ export class AuthService {
     if (!hash) {
       return false;
     }
-    return bcrypt.compareSync(password, hash);
+    return await bcrypt.compare(password, hash);
   }
 
   async generateJwtPair(userId: string, deviceId: string): Promise<JwtPairType> {
     const jwtAccessPayload = { userId };
     const jwtRefreshPayload = { userId, deviceId };
-    const secret = SETTINGS.JWT_PRIVATE_KEY!;
+    const secret = SETTINGS.JWT_PRIVATE_KEY;
 
     const accessToken = jwt.sign(jwtAccessPayload, secret, {
       algorithm: 'HS256',
       expiresIn: SETTINGS.ACCESS_TOKEN_LIFETIME,
     });
+
     const refreshToken = jwt.sign(jwtRefreshPayload, secret, {
       algorithm: 'HS256',
       expiresIn: SETTINGS.REFRESH_TOKEN_LIFETIME,
