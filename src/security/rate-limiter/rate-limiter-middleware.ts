@@ -6,7 +6,7 @@ import { RateLimiterService } from './rate-limiter-service.js';
 const rateLimiterService = container.get(RateLimiterService);
 
 export const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
-  const ip = req.headers['x-forwarded-for']?.[0] || req.ip!;
+  const ip = req.ip!;
   const url = req.originalUrl;
 
   if (await rateLimiterService.shouldBlockRequest(ip, url)) {
