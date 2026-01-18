@@ -20,7 +20,7 @@ export const checkRefreshToken = async (req: Request, res: Response, next: NextF
     return;
   }
 
-  const { userId, deviceId, iat } = payload;
+  const { sub: userId, deviceId, iat } = payload;
 
   req.userId = userId;
   req.deviceId = deviceId;

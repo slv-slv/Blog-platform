@@ -26,7 +26,7 @@ export const checkAccessToken = async (req: Request, res: Response, next: NextFu
     return;
   }
 
-  const { userId } = payload;
+  const { sub: userId } = payload;
   req.userId = userId;
 
   next();

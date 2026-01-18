@@ -26,7 +26,7 @@ afterAll(async () => {
 describe('REFRESH-TOKEN', () => {
   const userId = new ObjectId().toString();
 
-  const payload = { userId, deviceId: crypto.randomUUID() };
+  const payload = { sub: userId, deviceId: crypto.randomUUID() };
   const secret = SETTINGS.JWT_PRIVATE_KEY!;
   const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '20s' });
 

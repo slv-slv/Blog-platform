@@ -23,8 +23,8 @@ export class AuthService {
   }
 
   async generateJwtPair(userId: string, deviceId: string): Promise<JwtPairType> {
-    const jwtAccessPayload = { userId };
-    const jwtRefreshPayload = { userId, deviceId };
+    const jwtAccessPayload = { sub: userId };
+    const jwtRefreshPayload = { sub: userId, deviceId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
 
     const accessToken = jwt.sign(jwtAccessPayload, secret, {

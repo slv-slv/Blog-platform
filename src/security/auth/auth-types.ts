@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
 
 export interface JwtAcessPayload extends jwt.JwtPayload {
-  userId: string;
+  sub: string;
   iat: number;
   exp: number;
 }
 
 export interface JwtRefreshPayload extends jwt.JwtPayload {
-  userId: string;
+  sub: string;
   deviceId: string;
   iat: number;
   exp: number;

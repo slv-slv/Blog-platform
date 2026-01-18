@@ -42,7 +42,7 @@ describe('GET COMMENT', () => {
     const insertedUser = await usersService.createUser(login, email, password);
     userId = insertedUser.data!.id;
 
-    const payload = { userId };
+    const payload = { sub: userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 

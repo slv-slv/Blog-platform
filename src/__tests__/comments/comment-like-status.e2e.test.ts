@@ -42,7 +42,7 @@ describe('COMMENT LIKE STATUS', () => {
     const user = await usersService.createUser(login, email, password);
     userId = user.data!.id;
 
-    const payload = { userId };
+    const payload = { sub: userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
@@ -106,7 +106,7 @@ describe('COMMENT LIKE STATUS', () => {
 
   it('should increase the number of likes when another user likes', async () => {
     const anotherUserId = new ObjectId().toString();
-    const payload = { userId: anotherUserId };
+    const payload = { sub: anotherUserId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     const anotherAccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 

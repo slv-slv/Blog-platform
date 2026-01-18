@@ -40,7 +40,7 @@ describe('POST LIKE STATUS', () => {
     const user = await usersService.createUser(login, email, password);
     userId = user.data!.id;
 
-    const payload = { userId };
+    const payload = { sub: userId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     accessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
@@ -101,7 +101,7 @@ describe('POST LIKE STATUS', () => {
 
   it('should increase the number of likes when another user likes', async () => {
     const anotherUserId = new ObjectId().toString();
-    const payload = { userId: anotherUserId };
+    const payload = { sub: anotherUserId };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     const anotherAccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
@@ -122,11 +122,11 @@ describe('POST LIKE STATUS', () => {
     const user3Id = new ObjectId().toString();
     const user4Id = new ObjectId().toString();
 
-    let payload = { userId: user3Id };
+    let payload = { sub: user3Id };
     let secret = SETTINGS.JWT_PRIVATE_KEY!;
     const user3AccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
-    payload = { userId: user4Id };
+    payload = { sub: user4Id };
     secret = SETTINGS.JWT_PRIVATE_KEY!;
     const user4AccessToken = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 

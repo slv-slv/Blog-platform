@@ -28,7 +28,7 @@ describe('LOGOUT', () => {
   const userId = new ObjectId().toString();
   const deviceId = crypto.randomUUID();
 
-  const payload = { userId };
+  const payload = { sub: userId };
   const secret = SETTINGS.JWT_PRIVATE_KEY!;
   const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '20s' });
   const { iat, exp } = jwt.decode(token) as JwtRefreshPayload;

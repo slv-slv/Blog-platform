@@ -28,20 +28,20 @@ describe('GET CURRENT USER', () => {
 
   const secret = SETTINGS.JWT_PRIVATE_KEY!;
   let token: string;
-  let payload: { userId: string };
+  let payload: { sub: string };
   let userId: string;
 
   it('should return 401 status code if no token sent', async () => {
     const user = await usersService.createUser(login, email, password);
     userId = user.data!.id;
 
-    payload = { userId };
+    payload = { sub: userId };
 
     await request(app).get('/auth/me').expect(HTTP_STATUS.UNAUTHORIZED_401);
   });
 
   it('should return 401 status code for not existing user', async () => {
-    const payload = { userId: new ObjectId().toString() };
+    const payload = { sub: new ObjectId().toString() };
     const secret = SETTINGS.JWT_PRIVATE_KEY!;
     const token = jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '15m' });
 
