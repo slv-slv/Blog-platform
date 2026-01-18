@@ -36,8 +36,10 @@ export class PostLikesRepo {
       )
       .lean();
 
-    if (post!.likes) return LikeStatus.Like;
-    if (post!.dislikes) return LikeStatus.Dislike;
+    if (!post) return LikeStatus.None;
+
+    if (post.likes) return LikeStatus.Like;
+    if (post.dislikes) return LikeStatus.Dislike;
 
     return LikeStatus.None;
   }
@@ -52,6 +54,13 @@ export class PostLikesRepo {
 
   async setLike(postId: string, userId: string, createdAt: Date): Promise<void> {
     const like = { userId, createdAt };
+
+    await this.model.updateOne(
+      { postId },
+      { $setOnInsert: { postId, likes: [], dislikes: [] } },
+      { upsert: true },
+    );
+
     await this.model.updateOne(
       { postId },
       { $push: { likes: like }, $pull: { dislikes: { userId: userId } } },
@@ -60,6 +69,13 @@ export class PostLikesRepo {
 
   async setDislike(postId: string, userId: string, createdAt: Date): Promise<void> {
     const dislike = { userId, createdAt };
+
+    await this.model.updateOne(
+      { postId },
+      { $setOnInsert: { postId, likes: [], dislikes: [] } },
+      { upsert: true },
+    );
+
     await this.model.updateOne(
       { postId },
       { $push: { dislikes: dislike }, $pull: { likes: { userId: userId } } },

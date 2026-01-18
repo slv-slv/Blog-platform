@@ -29,10 +29,6 @@ export class PostsService {
       };
     }
 
-    const postId = newPost.id;
-
-    await this.postLikesService.createLikesInfo(postId);
-
     const extendedLikesInfo = this.postLikesService.getDefaultLikesInfo();
 
     return {
@@ -73,8 +69,6 @@ export class PostsService {
         data: null,
       };
     }
-
-    await this.postLikesService.deleteLikesInfo(id);
 
     return {
       status: RESULT_STATUS.NO_CONTENT,

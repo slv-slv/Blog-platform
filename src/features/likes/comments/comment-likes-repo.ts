@@ -100,7 +100,6 @@ export class CommentLikesRepo {
       {
         $pull: { likes: { userId: userId }, dislikes: { userId: userId } },
       },
-      { upsert: true },
     );
   }
 }
