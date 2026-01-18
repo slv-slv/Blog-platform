@@ -11,7 +11,7 @@ export const createSession = async (req: Request, res: Response, next: NextFunct
   const exp = req.exp!;
 
   const deviceName = req.get('User-Agent') ?? 'unknown';
-  const ip = req.ip!;
+  const ip = req.ip ?? 'unknown';
 
   await sessionsService.createSession(userId, deviceId, deviceName, ip, iat, exp);
 
