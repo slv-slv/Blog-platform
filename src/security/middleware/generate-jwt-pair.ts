@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { JwtRefreshPayload } from '../auth/auth-types.js';
 import { container } from '../../ioc/container.js';
 import { AuthService } from '../auth/auth-service.js';
@@ -11,7 +12,7 @@ export const generateJwtPair = async (req: Request, res: Response, next: NextFun
 
   const { accessToken, refreshToken } = await authService.generateJwtPair(userId, deviceId);
 
-  const { iat, exp } = authService.verifyJwt(refreshToken) as JwtRefreshPayload;
+  const { iat, exp } = jwt.decode(refreshToken) as JwtRefreshPayload;
 
   req.deviceId = deviceId;
   req.iat = iat;
