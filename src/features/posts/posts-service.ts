@@ -70,6 +70,8 @@ export class PostsService {
       };
     }
 
+    await this.postLikesService.deleteLikesInfo(id);
+
     return {
       status: RESULT_STATUS.NO_CONTENT,
       data: null,

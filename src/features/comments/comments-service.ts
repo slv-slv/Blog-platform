@@ -109,6 +109,8 @@ export class CommentsService {
 
     await this.commentsRepo.deleteComment(commentId);
 
+    await this.commentLikesService.deleteLikesInfo(commentId);
+
     return {
       status: RESULT_STATUS.NO_CONTENT,
       data: null,
