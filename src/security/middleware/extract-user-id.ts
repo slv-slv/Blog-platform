@@ -4,7 +4,7 @@ import { AuthService } from '../auth/auth-service.js';
 
 const authService = container.get(AuthService);
 
-export const getUserId = async (req: Request, res: Response, next: NextFunction) => {
+export const extractUserId = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {

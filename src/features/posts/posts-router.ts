@@ -8,25 +8,25 @@ import { basicAuth } from '../../security/middleware/basic-auth.js';
 import { checkAccessToken } from '../../security/middleware/check-access-token.js';
 import { container } from '../../ioc/container.js';
 import { PostsController } from './posts-controller.js';
-import { getUserId } from '../../security/middleware/get-user-id.js';
+import { extractUserId } from '../../security/middleware/extract-user-id.js';
 import { likeStatusValidator } from '../likes/validation/like-status-validator.js';
-import { getPagingParams } from '../../common/middleware/get-paging-params.js';
+import { extractPagingParams } from '../../common/middleware/extract-paging-params.js';
 
 export const postsRouter: RouterType = Router();
 const postsController = container.get(PostsController);
 
 postsRouter.get(
   '/',
-  getUserId,
+  extractUserId,
   pagingValidator.postsSortBy,
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
-  getPagingParams,
+  extractPagingParams,
   postsController.getAllPosts.bind(postsController),
 );
 
-postsRouter.get('/:id', getUserId, postsController.findPost.bind(postsController));
+postsRouter.get('/:id', extractUserId, postsController.findPost.bind(postsController));
 
 postsRouter.post(
   '/',
@@ -54,12 +54,12 @@ postsRouter.delete('/:id', basicAuth, postsController.deletePost.bind(postsContr
 
 postsRouter.get(
   '/:postId/comments',
-  getUserId,
+  extractUserId,
   pagingValidator.commentsSortBy,
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
-  getPagingParams,
+  extractPagingParams,
   postsController.getCommentsForPost.bind(postsController),
 );
 

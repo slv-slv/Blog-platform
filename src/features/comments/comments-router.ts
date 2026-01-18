@@ -5,13 +5,13 @@ import { getValidationResult } from '../../common/middleware/get-validation-resu
 import { checkAccessToken } from '../../security/middleware/check-access-token.js';
 import { container } from '../../ioc/container.js';
 import { CommentsController } from './comments-controller.js';
-import { getUserId } from '../../security/middleware/get-user-id.js';
+import { extractUserId } from '../../security/middleware/extract-user-id.js';
 import { likeStatusValidator } from '../likes/validation/like-status-validator.js';
 
 export const commentsRouter: RouterType = Router();
 const commentsController = container.get(CommentsController);
 
-commentsRouter.get('/:id', getUserId, commentsController.findComment.bind(commentsController));
+commentsRouter.get('/:id', extractUserId, commentsController.findComment.bind(commentsController));
 
 commentsRouter.put(
   '/:commentId',

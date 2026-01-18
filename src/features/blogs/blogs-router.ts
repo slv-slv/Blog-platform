@@ -7,8 +7,8 @@ import { getValidationResult } from '../../common/middleware/get-validation-resu
 import { basicAuth } from '../../security/middleware/basic-auth.js';
 import { container } from '../../ioc/container.js';
 import { BlogsController } from './blogs-controller.js';
-import { getUserId } from '../../security/middleware/get-user-id.js';
-import { getPagingParams } from '../../common/middleware/get-paging-params.js';
+import { extractUserId } from '../../security/middleware/extract-user-id.js';
+import { extractPagingParams } from '../../common/middleware/extract-paging-params.js';
 
 export const blogsRouter: RouterType = Router();
 const blogsController = container.get(BlogsController);
@@ -20,7 +20,7 @@ blogsRouter.get(
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
-  getPagingParams,
+  extractPagingParams,
   blogsController.getAllBlogs.bind(blogsController),
 );
 
@@ -50,12 +50,12 @@ blogsRouter.delete('/:id', basicAuth, blogsController.deleteBlog.bind(blogsContr
 
 blogsRouter.get(
   '/:blogId/posts',
-  getUserId,
+  extractUserId,
   pagingValidator.postsSortBy,
   pagingValidator.sortDirection,
   pagingValidator.pageNumber,
   pagingValidator.pageSize,
-  getPagingParams,
+  extractPagingParams,
   blogsController.getPostsByBlogId.bind(blogsController),
 );
 
