@@ -8,7 +8,7 @@ export const getPagingParams = (req: Request, res: Response, next: NextFunction)
   const pageNumber = req.query.pageNumber ? +req.query.pageNumber : SETTINGS.PAGING_DEFAULT_PARAMS.pageNumber;
   const pageSize = req.query.pageSize ? +req.query.pageSize : SETTINGS.PAGING_DEFAULT_PARAMS.pageSize;
 
-  const pagingParams = { sortBy, sortDirection, pageNumber, pageSize } as PagingParams;
+  const pagingParams = { sortBy, sortDirection, pageNumber, pageSize };
   req.pagingParams = pagingParams;
 
   next();
