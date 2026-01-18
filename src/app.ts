@@ -11,6 +11,8 @@ import mongoose from 'mongoose';
 
 export const app: Express = express();
 
+app.set('trust proxy', true);
+
 app.use(express.json());
 app.use(cookieParser());
 
